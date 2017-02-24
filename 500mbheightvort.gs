@@ -44,7 +44,7 @@
 
 *draw titles, caption, and axis label for map. Make sure to change the times so they are accurate!
 'draw title '"500 hPa Geopotential Height and Absolute Vorticity"
-'draw string 1.7 0.5 Model: GFS   Init: 18Z 23FEB2017   Valid: 00Z 23FEB2017 (6-hour forecast)'
+'draw string 1.7 0.5 Model: GFS   Init: 18Z 23FEB2017   Valid: 00Z 24FEB2017 (6-hour forecast)'
 'draw string 10 7.8 s`a-1'
 'draw string 9.15 .125 weathertogether.us'
 'draw string 3.5 .125 This is really fun and not too difficult!'
