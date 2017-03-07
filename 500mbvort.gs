@@ -4,7 +4,7 @@
 *xcbar.gs: http://kodama.fubuki.info/wiki/wiki.cgi/GrADS/script/xcbar.gs?lang=en
 *colormaps_v2.gs (rename to colormaps.gs for script to run) http://gradsaddict.blogspot.com/2015/12/script-colormapsgs-version-20-create.html
 
-*To do list: *Get local maxima and minima for 500 hPa height contours using 'mfhilo' function
+*To do list: *Clean up the high and low values when the heights go over the terrain of the Western US with 'mfhilo' function
 
 
 
@@ -13,14 +13,15 @@
 'set display color white'
 'clear'
 'set timelab off'
-'set xsize 1100 850'
+'set grads off'
+'set xsize 1024 768'
 
 *Open netcdf file from NOMADS server
-'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20170224/gfs_0p25_12z'
+'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20170307/gfs_0p25_00z'
 
 *Set time-step you want to plot. For this GFS, time-steps are in 3 hour intervals from t=1 to t=81, where t=1 is the initialization (0 hour forecast). 
 *To find how many hours in advance you are plotting: hours=(t-1)*3
-'set t 3'
+'set t 60'
 
 *Set spatial domain for Grads to retrieve data from
 'set lat 18 70'
@@ -58,5 +59,84 @@
 'draw string 1.3 7.9 Absolute Vorticity (shaded, s`a-1`n)'      
 'draw string 1.3 0.6 Model: __Z DDMONYYYY GFS                Valid: __Z DDMONYYYY (_-hour forecast)'
 'draw string 7.9 7.9 weathertogether.us'
+
+*plot high and low centers via mfhilo function
+radius=1500
+cint=500
+
+*   ******************************DRAW L's******************************
+
+'mfhilo hgtprs/10 CL l 'radius', 'cint
+
+Low_info=result
+i=2         ;*Since the data starts on the 2nd line
+minmax=sublin(Low_info,i)
+
+while(subwrd(minmax,1) = 'L') 
+
+  min_lat = subwrd(minmax, 2)
+  min_lon = subwrd(minmax, 3)
+  min_val = subwrd(minmax, 5)
+  minval = math_nint(min_val)
+
+  'q w2xy 'min_lon' 'min_lat      ;*Translate lat/lon to page coordinates
+   x_min = subwrd(result,3)
+   y_min = subwrd(result,6)
+
+
+  'q gxinfo'                      ;*Get area boundaries
+  xline=sublin(result,3)
+  yline=sublin(result,4)
+  xs=subwrd(xline,4)' 'subwrd(xline,6)
+  ys=subwrd(yline,4)' 'subwrd(yline,6)
+
+  if(y_min > subwrd(ys,1)+0.1 & y_min < subwrd(ys,2)-0.1 & x_min > subwrd(xs,1)+0.1 & x_min < subwrd(xs,2)-0.5)
+    'set strsiz .1'
+    'set string 1 c 5'
+    'draw string 'x_min' 'y_min' 'minval
+        
+  endif
+
+  i=i+1
+  minmax = sublin(Low_info,i)
+endwhile
+
+
+*   ******************************DRAW H's******************************
+
+'mfhilo hgtprs/10 CL h 'radius', 'cint
+
+High_info=result
+i=2         ;*Since the data starts on the 2nd line
+minmax=sublin(High_info,i)
+
+while(subwrd(minmax,1) = 'H') 
+
+  min_lat = subwrd(minmax, 2)
+  min_lon = subwrd(minmax, 3)
+  min_val = subwrd(minmax, 5)
+  minval = math_nint(min_val)
+
+  'q w2xy 'min_lon' 'min_lat      ;*Translate lat/lon to page coordinates
+   x_min = subwrd(result,3)
+   y_min = subwrd(result,6)
+
+
+  'q gxinfo'                      ;*Get area boundaries
+  xline=sublin(result,3)
+  yline=sublin(result,4)
+  xs=subwrd(xline,4)' 'subwrd(xline,6)
+  ys=subwrd(yline,4)' 'subwrd(yline,6)
+
+  if(y_min > subwrd(ys,1)+0.1 & y_min < subwrd(ys,2)-0.1 & x_min > subwrd(xs,1)+0.1 & x_min < subwrd(xs,2)-0.5)
+    'set strsiz .1'
+    'set string 1 c 5'
+    'draw string 'x_min' 'y_min' 'minval
+  endif
+
+  i=i+1
+  minmax = sublin(High_info,i)
+endwhile
+
 *Save output as .png file in current directory
-'gxprint 500-hPa-NE-Pacific.png'
+'gxprint 500-hPa-NE-Pacific.png x1024 y768'
