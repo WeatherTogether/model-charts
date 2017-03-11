@@ -8,20 +8,20 @@
 
 
 
-*Basic commands to clear everything, make background white, turn off timestamp, and fix window output to 1024x768.
+*Basic commands to clear everything, make background white, turn off timestamp, and fix window output to 1100x850.
 'reinit'
 'set display color white'
 'clear'
 'set timelab off'
 'set grads off'
-'set xsize 1024 768'
+'set parea 0.3 10.3 0.4 7.75'
 
 *Open netcdf file from NOMADS server
-'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20170307/gfs_0p25_00z'
+'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20170311/gfs_0p25_00z'
 
 *Set time-step you want to plot. For this GFS, time-steps are in 3 hour intervals from t=1 to t=81, where t=1 is the initialization (0 hour forecast). 
 *To find how many hours in advance you are plotting: hours=(t-1)*3
-'set t 60'
+'set t 3'
 
 *Set spatial domain for Grads to retrieve data from
 'set lat 18 70'
@@ -45,7 +45,7 @@
 'set gxout shaded'
 'colormaps.gs -l 0 50e-5 1e-5 -map paired'
 'd absvprs'
-'xcbar.gs -fstep 5 -line on -edge circle -direction v 9.8 10 .6 7.9'
+'xcbar.gs -fstep 5 -line on -edge circle -direction v 9.8 10 .4 7.75'
 
 *plot the 500hPa height contours in intervals of 3 decameters
 'set gxout contour'
@@ -55,9 +55,9 @@
 'd hgtprs/10'
 
 *draw titles, caption, and axis label for map. Make sure to change the times so they are accurate!
-'draw string 1.3 8.1 500 hPa Geopotential Height (contours, dam)'
-'draw string 1.3 7.9 Absolute Vorticity (shaded, s`a-1`n)'      
-'draw string 1.3 0.6 Model: __Z DDMONYYYY GFS                Valid: __Z DDMONYYYY (_-hour forecast)'
+'draw string .85 8.1 500 hPa Geopotential Height (contours, dam)'
+'draw string .85 7.9 Absolute Vorticity (shaded, s`a-1`n)'      
+'draw string .85 0.25 Model: 00Z 11Mar2017 GFS                Valid: 06Z 11Mar2017 (6-hour forecast)'
 'draw string 7.9 7.9 weathertogether.us'
 
 *plot high and low centers via mfhilo function
