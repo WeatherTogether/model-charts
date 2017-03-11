@@ -8,7 +8,7 @@
 
 
 
-*Basic commands to clear everything, make background white, turn off timestamp, and fix window output to 1100x850.
+*Basic commands to clear everything, make background white, turn off timestamp/grads,  and set plotting area.
 'reinit'
 'set display color white'
 'clear'
