@@ -57,7 +57,7 @@ endwhile
 'd (tmpsfc-273.15)*9/5 +32)'
 
 'draw title GEFS 2-meter temperature at Portland, OR'      
-'draw string 2 0.2 Model: 00Z 09Mar2017 GEFS'
+'draw string 2 0.2 Model: 18Z 10Mar2017 GEFS'
 'draw string 8.3 0.2 weathertogether.us'
 
 *Plot ensemble mean
