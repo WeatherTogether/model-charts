@@ -1,10 +1,7 @@
-*This script plots sea-level-pressure (hPa), 6-hour precipitation (in), and 1000-500mb thicknesses (dam) over a polar 
-*stereographic projection of the NE Pacific. It then saves the output to 6hourprecip.png in the current directory. 
-*To run this script,you will need to have xcbar.gs and colormaps.gs installed. 
+*This script plots sea-level-pressure (hPa), 3-hour precipitation (in), and 1000-500mb thicknesses (dam) over a polar *stereographic projection of the NE Pacific. It then saves the output to a .png file named SLP-Precip-NE-Pacific in the current directory. To run this script,you will need to have xcbar.gs and colormaps.gs installed. 
 
 *xcbar.gs: http://kodama.fubuki.info/wiki/wiki.cgi/GrADS/script/xcbar.gs?lang=en
 *colormaps_v2.gs (rename to colormaps.gs for script to run) http://gradsaddict.blogspot.com/2015/12/script-colormapsgs-version-20-create.html
-
 
 *Basic commands to clear everything, make background white, turn off timestamp, and fix window output to 1100x850.
 'reinit'
@@ -12,7 +9,7 @@
 'clear'
 'set timelab off'
 'set grads off'
-'set xsize 1024 768'
+'set parea 0.5 10.5 0.4 7.75'
 
 *Open netcdf file from NOMADS server
 'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20170309/gfs_0p25_00z'
@@ -43,7 +40,7 @@
 'colormaps.gs -map s3pcpn -custom 0 .01 .02 .05 .1 .15 .20 .25 .30 .35 .40 .45 .50 .60 .70 .80 .90 1.00 1.20 1.50 2.00 5.00'
 *'d sum(apcpsfc,t=1,t=81,2)'
 'd apcpsfc/25.4'
-'xcbar.gs -line on -edge circle -direction v 9.8 10 .6 7.9'
+'xcbar.gs -line on -edge circle -direction v 10.1 10.3 .4 7.75'
 
 *plot 1000-500hPa thickness in intervals of 6 decameters
 'set gxout contour'
@@ -72,11 +69,11 @@
 'd prmslmsl/100'
 
 *draw titles, caption, and axis label for map. Make sure to change the times so they are accurate!
-'draw string 1.3 8.3 1000-500 hPa Thickness (dotted contours, dam)'
-'draw string 1.3 8.1 Sea-Level Pressure (contours, hPa)'
-'draw string 1.3 7.9 6-Hour Precipitation (shaded, inches)'      
-'draw string 1.3 0.6 Model: 00Z 8Mar2017 GFS                Valid: 06Z 8Mar2017 (6-hour forecast)'
-'draw string 7.9 7.9 weathertogether.us'
+'draw string 1.05 8.3 1000-500 hPa Thickness (dotted contours, dam)'
+'draw string 1.05 8.1 Sea-Level Pressure (contours, hPa)'
+'draw string 1.05 7.9 6-Hour Precipitation (shaded, inches)'      
+'draw string 1.05 0.25 Model: 00Z 8Mar2017 GFS                Valid: 06Z 8Mar2017 (6-hour forecast)'
+'draw string 8.1 7.9 weathertogether.us'
 
 *plot high and low centers via mfhilo function
 radius=1000
