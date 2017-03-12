@@ -1,4 +1,4 @@
-*This script plots sea-level-pressure (hPa), 3-hour precipitation (in), and 1000-500mb thicknesses (dam) over a polar *stereographic projection of the NE Pacific. It then saves the output to a .png file named SLP-Precip-NE-Pacific in the current directory. To run this script,you will need to have xcbar.gs and colormaps.gs installed. 
+*This script plots sea-level-pressure (hPa), 6-hour precipitation (in), and 1000-500mb thicknesses (dam) over a polar *stereographic projection of the NE Pacific. It then saves the output to a .png file named SLP-Precip-NE-Pacific in the current directory. To run this script,you will need to have xcbar.gs and colormaps.gs installed. 
 
 *xcbar.gs: http://kodama.fubuki.info/wiki/wiki.cgi/GrADS/script/xcbar.gs?lang=en
 *colormaps_v2.gs (rename to colormaps.gs for script to run) http://gradsaddict.blogspot.com/2015/12/script-colormapsgs-version-20-create.html
@@ -6,20 +6,34 @@
 *To do list: 
 
 
-*Basic commands to clear everything, make background white, turn off timestamp/grads, and set plotting area.
+*Basic commands to clear everything, make background white, turn off timestamp, and fix window output to 1100x850.
 'reinit'
 'set display color white'
 'clear'
 'set timelab off'
 'set grads off'
-'set parea 0.3 10.3 0.4 7.75'
+'set parea 0.3 10.3 0.15 7.5'
+
+
 
 *Open netcdf file from NOMADS server
-'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20170309/gfs_0p25_00z'
+'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20170312/gfs_0p25_00z'
 
-*Set time-step you want to plot. For this GFS, time-steps are in 3 hour intervals from t=1 to t=81, where t=1 is the *initialization (0 hour forecast). 
-*To find how many hours in advance you are plotting: hours=(t-1)*3
-'set t 3'
+* *** SET YOUR VARIABLES!!! :)
+
+*Model info
+run = 00Z
+date = 12Mar2017
+model = GFS
+
+*frame (goes from 1-81 in 3-hour intervals, hours=(frame-1)*3)
+frame=3
+
+
+*** End variables
+
+*set time
+'set t 'frame
 
 *Set spatial domain for Grads to retrieve data from
 'set lat 18 70'
@@ -36,15 +50,14 @@
 'set mpt 2 1 3 3'
 'set grid on 5 1 1'
 
-
-
 *Plot 6-hour precipitation with colormaps and xcbar scripts
 'set gxout shaded'
 'colormaps.gs -map s3pcpn -custom 0 .01 .02 .05 .1 .15 .20 .25 .30 .35 .40 .45 .50 .60 .70 .80 .90 1.00 1.20 1.50 2.00 5.00'
 *'d sum(apcpsfc,t=1,t=81,2)'
 'd apcpsfc/25.4'
-'xcbar.gs -line on -edge circle -direction v 9.8 10 .4 7.75'
+'xcbar.gs -line on -edge circle -direction v 9.8 10 .15 7.5'
 
+*** CHANGE THICKNESS SETTINGS HERE
 *plot 1000-500hPa thickness in intervals of 6 decameters
 'set gxout contour'
 'set cint 6'
@@ -54,12 +67,6 @@
 'set clevs 476 480 486 492 498 504 510 516 522 528 534 540 546 552 558 564 570 576 582 588 594 600'
 'set ccols 4 4 4 4 4 4 4 4 4 4 4 2 2 2 2 2 2 2 2 2 2 2'
 
-*if (hgtprs(lev=500)-hgtprs(lev=1000))/10 >= 540)
-*'set ccolor 2'
-*endif
-*if (hgtprs(lev=500)-hgtprs(lev=1000))/10 < 540)
-*'set ccolor 4'
-*endif
 'd (hgtprs(lev=500)-hgtprs(lev=1000))/10'
 
 *plot the SLP contours in intervals of 3 hPa
@@ -71,12 +78,22 @@
 'set clab masked'
 'd prmslmsl/100'
 
+hours = (frame-1)*3
+
+
 *draw titles, caption, and axis label for map. Make sure to change the times so they are accurate!
-'draw string .85 8.3 1000-500 hPa Thickness (dotted contours, dam)'
-'draw string .85 8.1 Sea-Level Pressure (contours, hPa)'
-'draw string .85 7.9 6-Hour Precipitation (shaded, inches)'      
-'draw string .85 0.25 Model: 00Z 8Mar2017 GFS                Valid: 06Z 8Mar2017 (6-hour forecast)'
-'draw string 7.9 7.9 weathertogether.us'
+'draw string .85 8.1 1000-500 hPa Thickness (dotted contours, dam)'
+'draw string .85 7.9 Sea-Level Pressure (contours, hPa)'
+'draw string .85 7.7 6-Hour Precipitation (shaded, inches)'      
+
+
+'set string 4 br'
+
+'draw string 9.8 8.25 '"Model: "''run%' '%date' '%model
+'draw string 9.8 8.05'"Valid: HHZ DDMonYYYY ("''%hours''"-hour forecast)"
+'set string 11 br'
+'draw string 9.8 7.65 weathertogether.us'
+
 
 *plot high and low centers via mfhilo function
 radius=1000
