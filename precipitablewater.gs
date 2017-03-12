@@ -6,20 +6,26 @@
 
 
 
-*Basic commands to clear everything, make background white, turn off timestamp/grads, and set plotting area.
+*Basic commands to clear everything, make background white, turn off timestamp, and fix window output to 1100x850.
 'reinit'
 'set display color white'
 'clear'
 'set timelab off'
 'set grads off'
-'set parea 0.3 10.3 0.4 7.75'
+'set parea 0.3 10.3 0.15 7.5'
 
 *Open netcdf file from NOMADS server
-'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20170311/gfs_0p25_00z'
+'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20170312/gfs_0p25_00z'
 
-*Set time-step you want to plot. For this GFS, time-steps are in 3 hour intervals from t=1 to t=81, where t=1 is the initialization (0 hour forecast). 
-*To find how many hours in advance you are plotting: hours=(t-1)*3
-'set t 3'
+* *** SET YOUR VARIABLES!!! :)
+
+*Model info
+run = 00Z
+date = 12Mar2017
+model = GFS
+
+*frame (goes from 1-81 in 3-hour intervals, hours=(frame-1)*3)
+frame=3
 
 *Set spatial domain for Grads to retrieve data from
 'set lat 18 70'
@@ -40,11 +46,23 @@
 'set gxout shaded'
 'colormaps.gs -l 0 2 .04 -map s3pcpn'
 'd pwatclm/25.4'
-'xcbar.gs -fstep 5 -line on -edge circle -direction v 9.8 10 .4 7.75'
+'xcbar.gs -fstep 5 -line on -edge circle -direction v 9.8 10 .15 7.5'
 
-*draw titles, caption, and axis label for map. Make sure to change the times so they are accurate! As coded thus far, approriate "Model: 00Z 11MAR2017 GFS                Valid: 06Z 11MAR2017 (6-hour forecast)"
-'draw string .85 7.9         Precipitable Water (shaded, inches)'      
-'draw string .85 0.25 Model: __Z DDMONYYYY GFS                Valid: __Z DDMONYYYY (_-hour forecast)'
-'draw string 7.9 7.9 weathertogether.us'
+            
+hours = (frame-1)*3
+
+
+*draw titles and strings for map!
+'draw string .85 7.7 Precipitable Water (shaded, inches)'       
+
+'set string 4 br'
+
+'draw string 9.8 8.25 '"Model: "''run%' '%date' '%model
+'draw string 9.8 8.05'"Valid: HHZ DDMonYYYY ("''%hours''"-hour forecast)"
+'set string 11 br'
+'draw string 9.8 7.65 weathertogether.us'
+
+
+
 *Save output as .png file in current directory
 'gxprint Precipitable-Water-NE-Pacific.png x1024 y768'
