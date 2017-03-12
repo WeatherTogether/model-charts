@@ -42,7 +42,7 @@ frame=3
 'set mpt 2 1 3 3'
 'set grid on 5 1 1'
 
-*Plot absolute vorticity with colormaps and xcbar scripts
+*Plot precipitable water with colormaps and xcbar scripts
 'set gxout shaded'
 'colormaps.gs -l 0 2 .04 -map s3pcpn'
 'd pwatclm/25.4'
