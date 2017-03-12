@@ -81,7 +81,7 @@ frame=3
 hours = (frame-1)*3
 
 
-*draw titles, caption, and axis label for map. Make sure to change the times so they are accurate!
+*draw titles/strings
 'draw string .85 8.1 1000-500 hPa Thickness (dotted contours, dam)'
 'draw string .85 7.9 Sea-Level Pressure (contours, hPa)'
 'draw string .85 7.7 6-Hour Precipitation (shaded, inches)'      
