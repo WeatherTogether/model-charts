@@ -1,7 +1,6 @@
 
 *This script generates a time series at a lat/lon point of the temperature at a specified level and the 6-hour precip from the GFS ensemble.
 
-*To do: add climotologies!
 
 *Basic commands to clear everything, set background white, turn off timestamp/grads.
 'reinit'
@@ -31,7 +30,7 @@ longitude = 237.67
 *Portland is 45.52, 237.32
 
 *level (hPa)
-level = 850
+level = 500
 
 *time range (each step is 6 hours, model has 65 steps)
 tmin = 1
@@ -39,11 +38,11 @@ tmax= 65
 
 *Precipitation y-axis range (inches)
 precipmin=0
-precipmax=1.5
+precipmax=2
 
 *Temperature y-axis range (Celsius)
-tempmin=-25
-tempmax=25
+tempmin=-50
+tempmax=-10
 
 
 
@@ -146,9 +145,11 @@ endwhile
 'draw string 5 7.9 Control = black'
 'set string 4'
 'draw string 5 7.6 Ens. mean = blue' 
-'set string 1'
-'draw string 8 7.9 'run%' '%date' '%model   
-'draw string 8 7.6 weathertogether.us'
+
+'set string 1 br'
+'draw string 9.95 7.9 'run%' '%date' '%model 
+'set string 11 br'  
+'draw string 9.95 7.6 weathertogether.us'
 
 'set strsiz 0.15' 
 'set string 1 c 3 -90' 
