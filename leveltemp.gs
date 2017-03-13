@@ -13,20 +13,23 @@
 
 *open file (be sure to change it to the model you want to open!)
 *GFS ensembles
-'sdfopen  http://nomads.ncep.noaa.gov:9090/dods/gens/gens20170313/gep_all_00z'
+'sdfopen  http://nomads.ncep.noaa.gov:9090/dods/gens/gens20170313/gep_all_06z'
 *GFS high resolution operational
-'sdfopen http://nomads.ncep.noaa.gov:80/dods/gfs_0p25/gfs20170313/gfs_0p25_00z'
+'sdfopen http://nomads.ncep.noaa.gov:80/dods/gfs_0p25/gfs20170313/gfs_0p25_06z'
 
 * *** SET YOUR VARIABLES!!! :)
 
 *Model info
-run = 00z
+run = 06z
 date = 13Mar2017
 model = GFS
 
-*location
-city = Portland
-state = OR
+*location - NOTE: if any one of these is not applicable, simply use an empty string, i.e. ""
+city = "Portland"
+state = "OR"
+country = "USA"
+
+*lat and lon 
 latitude = 45.59
 longitude = 237.41
 
@@ -45,7 +48,7 @@ precipmax=2
 tempmin=-20
 tempmax=20
 
-*ensemble time range (each step is 6 hours, model has 65 steps). Numbers must be >=1 and <=65.
+*ensemble time range (each step is 6 hours, model has 65 steps)
 tmin = 1
 tmax= 65
 
@@ -119,7 +122,7 @@ endwhile
 'set dfile 1'
 
 *plot ensembles
-'define precip=0'
+*'define precip=0' (would like to sum precip eventually)
 ens=0;while(ens<21);ens=ens+1
  'set gxout line'
  'set cmark 0'
@@ -160,9 +163,11 @@ endwhile
 
 'set strsiz 0.12' 
 'set string 1 bl 5 0'
-'draw string 1.05 7.9 '%city''","' '%state' '%level' '"hPa Temperature (`ao`nC)" 
+'draw string 1.05 8.1 '%city''","' '%state' '%country' '"("''%latitude''","' '%longitude''")"
+'draw string 1.05  7.85 '%level' '"hPa Temperature (`ao`nC)" 
 'draw string 1.05 7.6 6-hour Precipitation (inches)' 
 
+*draw legend
 'set strsiz .1'
 'draw string 5.5 8 Control = black'
 'set string 4'
@@ -170,18 +175,22 @@ endwhile
 'set string 14'
 'draw string 5.5 7.6 Operational = purple'
 
+*draw model run
 'set strsiz .11'
 'set string 1 br'
 'draw string 9.95 7.9 '"Model: "''run%' '%date' '%model
  
+*draw weathertogether.us
 'set strsiz .12'
 'set string 11 br' 
 'draw string 9.95 7.6 weathertogether.us'
 
+*draw y-axis on left
 'set strsiz 0.15' 
 'set string 1 c 3 -90' 
 'draw string .5 4.25 'level%' hPa Temperature (`ao`nC)'
 
+*draw y axis on right
 'set strsiz 0.15' 
 'set string 1 c 3 -90' 
 'draw string 10.5 4.25 6-hour Precipitation (inches)'
