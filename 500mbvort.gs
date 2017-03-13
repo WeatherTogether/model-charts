@@ -8,7 +8,7 @@
 
 
 
-*Basic commands to clear everything, make background white, turn off timestamp/grads,  and set plotting area.
+*Basic commands to clear everything, make background white, turn off timestamp/grads, and set plotting area.
 'reinit'
 'set display color white'
 'clear'
@@ -29,16 +29,19 @@ model = GFS
 *frame (goes from 1-81 in 3-hour intervals, hours=(frame-1)*3)
 frame=3
 
+*Forecast time (format: __Z day, DDMonYYYY)
+forecasttime="06Z Mon, 13Mar2017"
+
 *vertical level
 level=500
 *** End variables
 
+*Set vertical coordinate
+'set lev 'level
+
 *Set spatial domain for Grads to retrieve data from
 'set lat 18 70'
 'set lon -190 -80'
-
-*Set vertical coordinate
-'set lev 'level
 
 *Set map projection 
 'set mpvals -160 -110 23 65'
@@ -67,16 +70,19 @@ level=500
 hours=(frame-1)*3
 
 *draw titles, caption, and axis label for map. Make sure to change the times so they are accurate!
-'draw string .85 7.9 '%level' '"hPa Geopotential Height (contours, dam)"
-'draw string .85 7.7 Absolute Vorticity (shaded, s`a-1`n)'  
+
+
+'set strsiz .15'
+'draw string .85 7.95 '%level' '"hPa Geopotential Height (contours, dam)"
+'draw string .85 7.7 Absolute Vorticity (shaded, s`a-1`n)'   
 'set string 4 br'
-
-'draw string 9.8 8.25 '"Model: "''run%' '%date' '%model
-'draw string 9.8 8.05'"Valid: HHZ DDMonYYYY ("''%hours''"-hour forecast)"
+'set strsiz .12'
+'draw string 9.75 8.3 '"Model: "''run%' '%date' '%model
+'draw string 9.75 8.1 '"Valid: "''%forecasttime
+'draw string 9.75 7.9 '%hours' '"- hour forecast"
+'set strsiz .13'
 'set string 11 br'
-'draw string 9.8 7.65 weathertogether.us'
-         
-
+'draw string 9.75 7.6 weathertogether.us' 
 
 
 *plot high and low centers via mfhilo function
