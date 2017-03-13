@@ -45,7 +45,7 @@ precipmax=2
 tempmin=-20
 tempmax=20
 
-*ensemble time range (each step is 6 hours, model has 65 steps)
+*ensemble time range (each step is 6 hours, model has 65 steps). Numbers must be >=1 and <=65.
 tmin = 1
 tmax= 65
 
