@@ -5,7 +5,6 @@
 
 *To do list: 
 
-
 *Basic commands to clear everything, make background white, turn off timestamp, and fix window output to 1100x850.
 'reinit'
 'set display color white'
@@ -15,20 +14,21 @@
 'set parea 0.3 10.3 0.15 7.5'
 
 
-
 *Open netcdf file from NOMADS server
-'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20170312/gfs_0p25_00z'
+'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20170313/gfs_0p25_06z'
 
 * *** SET YOUR VARIABLES!!! :)
 
 *Model info
-run = 00Z
-date = 12Mar2017
+run = 06Z
+date = 13Mar2017
 model = GFS
 
 *frame (goes from 1-81 in 3-hour intervals, hours=(frame-1)*3)
 frame=3
 
+*Forecast time (format: __Z day, DDMonYYYY)
+forecasttime="12Z Mon, 13Mar2017"
 
 *** End variables
 
@@ -61,11 +61,11 @@ frame=3
 *plot 1000-500hPa thickness in intervals of 6 decameters
 'set gxout contour'
 'set cint 6'
-'set cthick 5'
+'set cthick 3'
 'set cstyle 3'
 'set clab masked'
 'set clevs 476 480 486 492 498 504 510 516 522 528 534 540 546 552 558 564 570 576 582 588 594 600'
-'set ccols 4 4 4 4 4 4 4 4 4 4 4 2 2 2 2 2 2 2 2 2 2 2'
+'set ccols 4 4 4 4 4 4 4 4 4 4 4 4 2 2 2 2 2 2 2 2 2 2'
 
 'd (hgtprs(lev=500)-hgtprs(lev=1000))/10'
 
@@ -74,25 +74,27 @@ frame=3
 'set cint 3'
 'set ccolor 1'
 'set cstyle 1'
-'set cthick 3'
+'set cthick 1'
 'set clab masked'
 'd prmslmsl/100'
 
 hours = (frame-1)*3
 
 
-*draw titles/strings
-'draw string .85 8.1 1000-500 hPa Thickness (dotted contours, dam)'
-'draw string .85 7.9 Sea-Level Pressure (contours, hPa)'
-'draw string .85 7.7 6-Hour Precipitation (shaded, inches)'      
 
-
+*draw titles and strings for map!
+'set strsiz .15'
+'draw string .85 8.2 1000-500 hPa Thickness (dotted contours, dam)'
+'draw string .85 7.95 Sea-Level Pressure (contours, hPa)' 
+'draw string .85 7.7 6-Hour Precipitation (shaded, inches)' 
 'set string 4 br'
-
-'draw string 9.8 8.25 '"Model: "''run%' '%date' '%model
-'draw string 9.8 8.05'"Valid: HHZ DDMonYYYY ("''%hours''"-hour forecast)"
+'set strsiz .12'
+'draw string 9.75 8.3 '"Model: "''run%' '%date' '%model
+'draw string 9.75 8.1 '"Valid: "''%forecasttime
+'draw string 9.75 7.9 '%hours' '"- hour forecast"
+'set strsiz .13'
 'set string 11 br'
-'draw string 9.8 7.65 weathertogether.us'
+'draw string 9.75 7.6 weathertogether.us' 
 
 
 *plot high and low centers via mfhilo function
@@ -126,13 +128,13 @@ while(subwrd(minmax,1) = 'L')
   ys=subwrd(yline,4)' 'subwrd(yline,6)
 
   if(y_min > subwrd(ys,1)+0.1 & y_min < subwrd(ys,2)-0.1 & x_min > subwrd(xs,1)+0.1 & x_min < subwrd(xs,2)-0.5)
-    'set strsiz .2'
-    'set string 2 c 7'
+    'set strsiz .3'
+    'set string 2 c 6'
     'draw string 'x_min' 'y_min' L'
 
-    'set strsiz 0.1'
-    'set string 2 bl 4'
-    'draw string 'x_min+0.1' 'y_min-0.15' 'minval
+    'set strsiz 0.15'
+    'set string 2 c 6'
+    'draw string 'x_min' 'y_min-0.3' 'minval
         
   endif
 
@@ -168,13 +170,13 @@ while(subwrd(minmax,1) = 'H')
   ys=subwrd(yline,4)' 'subwrd(yline,6)
 
   if(y_min > subwrd(ys,1)+0.1 & y_min < subwrd(ys,2)-0.1 & x_min > subwrd(xs,1)+0.1 & x_min < subwrd(xs,2)-0.5)
-    'set strsiz .2'
-    'set string 4 c 7'
+    'set strsiz .3'
+    'set string 4 c 6'
     'draw string 'x_min' 'y_min' H'
 
-    'set strsiz 0.1'
-    'set string 4 bl 4'
-    'draw string 'x_min+0.1' 'y_min-0.15' 'minval
+    'set strsiz 0.15'
+    'set string 4 c 6'
+    'draw string 'x_min' 'y_min-0.3' 'minval
   endif
 
   i=i+1
