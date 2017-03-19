@@ -1,4 +1,3 @@
-
 *This script generates a time series at a lat/lon point of the temperature at a specified level and the 6-hour precip from the GFS ensemble.
 
 
@@ -13,19 +12,19 @@
 
 *open file (be sure to change it to the model you want to open!)
 *GFS ensembles
-'sdfopen  http://nomads.ncep.noaa.gov:9090/dods/gens/gens20170313/gep_all_06z'
+'sdfopen  http://nomads.ncep.noaa.gov:9090/dods/gens/gens20170318/gep_all_12z'
 *GFS high resolution operational
-'sdfopen http://nomads.ncep.noaa.gov:80/dods/gfs_0p25/gfs20170313/gfs_0p25_06z'
+'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20170318/gfs_0p25_12z'
 
 * *** SET YOUR VARIABLES!!! :)
 
 *Model info
-run = 06z
-date = 13Mar2017
+run = 12z
+date = 18Mar2017
 model = GFS
 
 *location - NOTE: if any one of these is not applicable, simply use an empty string, i.e. ""
-city = "Portland"
+city = "Portland (KPDX)"
 state = "OR"
 country = "USA"
 
@@ -33,6 +32,7 @@ country = "USA"
 latitude = 45.59
 longitude = 237.41
 
+*KSEA is 47.45, 237.69
 *KPDX is 45.59, 237.41
 *KTTD is 45.55, 237.60
 *KHIO is 45.54, 237.05
@@ -82,6 +82,8 @@ ens=0;while(ens<21);ens=ens+1
  'set csmooth on'
  'set e 'ens
  'd (tmpprs-273.15)'
+ 'set xlab off'
+ 'set ylab off'
 endwhile
 
 
@@ -114,9 +116,13 @@ endwhile
 
 
 *Set axis range, put labels on right side, set grid off
+'set ylab on'
 'set vrange 'precipmin%' '%precipmax
 'set ylpos 0 r'
 'set grid off'
+
+
+
 
 *change to first file opened with sdfopen
 'set dfile 1'
@@ -131,6 +137,7 @@ ens=0;while(ens<21);ens=ens+1
  'set csmooth on'
  'set e 'ens
  'd apcpsfc/25.4'
+ 'set ylab off'
 endwhile
 
 *plot control
@@ -164,16 +171,8 @@ endwhile
 'set strsiz 0.12' 
 'set string 1 bl 5 0'
 'draw string 1.05 8.1 '%city''","' '%state' '%country' '"("''%latitude''","' '%longitude''")"
-'draw string 1.05  7.85 '%level' '"hPa Temperature (`ao`nC)" 
-'draw string 1.05 7.6 6-hour Precipitation (inches)' 
-
-*draw legend
-'set strsiz .1'
-'draw string 5.5 8 Control = black'
-'set string 4'
-'draw string 5.5 7.8 Ens. mean = blue' 
-'set string 14'
-'draw string 5.5 7.6 Operational = purple'
+'draw string 1.05  7.85 '%level' '"hPa Temperature (red, `ao`nC)" 
+'draw string 1.05 7.6 6-hour Precipitation (green, inches)' 
 
 *draw model run
 'set strsiz .11'
@@ -195,15 +194,19 @@ endwhile
 'set string 1 c 3 -90' 
 'draw string 10.5 4.25 6-hour Precipitation (inches)'
 
-*draw box (not quite working right now)
+*draw legend
 
-*'set strsiz 0.1' 
-*'set string 0 '
-*'draw recf 8 6.9 10 7.5'
-*'set string 0 bl 3 0'
-*'draw string 8.1 7.3 Control = Black'
-*'set string 4'
-*'draw string 8.1 7.1 Ensemble Mean = Blue'
+'set line 1 1 2'
+'draw recf 4.75 6.88 6.25 7.5'
+'set line 0 1 2'
+'draw recf 4.76 6.9 6.24 7.49'
+'set strsiz 0.1' 
+'set string 1 c 3 0'
+'draw string 5.5 7.4 Control'
+'set string 14'
+'draw string 5.5 7.2 Operational'
+'set string 4'
+'draw string 5.5 7.0 Ensemble Mean'
 
 
 *print to leveltemp.png in current directory
