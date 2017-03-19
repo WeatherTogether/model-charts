@@ -15,20 +15,20 @@
 
 
 *Open netcdf file from NOMADS server
-'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20170313/gfs_0p25_06z'
+'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20170319/gfs_0p25_12z'
 
 * *** SET YOUR VARIABLES!!! :)
 
 *Model info
-run = 06Z
-date = 13Mar2017
+run = 12Z
+date = 19Mar2017
 model = GFS
 
 *frame (goes from 1-81 in 3-hour intervals, hours=(frame-1)*3)
 frame=3
 
 *Forecast time (format: __Z day, DDMonYYYY)
-forecasttime="12Z Mon, 13Mar2017"
+forecasttime="18Z Sun, 19Mar2017"
 
 *** End variables
 
@@ -47,7 +47,7 @@ forecasttime="12Z Mon, 13Mar2017"
 'set mpdset mres'
 'set mpt 0 1 1 6'
 'set mpt 1 1 1 6'
-'set mpt 2 1 3 3'
+'set mpt 2 1 1 1'
 'set grid on 5 1 1'
 
 *Plot 6-hour precipitation with colormaps and xcbar scripts
@@ -80,7 +80,10 @@ forecasttime="12Z Mon, 13Mar2017"
 
 hours = (frame-1)*3
 
-
+*Draw shapefiles
+'set line 1 1 1'
+'draw shp Shapefiles/PROVINCE.shp'
+'draw shp Shapefiles/mexstates.shp'
 
 *draw titles and strings for map!
 'set strsiz .15'
@@ -127,7 +130,7 @@ while(subwrd(minmax,1) = 'L')
   xs=subwrd(xline,4)' 'subwrd(xline,6)
   ys=subwrd(yline,4)' 'subwrd(yline,6)
 
-  if(y_min > subwrd(ys,1)+0.1 & y_min < subwrd(ys,2)-0.1 & x_min > subwrd(xs,1)+0.1 & x_min < subwrd(xs,2)-0.5)
+  if(y_min > subwrd(ys,1)+0.3 & y_min < subwrd(ys,2)-0.3 & x_min > subwrd(xs,1)+0.3 & x_min < subwrd(xs,2)-0.3)
     'set strsiz .3'
     'set string 2 c 6'
     'draw string 'x_min' 'y_min' L'
@@ -169,7 +172,7 @@ while(subwrd(minmax,1) = 'H')
   xs=subwrd(xline,4)' 'subwrd(xline,6)
   ys=subwrd(yline,4)' 'subwrd(yline,6)
 
-  if(y_min > subwrd(ys,1)+0.1 & y_min < subwrd(ys,2)-0.1 & x_min > subwrd(xs,1)+0.1 & x_min < subwrd(xs,2)-0.5)
+  if(y_min > subwrd(ys,1)+0.3 & y_min < subwrd(ys,2)-0.3 & x_min > subwrd(xs,1)+0.3 & x_min < subwrd(xs,2)-0.3)
     'set strsiz .3'
     'set string 4 c 6'
     'draw string 'x_min' 'y_min' H'
