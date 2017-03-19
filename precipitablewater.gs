@@ -1,11 +1,10 @@
-*This script plots heights/precipitable water from the GFS in decameters and inverse seconds, respectively, over a polar stereographic
-*projection of the NE Pacific. It then saves the output to Precipitable-Water-NE-Pacific.png in the current directory. To run this script,you will need to have xcbar.gs and colormaps.gs installed. 
+*This script plots 500 hPa heights/absolute vorticity from the GFS in decameters and inverse seconds, respectively, over a polar stereographic
+*projection of the NE Pacific. It then saves the output to a .png file named 500-hPa-NE-Pacific in the current directory. To run this script,you will need to have xcbar.gs and colormaps.gs installed. 
 
 *xcbar.gs: http://kodama.fubuki.info/wiki/wiki.cgi/GrADS/script/xcbar.gs?lang=en
 *colormaps_v2.gs (rename to colormaps.gs for script to run) http://gradsaddict.blogspot.com/2015/12/script-colormapsgs-version-20-create.html
 
-
-*Basic commands to clear everything, make background white, turn off timestamp/grads, and set plotting area
+*Basic commands to clear everything, make background white, turn off timestamp, and fix window output to 1100x850.
 'reinit'
 'set display color white'
 'clear'
@@ -14,22 +13,23 @@
 'set parea 0.3 10.3 0.15 7.5'
 
 *Open netcdf file from NOMADS server
-'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20170313/gfs_0p25_00z'
+'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20170319/gfs_0p25_12z'
 
 * *** SET YOUR VARIABLES!!! :)
 
 *Model info
-run = 00Z
-date = 13Mar2017
+run = 12Z
+date = 19Mar2017
 model = GFS
+
 
 *frame (goes from 1-81 in 3-hour intervals, hours=(frame-1)*3)
 frame=3
 
 *Forecast time (format: __Z day, DDMonYYYY)
-forecasttime="06Z Mon, 13Mar2017"
+forecasttime="18Z Sun, 19Mar2017"
 
-*vertical level (for height contours)
+*vertical level
 level=500
 *** End variables
 
@@ -45,7 +45,7 @@ level=500
 'set mpdset mres'
 'set mpt 0 1 1 6'
 'set mpt 1 1 1 6'
-'set mpt 2 1 3 3'
+'set mpt 2 1 1 1'
 'set grid on 5 1 1'
 
 *Plot precipitable water with colormaps and xcbar scripts
@@ -66,6 +66,10 @@ level=500
             
 hours = (frame-1)*3
 
+*Draw shapefiles
+'set line 1 1 1'
+'draw shp Shapefiles/PROVINCE.shp'
+'draw shp Shapefiles/mexstates.shp'
 
 *draw titles and strings for map!
 'set strsiz .15'
