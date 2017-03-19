@@ -8,7 +8,7 @@
 
 
 
-*Basic commands to clear everything, make background white, turn off timestamp/grads, and set plotting area.
+*Basic commands to clear everything, make background white, turn off timestamp/grads,  and set plotting area.
 'reinit'
 'set display color white'
 'clear'
@@ -17,20 +17,20 @@
 'set parea 0.3 10.3 0.15 7.5'
 
 *Open netcdf file from NOMADS server
-'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20170312/gfs_0p25_00z'
+'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20170319/gfs_0p25_00z'
 
 * *** SET YOUR VARIABLES!!! :)
 
 *Model info
-run = 00Z
-date = 12Mar2017
+run = 12Z
+date = 19Mar2017
 model = GFS
 
 *frame (goes from 1-81 in 3-hour intervals, hours=(frame-1)*3)
 frame=3
 
 *Forecast time (format: __Z day, DDMonYYYY)
-forecasttime="06Z Mon, 13Mar2017"
+forecasttime="18Z Sun, 19Mar2017"
 
 *vertical level
 level=500
@@ -51,7 +51,7 @@ level=500
 'set mpdset mres'
 'set mpt 0 0 1 6'
 'set mpt 1 0 1 6'
-'set mpt 2 0 3 3'
+'set mpt 2 0 1 1'
 'set grid on 5 0 1'
 
 *Plot absolute vorticity with colormaps and xcbar scripts
@@ -68,6 +68,11 @@ level=500
 'd hgtprs/10'
 
 hours=(frame-1)*3
+
+*Draw shapefiles
+'set line 0 1 1'
+'draw shp Shapefiles/PROVINCE.shp'
+'draw shp Shapefiles/mexstates.shp'
 
 *draw titles, caption, and axis label for map. Make sure to change the times so they are accurate!
 
