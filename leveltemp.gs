@@ -175,8 +175,7 @@ initday=substr(result, 38, 3)
 
 
 *Draw titles and strings
-
-'set strsiz 0.16' 
+'set strsiz 0.18' 
 'set string 1 c 5 0'
 'draw string 5.5 8.3 '%city''","' '%state' '%country' '"("''%latitude''","' '%longitude''")"
 'set string 1 bl 5 0'
@@ -190,7 +189,7 @@ initday=substr(result, 38, 3)
 
 *draw weathertogether.us
 'set font 11'
-'set strsiz .15'
+'set strsiz .17'
 'set string 11 br' 
 'draw string 9.95 7.6 weathertogether.us'
 
