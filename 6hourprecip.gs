@@ -9,31 +9,33 @@
 'reinit'
 'set display color white'
 'clear'
-'set timelab off'
 'set grads off'
+'set hershey off'
+'set font 12 file /usr/share/fonts/type1/gsfonts/n019023l.pfb'
+'set font 11 file /usr/share/fonts/type1/gsfonts/n019004l.pfb'
+'set font 10 file /usr/share/fonts/type1/gsfonts/n019003l.pfb'
 'set parea 0.3 10.3 0.15 7.5'
 
 
-*Open netcdf file from NOMADS server
-'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20170319/gfs_0p25_12z'
-
 * *** SET YOUR VARIABLES!!! :)
 
-*Model info
-run = 12Z
-date = 19Mar2017
-model = GFS
+*Model date
+run = "12z"
+day = "23"
+month = "03"
+year = "2017"
 
 *frame (goes from 1-81 in 3-hour intervals, hours=(frame-1)*3)
-frame=3
+frame=54
 
-*Forecast time (format: __Z day, DDMonYYYY)
-forecasttime="18Z Sun, 19Mar2017"
 
 *** End variables
 
-*set time
-'set t 'frame
+*Open netcdf file from NOMADS server
+'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs'%year''%month''%day'/gfs_0p25_'%run
+
+
+*** Begin plotting
 
 *Set spatial domain for Grads to retrieve data from
 'set lat 18 70'
@@ -50,10 +52,12 @@ forecasttime="18Z Sun, 19Mar2017"
 'set mpt 2 1 1 1'
 'set grid on 5 1 1'
 
+*set time to plot
+'set t 'frame
+
 *Plot 6-hour precipitation with colormaps and xcbar scripts
 'set gxout shaded'
 'colormaps.gs -map s3pcpn -custom 0 .01 .02 .05 .1 .15 .20 .25 .30 .35 .40 .45 .50 .60 .70 .80 .90 1.00 1.20 1.50 2.00 5.00'
-*'d sum(apcpsfc,t=1,t=81,2)'
 'd apcpsfc/25.4'
 'xcbar.gs -line on -edge circle -direction v 9.8 10 .15 7.5'
 
@@ -78,6 +82,26 @@ forecasttime="18Z Sun, 19Mar2017"
 'set clab masked'
 'd prmslmsl/100'
 
+*** End plotting
+
+*Get time of forecast
+'q time'
+forecastutc=substr(result, 24, 3)
+forecastdate=substr(result, 27, 2)
+forecastmonth=substr(result, 29, 3)
+forecastyear=substr(result, 32, 4)
+forecastday=substr(result, 45, 3)
+
+*Get time of model run
+'set t 1' 
+'q time'
+initutc=substr(result, 8, 3)
+initdate=substr(result, 11, 2)
+initmonth=substr(result, 13, 3)
+inityear=substr(result, 16, 4)
+initday=substr(result, 38, 3)
+
+*Get hour of forecast          
 hours = (frame-1)*3
 
 *Draw shapefiles
@@ -86,21 +110,26 @@ hours = (frame-1)*3
 'draw shp Shapefiles/mexstates.shp'
 
 *draw titles and strings for map!
-'set strsiz .15'
-'draw string .85 8.2 1000-500 hPa Thickness (dotted contours, dam)'
-'draw string .85 7.95 Sea-Level Pressure (contours, hPa)' 
-'draw string .85 7.7 6-Hour Precipitation (shaded, inches)' 
+'set strsiz .18'
+'draw string .85 8.26 1000-500 hPa Thickness (dotted contours, dam)'
+'draw string .85 7.97 Sea-Level Pressure (contours, hPa)' 
+'draw string .85 7.68 6-Hour Precipitation (shaded, inches)' 
 'set string 4 br'
-'set strsiz .12'
-'draw string 9.75 8.3 '"Model: "''run%' '%date' '%model
-'draw string 9.75 8.1 '"Valid: "''%forecasttime
-'draw string 9.75 7.9 '%hours' '"- hour forecast"
-'set strsiz .13'
-'set string 11 br'
-'draw string 9.75 7.6 weathertogether.us' 
+'set strsiz .14'
+'set string 1 br'
+'draw string 9.75 8.30 '"Model: "''initutc%' '%initdate''%initmonth''%inityear' '"GFS"
+'set font 12'
+'set string 4'
+'draw string 9.75 8.05 '"Valid: "''%forecastutc' '%forecastday' '%forecastdate''%forecastmonth''%forecastyear
+'draw string 9.75 7.85 '%hours' '"- hour forecast"
+'set font 11'
+'set strsiz .17'
+'set string 11'
+'draw string 9.75 7.58 weathertogether.us'    
 
 
 *plot high and low centers via mfhilo function
+'set t '%frame 
 radius=1000
 cint=300
 
@@ -187,4 +216,4 @@ while(subwrd(minmax,1) = 'H')
 endwhile
 
 *Save output as .png file in current directory
-'gxprint 6hourprecip.png x1024 y768'
+'gxprint 6hourprecip.png'
