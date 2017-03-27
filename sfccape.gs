@@ -1,5 +1,5 @@
 *This script plots 500 hPa heights and surface-based CAPE in decameters and J/kg over a Mercator Projection of the Continental US
-*It then saves the output to a .png file named sfccape-CONUS in the current directory. To run this script,you will need to have xcbar.gs, color.gs and colormaps.gs installed. 
+*It then saves the output to a file named US-Surface-Cape.png in the current directory. To run this script,you will need to have xcbar.gs, color.gs and colormaps.gs installed. 
 
 *color.gs http://kodama.fubuki.info/wiki/wiki.cgi/GrADS/script/color.gs?lang=en
 *xcbar.gs: http://kodama.fubuki.info/wiki/wiki.cgi/GrADS/script/xcbar.gs?lang=en
@@ -68,7 +68,7 @@ int=4000/50
 *Set vertical coordinate
 'set lev 'level
 
-*plot the 500hPa height contours in intervals of 3 decameters
+*plot the 500 hPa height contours in intervals of 3 decameters
 'set gxout contour'
 'set cint 3'
 'set cthick 5'
