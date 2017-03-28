@@ -4,6 +4,9 @@
 *xcbar.gs: http://kodama.fubuki.info/wiki/wiki.cgi/GrADS/script/xcbar.gs?lang=en
 *colormaps_v2.gs (rename to colormaps.gs for script to run) http://gradsaddict.blogspot.com/2015/12/script-colormapsgs-version-20-create.html
 
+function script(args)
+rundate = subwrd(args,1)
+
 *Basic commands to clear everything, make background white, turn off timestamp/grads, set fonts, and set plotting area.
 'reinit'
 'set display color white'
@@ -16,25 +19,17 @@
 'set parea 0.3 10.3 0.15 7.5'
 
 
-
 * *** SET YOUR VARIABLES!!! :)
-
-*Model date
-run = "12z"
-day = "23"
-month = "03"
-year = "2017"
 
 *frame (goes from 1-81 in 3-hour intervals, hours=(frame-1)*3)
 frame=3
-
 
 *vertical level
 level=500
 *** End variables
 
 *Open netcdf file from NOMADS server
-'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs'%year''%month''%day'/gfs_0p25_'%run
+'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20'rundate'/gfs_0p25_'12z
 
 *** Begin plotting
 *Set spatial domain for Grads to retrieve data from
@@ -49,7 +44,7 @@ level=500
 'set mpdset mres'
 'set mpt 0 0 1 6'
 'set mpt 1 0 1 6'
-'set mpt 2 0 1 1'
+'set mpt 2 0 3 1'
 'set grid on 5 0 1'
 
 *set time to plot
@@ -95,10 +90,8 @@ hours = (frame-1)*3
 
 *Draw shapefiles
 'set line 0 1 1'
-'draw shp Shapefiles/PROVINCE.shp'
-'draw shp Shapefiles/mexstates.shp'
-
-*draw titles, caption, and axis label for map. Make sure to change the times so they are accurate!
+'draw shp /home/mint/opengrads/Contents/Shapefiles/caprovinces/PROVINCE.shp'
+'draw shp /home/mint/opengrads/Contents/Shapefiles/mexstates/mexstates.shp'
 
 *draw titles and strings for map!
 'set strsiz .18'
@@ -118,6 +111,7 @@ hours = (frame-1)*3
 
 
 *plot high and low centers via mfhilo function
+'set t '%frame 
 radius=1500
 cint=500
 
@@ -196,4 +190,4 @@ while(subwrd(minmax,1) = 'H')
 endwhile
 
 *Save output as .png file in current directory
-'gxprint 500-hPa-NE-Pacific.png'
+'gxprint 500-hPa-NE-Pacific.png x1200 y927'
