@@ -1,9 +1,11 @@
-*This script plots sea-level-pressure (hPa), 6-hour precipitation (in), and 1000-500mb thicknesses (dam) over a polar *stereographic projection of the NE Pacific. It then saves the output to a .png file named SLP-Precip-NE-Pacific in the current directory. To run this script,you will need to have xcbar.gs and colormaps.gs installed. 
+*This script plots sea-level-pressure (hPa), 6-hour precipitation (in), and 1000-500mb thicknesses (dam) over a polar *stereographic projection of the NE Pacific. It then saves the output to NEPacific6hourprecip.png in the current directory. To run this script,you will need to have xcbar.gs and colormaps.gs installed. 
 
 *xcbar.gs: http://kodama.fubuki.info/wiki/wiki.cgi/GrADS/script/xcbar.gs?lang=en
 *colormaps_v2.gs (rename to colormaps.gs for script to run) http://gradsaddict.blogspot.com/2015/12/script-colormapsgs-version-20-create.html
 
-*To do list: 
+Pull current date from bash script
+function script(args)
+rundate = subwrd(args,1)
 
 *Basic commands to clear everything, make background white, turn off timestamp, and fix window output to 1100x850.
 'reinit'
@@ -19,21 +21,13 @@
 
 * *** SET YOUR VARIABLES!!! :)
 
-*Model date
-run = "12z"
-day = "23"
-month = "03"
-year = "2017"
-
 *frame (goes from 1-81 in 3-hour intervals, hours=(frame-1)*3)
 frame=54
 
-
 *** End variables
 
-*Open netcdf file from NOMADS server
-'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs'%year''%month''%day'/gfs_0p25_'%run
-
+*Open file from NOMADS server
+'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20'rundate'/gfs_0p25_'12z
 
 *** Begin plotting
 
@@ -49,7 +43,7 @@ frame=54
 'set mpdset mres'
 'set mpt 0 1 1 6'
 'set mpt 1 1 1 6'
-'set mpt 2 1 1 1'
+'set mpt 2 1 1 3'
 'set grid on 5 1 1'
 
 *set time to plot
@@ -106,15 +100,14 @@ hours = (frame-1)*3
 
 *Draw shapefiles
 'set line 1 1 1'
-'draw shp Shapefiles/PROVINCE.shp'
-'draw shp Shapefiles/mexstates.shp'
+'draw shp /home/mint/opengrads/Contents/Shapefiles/caprovinces/PROVINCE.shp'
+'draw shp /home/mint/opengrads/Contents/Shapefiles/mexstates/mexstates.shp'
 
 *draw titles and strings for map!
 'set strsiz .18'
 'draw string .85 8.26 1000-500 hPa Thickness (dotted contours, dam)'
 'draw string .85 7.97 Sea-Level Pressure (contours, hPa)' 
 'draw string .85 7.68 6-Hour Precipitation (shaded, inches)' 
-'set string 4 br'
 'set strsiz .14'
 'set string 1 br'
 'draw string 9.75 8.30 '"Model: "''initutc%' '%initdate''%initmonth''%inityear' '"GFS"
@@ -216,4 +209,4 @@ while(subwrd(minmax,1) = 'H')
 endwhile
 
 *Save output as .png file in current directory
-'gxprint 6hourprecip.png'
+'gxprint NEPacific6hourprecip.png'
