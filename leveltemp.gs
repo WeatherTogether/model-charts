@@ -1,6 +1,8 @@
 
 *This script generates a time series at a lat/lon point of the temperature at a specified level and the 6-hour precip from the GFS ensemble.
 
+function script(args)
+rundate = subwrd(args,1)
 
 *Basic commands to clear everything, make background white, turn off timestamp/grads, set fonts, and set plotting area.
 'reinit'
@@ -13,12 +15,6 @@
 'set parea 1 10 1 7.5'
 
 * *** SET YOUR VARIABLES!!! :)
-
-*Model date
-run = "12z"
-day = "23"
-month = "03"
-year = "2017"
 
 *location - NOTE: if any one of these is not applicable, simply use an empty string, i.e. ""
 city = "Portland Int'l Airport (KPDX)"
@@ -53,10 +49,10 @@ tmax= 65
 
 *Open netcdf file from NOMADS server
 *GFS ensembles
-'sdfopen  http://nomads.ncep.noaa.gov:9090/dods/gens/gens'%year''%month''%day'/gep_all_'%run
+'sdfopen  http://nomads.ncep.noaa.gov:9090/dods/gens/gens20'rundate'/gep_all_'12z
 
 *GFS high resolution operational
-'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs'%year''%month''%day'/gfs_0p25_'%run
+'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20'rundate'/gfs_0p25_'12z
 
 
 'set lat 'latitude
@@ -221,4 +217,4 @@ initday=substr(result, 38, 3)
 
 *print to leveltemp.png in current directory
 
-'gxprint leveltemp.png'
+'gxprint leveltemp.png x1200 y927'
