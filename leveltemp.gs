@@ -220,7 +220,6 @@ endwhile
 'draw string 10.5 4.25 6-hour Precipitation (inches)'
 
 *draw legend
-
 'set line 1 1 2'
 'draw recf 4.40 6.67 6.60 7.5'
 'set line 0 1 2'
@@ -235,7 +234,5 @@ endwhile
 'set string 6'
 'draw string 5.5 6.8 Climatology (1981-2010)'
 
-
-*print to leveltemp.png in current directory
-
+*print .png file
 'gxprint grads_pics/spaghetti_plots/gefs/kpdx/KPDX_850temp_00zGEFS.png x1200 y927'
