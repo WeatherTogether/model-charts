@@ -1,10 +1,11 @@
-*This script plots 1000-500 hPa thickness, SLP, and 10-meter wind over a Mercator projecton of the CONUS. To run this script,you will need to have xcbar.gs installed. This script imports the current date from a bash script and then plots the current 18z run.
+*This script plots 1000-500 hPa thickness, SLP, and 10-meter wind over a Mercator projecton of the CONUS. To run this script,you will need to have xcbar.gs installed. This script imports the current date from a bash script.
 
 *xcbar.gs: http://kodama.fubuki.info/wiki/wiki.cgi/GrADS/script/xcbar.gs?lang=en
 
 *Import date from bash script
 function script(args)
 rundate = subwrd(args,1)
+runhour = subwrd(args,2)
 
 *Basic commands to clear everything, make background white, turn off timestamp/grads, set fonts, and set plotting area.
 'reinit'
@@ -18,7 +19,7 @@ rundate = subwrd(args,1)
 'set parea 0.37 10.07 0.15 7.5'
 
 *Open netcdf file from NOMADS server
-'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20'rundate'/gfs_0p25_'18z
+'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20'rundate'/gfs_0p25_'runhour'z'
 
 *** Begin plotting
 
@@ -49,10 +50,13 @@ frame=0;while(frame<81);frame=frame+1
 'clear'
 'set grads off'
 'set font 10'
-'set t '%frame
 'set xlevs -120 -110 -100 -90 -80 -70'
-'set ylevs 20 30 40 50'
+'set ylevs 20 30 40 50'  
+'set t '%frame       
+hours = (frame-1)*3
 
+*PLOT 2-METER TEMPERATURE
+*below freezing
 'set rgb 16 248 248 255'
 'set rgb 17 248 239 250'
 'set rgb 18 249 231 246'
@@ -238,10 +242,6 @@ frame=0;while(frame<81);frame=frame+1
 'd (tmp2m-273.15)*9/5 + 32'
 'xcbar.gs -fstep 10 -line off -edge circle -direction v 10.1 10.3 .44 7.2'
 
-*Plot 10-meter wind barbs 
-*'set gxout barb'
-*'d skip(ugrd10m,5,5);vgrd10m'
-
 *plot 1000-500hPa thickness in intervals of 6 decameters
 *** CHANGE THICKNESS SETTINGS HERE
 'set clevs 476 480 486 492 498 504 510 516 522 528 534 540 546 552 558 564 570 576 582 588 594 600'
@@ -253,7 +253,7 @@ frame=0;while(frame<81);frame=frame+1
 'set clab masked'
 'd (hgtprs(lev=500)-hgtprs(lev=1000))/10'
 
-*plot the SLP contours in intervals of 1 hPa
+*plot the SLP contours in intervals of 3 hPa
 'set gxout contour'
 'set cint 3'
 'set ccolor 1'
@@ -272,9 +272,6 @@ forecastmonth=substr(result, 29, 3)
 forecastyear=substr(result, 32, 4)
 forecastday=substr(result, 45, 3)
 
-*Get hour of forecast          
-hours = (frame-1)*3
-
 *Draw shapefiles
 'set line 1 1 1'
 'draw shp /home/mint/opengrads/Contents/Shapefiles/Canada/PROVINCE.shp'
@@ -284,7 +281,7 @@ hours = (frame-1)*3
 'set strsiz .15'
 'draw string .45 8.06 1000-500 hPa Thickness (dotted contours, dam)'
 'draw string .45 7.77 Sea-Level Pressure (contours, hPa)' 
-'draw string .45 7.48 2-Meter Temperature (shading, `3.`0F)' 
+'draw string .45 7.48 2-Meter Temperature (shading, `ao`nF)' 
 'set strsiz .14'
 'set string 1 br'
 'draw string 9.95 8.10 '"Model: "''initutc%' '%initdate''%initmonth''%inityear' '"GFS"
@@ -329,7 +326,7 @@ while(subwrd(minmax,1) = 'L')
   ys=subwrd(yline,4)' 'subwrd(yline,6)
 
   if(y_min > subwrd(ys,1)+0.3 & y_min < subwrd(ys,2)-0.3 & x_min > subwrd(xs,1)+0.3 & x_min < subwrd(xs,2)-0.3)
-    'set strsiz .3'
+    'set strsiz .30'
     'set string 2 c 6'
     'draw string 'x_min' 'y_min' L'
 
@@ -386,18 +383,16 @@ endwhile
 
 *Save output as .png
 if (hours >99)
-*Save output as .png file
-'gxprint grads_pics/western_us/00z/SLP10mwind_WesternUS_'%hours'hrfcst.png x1200 y927'
+'gxprint grads_pics/conus/slp10mwind/'%runhour'z/CONUS_SLP10mwind_'%hours'hrfcst.png x1200 y927'
 endif
 
 if (hours >9 & hours <=99)
-*Save output as .png file in current directory
-'gxprint grads_pics/western_us/00z/SLP10mwind_WesternUS_0'%hours'hrfcst.png x1200 y927'
+'gxprint grads_pics/conus/slp10mwind/'%runhour'z/CONUS_SLP10mwind_0'%hours'hrfcst.png x1200 y927'
 endif
 
 if (hours <=9)
-*Save output as .png file in current directory
-'gxprint grads_pics/western_us/00z/SLP10mwind_WesternUS_00'%hours'hrfcst.png x1200 y927'
+'gxprint grads_pics/conus/slp10mwind/'%runhour'z/CONUS_SLP10mwind_00'%hours'hrfcst.png x1200 y927'
 endif
 endwhile
 
+'quit'
