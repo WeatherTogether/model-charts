@@ -23,6 +23,10 @@ ENDDATE=`date --date="$d +16 days" "+%Y%m%d%H"`
 #define url for first grib file of run
 URL="http://nomads.ncep.noaa.gov/cgi-bin/filter_gfs_0p25.pl?file=gfs.t${INITHOUR}z.pgrb2.0p25.f${FORECASTHOUR}&lev_1000_mb=on&lev_10_m_above_ground=on&lev_2_m_above_ground=on&lev_500_mb=on&lev_700_mb=on&lev_850_mb=on&lev_925_mb=on&lev_entire_atmosphere_%5C%28considered_as_a_single_layer%5C%29=on&lev_mean_sea_level=on&lev_surface=on&var_ABSV=on&var_APCP=on&var_CAPE=on&var_CRAIN=on&var_CSNOW=on&var_DPT=on&var_HGT=on&var_PRES=on&var_PRMSL=on&var_PWAT=on&var_TMP=on&var_UGRD=on&var_VGRD=on&leftlon=${LEFTLON}&rightlon=${RIGHTLON}&toplat=${TOPLAT}&bottomlat=${BOTTOMLAT}&dir=%2Fgfs.${INIT_INTDATE}${INITHOUR}"
 
+#declare arrays
+declare -a SCRIPTS=("pnw500hpavort.gs" "pnw2mtemp.gs" "pnw2mdp.gs" "pnwpwat.gs" "pnwsfccape.gs" "conus2mtemp.gs" "nepacpwat.gs")
+declare -a FILENAMES=("PNW_500hpavort_" "PNW_2mtemp_" "PNW_2mdp_" "PNW_pwat_" "PNW_sfcCAPE_" "CONUS_2mtemp_" "NEPAC_pwat_")
+
 cd /home/mint/opengrads/Contents/gribfiles/${MODEL}/${INIT_INTDATE}${INITHOUR}
 
 ### BEGIN WHILE LOOP
@@ -49,50 +53,14 @@ wget -O $GRIBFILE $URL
 
 ### RUN GRADS SCRIPTS/FTP SCRIPTS
 
-## REGION: PACIFIC NORTHWEST
-
-# 500 HPA HEIGHTS/ABSOLUTE VORTICITY
-#define filename
-FILENAME="PNW_500hpavort_${FORECASTHOUR}hrfcst.png" 
-#run grads script
-/home/mint/opengrads/Contents/opengrads -lbc "run /home/mint/opengrads/Contents/plotscripts/pnw500hpavort.gs $CTLFILE $INIT_STRINGDATE $INIT_INTDATE $INITHOUR $FILENAME $h $MODEL $MODELFORTITLE 500"
-#run ftp script
-sh /home/mint/opengrads/Contents/bashscripts/ftpsample.sh $INIT_INTDATE $INITHOUR $FILENAME $MODEL
-
-# 2-METER TEMP, SLP, 1000-500 HPA THICKNESS
-FILENAME="PNW_2mtemp_${FORECASTHOUR}hrfcst.png" 
-/home/mint/opengrads/Contents/opengrads -lbc "run /home/mint/opengrads/Contents/plotscripts/pnw2mtemp.gs $CTLFILE $INIT_STRINGDATE $INIT_INTDATE $INITHOUR $FILENAME $h $MODEL $MODELFORTITLE"
-sh /home/mint/opengrads/Contents/bashscripts/ftpsample.sh $INIT_INTDATE $INITHOUR $FILENAME $MODEL
-
-# 2-METER DEWPOINT, SLP, 1000-500 HPA THICKNESS
-FILENAME="PNW_2mdp_${FORECASTHOUR}hrfcst.png" 
-/home/mint/opengrads/Contents/opengrads -lbc "run /home/mint/opengrads/Contents/plotscripts/pnw2mdp.gs $CTLFILE $INIT_STRINGDATE $INIT_INTDATE $INITHOUR $FILENAME $h $MODEL $MODELFORTITLE"
-sh /home/mint/opengrads/Contents/bashscripts/ftpsample.sh $INIT_INTDATE $INITHOUR $FILENAME $MODEL 
-
-# PRECIPITABLE WATER, 500 HPA HEIGHTS
-FILENAME="PNW_pwat_${FORECASTHOUR}hrfcst.png" 
-/home/mint/opengrads/Contents/opengrads -lbc "run /home/mint/opengrads/Contents/plotscripts/pnwpwat.gs $CTLFILE $INIT_STRINGDATE $INIT_INTDATE $INITHOUR $FILENAME $h $MODEL $MODELFORTITLE 500"
-sh /home/mint/opengrads/Contents/bashscripts/ftpsample.sh $INIT_INTDATE $INITHOUR $FILENAME $MODEL
-
-# SURFACE-BASED CAPE
-FILENAME="PNW_sfcCAPE_${FORECASTHOUR}hrfcst.png" 
-/home/mint/opengrads/Contents/opengrads -lbc "run /home/mint/opengrads/Contents/plotscripts/pnwsfccape.gs $CTLFILE $INIT_STRINGDATE $INIT_INTDATE $INITHOUR $FILENAME $h $MODEL $MODELFORTITLE"
-sh /home/mint/opengrads/Contents/bashscripts/ftpsample.sh $INIT_INTDATE $INITHOUR $FILENAME $MODEL
-
-## REGION: CONUS
-
-# 2-METER TEMP, SLP, 1000-500 HPA THICKNESS
-FILENAME="CONUS_2mtemp_${FORECASTHOUR}hrfcst.png" 
-/home/mint/opengrads/Contents/opengrads -lbc "run /home/mint/opengrads/Contents/plotscripts/conus2mtemp.gs $CTLFILE $INIT_STRINGDATE $INIT_INTDATE $INITHOUR $FILENAME $h $MODEL $MODELFORTITLE"
-sh /home/mint/opengrads/Contents/bashscripts/ftpsample.sh $INIT_INTDATE $INITHOUR $FILENAME $MODEL "CONUS"
-
-## REGION: NE PACIFIC
-
-# PRECIPITABLE WATER, 500 HPA HEIGHTS
-FILENAME="NEPAC_pwat_${FORECASTHOUR}hrfcst.png" 
-/home/mint/opengrads/Contents/opengrads -lbc "run /home/mint/opengrads/Contents/plotscripts/nepacpwat.gs $CTLFILE $INIT_STRINGDATE $INIT_INTDATE $INITHOUR $FILENAME $h $MODEL $MODELFORTITLE 500"
-sh /home/mint/opengrads/Contents/bashscripts/ftpsample.sh $INIT_INTDATE $INITHOUR $FILENAME $MODEL "NE_Pacific"
-
+for ((i=0;i<${#SCRIPTS[@]};i++)); do
+    #define filename
+    FILENAME="${FILENAMES[i]}${FORECASTHOUR}hrfcst.png" 
+    #run grads script
+    /home/mint/opengrads/Contents/opengrads -lbc "run /home/mint/opengrads/Contents/plotscripts/${SCRIPTS[i]} $CTLFILE $INIT_STRINGDATE $INIT_INTDATE $INITHOUR $FILENAME $h $MODEL $MODELFORTITLE 500"
+    #run ftp script
+    sh /home/mint/opengrads/Contents/bashscripts/ftpsample.sh $INIT_INTDATE $INITHOUR $FILENAME $MODEL
+done
 
 ### REDEFINE VARIABLES
 
@@ -134,5 +102,3 @@ else
     sleep 60
 fi
 done
-
-# example call: sh /home/mint/opengrads/Contents/bashscripts/gribdownload.sh 12
