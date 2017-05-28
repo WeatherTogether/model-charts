@@ -1,33 +1,41 @@
 *This script generates a time series at a lat/lon point of the temperature at a specified level and the 6-hour precip from the GFS ensemble and .25 degree GFS operational.
 
 function script(args)
-rundate = subwrd(args,1)
-runhour = subwrd(args,2)
-dayofyear = subwrd(args,3)
 
-ICAO = subwrd(args,4)
-state = subwrd(args,5)
-country = subwrd(args,6)
-latitude = subwrd(args,7)
-longitude = subwrd(args,8)
+CTLFILE=subwrd(args,1)
+INIT_STRINGDATE=subwrd(args,2)
+INIT_INTDATE=subwrd(args,3)
+INITHOUR=subwrd(args,4)
+FILENAME=subwrd(args,5)
+MODEL=subwrd(args,6)
+MODELFORTITLE=subwrd(args,7)
+LEVEL=subwrd(args,8)
 
-level=subwrd(args,9)
-tempmin = subwrd(args,10)
-tempmax = subwrd(args,11)
-precipmin=subwrd(args,12)
-precipmax=subwrd(args,13)
+DAYOFYEAR=subwrd(args,9)
+MODELRUNLENGTH=subwrd(args,10)
+
+ICAO=subwrd(args,11)
+STATE=subwrd(args,12)
+COUNTRY=subwrd(args,13)
+LATITUDE=subwrd(args,14)
+LONGITUDE=subwrd(args,15)
+
+TEMPMIN=subwrd(args,16)
+TEMPMAX=subwrd(args,17)
+PRECIPMIN=subwrd(args,18)
+PRECIPMAX=subwrd(args,19)
+
+CITY1=subwrd(args,20)
+CITY2=subwrd(args,21)
+CITY3=subwrd(args,22)
+CITY4=subwrd(args,23)
+CITY5=subwrd(args,24)
+CITY6=subwrd(args,25)
+city=CITY1' 'CITY2' 'CITY3' 'CITY4' 'CITY5' 'CITY6
+
+dayofyear2=DAYOFYEAR+MODELRUNLENGTH
 
 *unelegant way to import name of city from bash script - this should be fixed. Problem stems because city names are usually multiple words and I don't want to use underscores.
-city1=subwrd(args,14)
-city2=subwrd(args,15)
-city3=subwrd(args,16)
-city4=subwrd(args,17)
-city5=subwrd(args,18)
-city6=subwrd(args,19)
-city=city1' 'city2' 'city3' 'city4' 'city5' 'city6
-say city
-
-dayofyear2 = dayofyear + 15
 
 *Basic commands to clear everything, make background white, turn off timestamp/grads, set fonts, and set plotting area.
 'reinit'
@@ -39,24 +47,15 @@ dayofyear2 = dayofyear + 15
 'set font 10 file /usr/share/fonts/type1/gsfonts/n019003l.pfb'
 'set parea .85 10.15 .4 7.5'
 
-*Open netcdf file from NOMADS server
+*Open file from NOMADS server
 *GFS ensembles
-'sdfopen  http://nomads.ncep.noaa.gov:9090/dods/gens/gens20'rundate'/gep_all_'runhour'z'
+'sdfopen  http://nomads.ncep.noaa.gov:9090/dods/gens/gens'INIT_INTDATE'/gep_all_'INITHOUR'z'
 
 *GFS high resolution operational
-'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20'rundate'/gfs_0p25_'runhour'z'
+'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs'INIT_INTDATE'/gfs_0p25_'INITHOUR'z'
 
 *1981-2010 climatology
 'sdfopen /home/mint/opengrads/Contents/datafiles/air.day.1981-2010.ltm.nc'
-
-*Get time of model run
-'set t 1' 
-'q time'
-initutc=substr(result, 8, 3)
-initdate=substr(result, 11, 2)
-initmonth=substr(result, 13, 3)
-inityear=substr(result, 16, 4)
-initday=substr(result, 38, 3)
 
 *set time
 'set t 1 65'
@@ -65,7 +64,7 @@ initday=substr(result, 38, 3)
 
 *Set axis range, put labels on right side
 'set ylab on'
-'set vrange 'precipmin%' '%precipmax
+'set vrange 'PRECIPMIN%' '%PRECIPMAX
 'set ylpos 0 r'
 'set grid off'
 
@@ -73,8 +72,8 @@ initday=substr(result, 38, 3)
 'set dfile 1'
 
 *plot ensembles
-'set lat 'latitude
-'set lon 'longitude
+'set lat 'LATITUDE
+'set lon 'LONGITUDE
 
 ens=0;while(ens<21);ens=ens+1
  'set gxout line'
@@ -115,11 +114,11 @@ endwhile
 * *** TEMPERATURE
 
 *set level for Temperature
-'set lev 'level
+'set lev 'LEVEL
 
 *set range for y-axis, set grid off, put labels on left side
 'set ylab on'
-'set vrange 'tempmin%' '%tempmax
+'set vrange 'TEMPMIN%' '%TEMPMAX
 'set grid on'
 'set ylpos 0 l'
 
@@ -165,10 +164,10 @@ endwhile
 
 *Set axis range, put labels on right side, set grid off
 'set dfile 3'
-'set lev 'level
-'set lat 'latitude
-'set lon 'longitude
-'set t '%dayofyear' '%dayofyear2
+'set lev 'LEVEL
+'set lat 'LATITUDE
+'set lon 'LONGITUDE
+'set t '%DAYOFYEAR' '%dayofyear2
 'set cmark 0'
 'set ccolor 6' 
 'set cthick 12'
@@ -184,13 +183,13 @@ endwhile
 
 'set strsiz .14'
 'draw string .9 8.08 ICAO Code: '%ICAO
-'draw string .9 7.83 Coordinates: '%latitude''","' '%longitude 
-'draw string .9 7.58 '%state''","' '%country
+'draw string .9 7.83 Coordinates: '%LATITUDE''","' '%LONGITUDE 
+'draw string .9 7.58 '%STATE''","' '%COUNTRY
 
 *draw model run
 'set strsiz .14'
 'set string 1 br'
-'draw string 10.10 7.85 Model: 'initutc%' '%initdate''%initmonth''%inityear' '"GEFS"
+'draw string 10.10 7.85 '"Model: "''INITHOUR%'Z '%INIT_STRINGDATE' '%MODELFORTITLE
 
 *draw weathertogether.us
 'set font 11'
@@ -202,7 +201,7 @@ endwhile
 'set font 10'
 'set strsiz 0.2' 
 'set string 1 c 3 -90' 
-'draw string .3 3.95 'level%' hPa Temperature (red, `ao`nC)'
+'draw string .3 3.95 'LEVEL%' hPa Temperature (red, `ao`nC)'
 
 *draw y axis on right
 'set strsiz 0.2' 
@@ -227,6 +226,6 @@ endwhile
 
 
 *print to .png
-'gxprint grads_pics/spaghetti_plots/gefs/'%ICAO'/'%ICAO'_'%level'temp_'%runhour'zGEFS.png x1200 y927'
+'gxprint /home/mint/grads_pics/'%MODEL'/'%INIT_INTDATE'/'%INITHOUR'z/'%FILENAME' x1200 y927'
 
 'quit'
