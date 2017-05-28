@@ -1,11 +1,17 @@
-*This script plots 1000-500 hPa thickness, SLP, and 10-meter wind over a Mercator projecton of the CONUS. To run this script,you will need to have xcbar.gs installed. This script imports the current date from a bash script.
+*This script plots 1000-500 hPa thickness, SLP, and 2-meter temp over a polar stereographic plot of the Pacific Northwest.
 
 *xcbar.gs: http://kodama.fubuki.info/wiki/wiki.cgi/GrADS/script/xcbar.gs?lang=en
 
-*Import date from bash script
+*Import arguments from bash script
 function script(args)
-rundate = subwrd(args,1)
-runhour = subwrd(args,2)
+CTLFILE = subwrd(args,1)
+INIT_STRINGDATE = subwrd(args,2)
+INIT_INTDATE = subwrd(args,3)
+INITHOUR = subwrd(args,4)
+FILENAME = subwrd(args,5)
+H = subwrd(args,6)
+MODEL = subwrd(args,7)
+MODELFORTITLE = subwrd(args,8)
 
 *Basic commands to clear everything, make background white, turn off timestamp/grads, set fonts, and set plotting area.
 'reinit'
@@ -18,8 +24,8 @@ runhour = subwrd(args,2)
 'set font 10 file /usr/share/fonts/type1/gsfonts/n019003l.pfb'
 'set parea 0.25 10.3 0.15 7.5'
 
-*Open netcdf file from NOMADS server
-'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20'rundate'/gfs_0p25_'runhour'z'
+*Open control file
+'open 'CTLFILE
 
 *** Begin plotting
 
@@ -37,25 +43,6 @@ runhour = subwrd(args,2)
 'set mpt 1 1 1 6'
 'set mpt 2 1 1 3'
 'set grid on 5 1 1'
-
-*Get time of model run
-'set t 1' 
-'q time'
-initutc=substr(result, 8, 3)
-initdate=substr(result, 11, 2)
-initmonth=substr(result, 13, 3)
-inityear=substr(result, 16, 4)
-initday=substr(result, 38, 3)
-
-*** BEGIN PLOT LOOP
-frame=0;while(frame<81);frame=frame+1
-
-*set time to plot and clear display
-'clear'
-'set grads off'
-'set font 10'
-'set t '%frame        
-hours = (frame-1)*3
 
 *PLOT 2-METER TEMPERATURE
 *below freezing
@@ -286,11 +273,11 @@ forecastday=substr(result, 45, 3)
 'draw string .70 7.68 2-Meter Temperature (shading, `ao`nF)' 
 'set strsiz .14'
 'set string 1 br'
-'draw string 9.9 8.30 '"Model: "''initutc%' '%initdate''%initmonth''%inityear' '"GFS"
+'draw string 9.9 8.30 '"Model: "''INITHOUR%'Z '%INIT_STRINGDATE' '%MODELFORTITLE
 'set font 12'
 'set string 4'
 'draw string 9.9 8.05 '"Valid: "''%forecastutc' '%forecastday' '%forecastdate''%forecastmonth''%forecastyear
-'draw string 9.9 7.85 '%hours' '"- hour forecast"
+'draw string 9.9 7.85 '%H' '"- hour forecast"
 'set font 11'
 'set strsiz .17'
 'set string 11'
@@ -306,6 +293,10 @@ cint=300
 Low_info=result
 i=2         ;*Since the data starts on the 2nd line
 minmax=sublin(Low_info,i)
+while(subwrd(minmax,1) != 'L') 
+i=i+1
+minmax=sublin(Low_info,i)
+endwhile
 
 while(subwrd(minmax,1) = 'L') 
 
@@ -348,6 +339,10 @@ endwhile
 High_info=result
 i=2         ;*Since the data starts on the 2nd line
 minmax=sublin(High_info,i)
+while(subwrd(minmax,1) != 'H') 
+i=i+1
+minmax=sublin(High_info,i)
+endwhile
 
 while(subwrd(minmax,1) = 'H') 
 
@@ -382,18 +377,6 @@ while(subwrd(minmax,1) = 'H')
 endwhile
 
 *Save output as .png
-if (hours >99)
-'gxprint grads_pics/pnw/slp10mwind/'%runhour'z/PNW_SLP10mwind_'%hours'hrfcst.png x1200 y927'
-endif
-
-if (hours >9 & hours <=99)
-'gxprint grads_pics/pnw/slp10mwind/'%runhour'z/PNW_SLP10mwind_0'%hours'hrfcst.png x1200 y927'
-endif
-
-if (hours <=9)
-'gxprint grads_pics/pnw/slp10mwind/'%runhour'z/PNW_SLP10mwind_00'%hours'hrfcst.png x1200 y927'
-endif
-endwhile
+'gxprint /home/mint/grads_pics/'%MODEL'/'%INIT_INTDATE'/'%INITHOUR'z/'%FILENAME' -b /home/mint/opengrads/basemaps/pnwbasemap.png -t 1 x1200 y927'
 
 'quit'
-
