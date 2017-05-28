@@ -1,14 +1,18 @@
-*This script plots 500 hPa heights and precipitable water over a polar stereographic projection of the NE Pacific. To run this script,you will need to have xcbar.gs installed. This script imports the current date from a bash script.
+*This script plots Precipitable Water and 500 hPa heights over a polar stereographic plot of the NE Pacific.
 
 *xcbar.gs: http://kodama.fubuki.info/wiki/wiki.cgi/GrADS/script/xcbar.gs?lang=en
 
-*Import date from bash script
+*Import arguments from bash script
 function script(args)
-rundate = subwrd(args,1)
-runhour = subwrd(args,2)
-
-*Import level
-level = subwrd(args,3)
+CTLFILE = subwrd(args,1)
+INIT_STRINGDATE = subwrd(args,2)
+INIT_INTDATE = subwrd(args,3)
+INITHOUR = subwrd(args,4)
+FILENAME = subwrd(args,5)
+H = subwrd(args,6)
+MODEL = subwrd(args,7)
+MODELFORTITLE = subwrd(args,8)
+LEVEL = subwrd(args,9)
 
 *Basic commands to clear everything, make background white, turn off timestamp/grads, set fonts, and set plotting area.
 'reinit'
@@ -21,8 +25,8 @@ level = subwrd(args,3)
 'set font 10 file /usr/share/fonts/type1/gsfonts/n019003l.pfb'
 'set parea 0.3 10.3 0.15 7.5'
 
-*Open netcdf file from NOMADS server
-'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20'rundate'/gfs_0p25_'runhour'z'
+*Open control file
+'open 'CTLFILE
 
 *** Begin plotting
 *Set spatial domain for Grads to retrieve data from
@@ -37,27 +41,10 @@ level = subwrd(args,3)
 'set mpdset hires'
 'set mpt 0 1 1 6'
 'set mpt 1 1 1 6'
-'set mpt 2 1 3 1'
+'set mpt 2 1 1 3'
 'set grid on 5 1 1'
 
-*Get time of model run
-'set t 1' 
-'q time'
-initutc=substr(result, 8, 3)
-initdate=substr(result, 11, 2)
-initmonth=substr(result, 13, 3)
-inityear=substr(result, 16, 4)
-initday=substr(result, 38, 3)
-
-*** BEGIN PLOT LOOP
-frame=0;while(frame<81);frame=frame+1
-
-*set time to plot and clear display
-'clear'
-'set grads off'
-'set font 10'
-'set t '%frame        
-hours = (frame-1)*3
+*set colors
 
 *'color.gs 0 2.5 .025 -v -kind black->peru->palegreen->darkgreen->yellow->red->fuchsia->blue->aqua->purple->firebrick->mistyrose'
 
@@ -169,12 +156,13 @@ hours = (frame-1)*3
 
 'set ccols 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117'
 
+*Plot precipitable water 
 'set gxout shaded'
 'd pwatclm/25.4'
 'xcbar.gs -fstep 10 -line off -edge circle -direction v 9.8 10 .15 7.5'
 
 *Set vertical coordinate
-'set lev 'level
+'set lev 'LEVEL
 
 *plot the height contours in intervals of 3 decameters
 'set gxout contour'
@@ -193,16 +181,6 @@ forecastmonth=substr(result, 29, 3)
 forecastyear=substr(result, 32, 4)
 forecastday=substr(result, 45, 3)
 
-*** End plotting
-
-*Get time of forecast
-'q time'
-forecastutc=substr(result, 24, 3)
-forecastdate=substr(result, 27, 2)
-forecastmonth=substr(result, 29, 3)
-forecastyear=substr(result, 32, 4)
-forecastday=substr(result, 45, 3)
-
 *Draw shapefiles
 'set line 1 1 1'
 'draw shp /home/mint/opengrads/Contents/Shapefiles/Canada/PROVINCE.shp'
@@ -210,15 +188,15 @@ forecastday=substr(result, 45, 3)
 
 *draw titles and strings for map!
 'set strsiz .18'
-'draw string .85 7.97 '%level' '"hPa Geopotential Height (contours, dam)"
+'draw string .85 7.97 '%LEVEL' '"hPa Geopotential Height (contours, dam)"
 'draw string .85 7.68 Precipitable Water (shaded, inches)'  
 'set strsiz .14'
 'set string 1 br'
-'draw string 9.75 8.30 '"Model: "''initutc%' '%initdate''%initmonth''%inityear' '"GFS"
+'draw string 9.75 8.30 '"Model: "''INITHOUR%'Z '%INIT_STRINGDATE' '%MODELFORTITLE
 'set font 12'
 'set string 4'
 'draw string 9.75 8.05 '"Valid: "''%forecastutc' '%forecastday' '%forecastdate''%forecastmonth''%forecastyear
-'draw string 9.75 7.85 '%hours' '"- hour forecast"
+'draw string 9.75 7.85 '%H' '"- hour forecast"
 'set font 11'
 'set strsiz .17'
 'set string 11'
@@ -235,6 +213,10 @@ cint=500
 Low_info=result
 i=2         ;*Since the data starts on the 2nd line
 minmax=sublin(Low_info,i)
+while(subwrd(minmax,1) != 'L') 
+i=i+1
+minmax=sublin(Low_info,i)
+endwhile
 
 while(subwrd(minmax,1) = 'L') 
 
@@ -273,6 +255,10 @@ endwhile
 High_info=result
 i=2         ;*Since the data starts on the 2nd line
 minmax=sublin(High_info,i)
+while(subwrd(minmax,1) != 'H') 
+i=i+1
+minmax=sublin(High_info,i)
+endwhile
 
 while(subwrd(minmax,1) = 'H') 
 
@@ -303,17 +289,6 @@ while(subwrd(minmax,1) = 'H')
 endwhile
 
 *Save output as .png
-if (hours >99)
-'gxprint grads_pics/ne_pacific/pwat/'%runhour'z/NEPacific_Pwat_'%hours'hrfcst.png x1200 y927'
-endif
-
-if (hours >9 & hours <=99)
-'gxprint grads_pics/ne_pacific/pwat/'%runhour'z/NEPacific_Pwat_0'%hours'hrfcst.png x1200 y927'
-endif
-
-if (hours <=9)
-'gxprint grads_pics/ne_pacific/pwat/'%runhour'z/NEPacific_Pwat_00'%hours'hrfcst.png x1200 y927'
-endif
-endwhile
+'gxprint /home/mint/grads_pics/'%MODEL'/'%INIT_INTDATE'/'%INITHOUR'z/'%FILENAME' x1200 y927'
 
 'quit'
