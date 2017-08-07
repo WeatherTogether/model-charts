@@ -1,7 +1,3 @@
-*This script plots Surface CAPE, SLP, and 1000-500 hPa thickness over a polar stereographic plot of the Pacific Northwest.
-
-*xcbar.gs: http://kodama.fubuki.info/wiki/wiki.cgi/GrADS/script/xcbar.gs?lang=en
-
 *Import arguments from bash script
 function script(args)
 CTLFILE = subwrd(args,1)
@@ -12,6 +8,7 @@ FILENAME = subwrd(args,5)
 H = subwrd(args,6)
 MODEL = subwrd(args,7)
 MODELFORTITLE = subwrd(args,8)
+LEVEL = subwrd(args,9)
 
 *Basic commands to clear everything, make background white, turn off timestamp/grads, set fonts, and set plotting area.
 'reinit'
@@ -22,7 +19,7 @@ MODELFORTITLE = subwrd(args,8)
 'set font 12 file /usr/share/fonts/type1/gsfonts/n019023l.pfb'
 'set font 11 file /usr/share/fonts/type1/gsfonts/n019004l.pfb'
 'set font 10 file /usr/share/fonts/type1/gsfonts/n019003l.pfb'
-'set parea 0.25 10.3 0.15 7.5'
+'set parea 0.37 10.07 0.15 7.5'
 
 *Open control file
 'open 'CTLFILE
@@ -30,12 +27,8 @@ MODELFORTITLE = subwrd(args,8)
 *** Begin plotting
 
 *Set spatial domain for Grads to retrieve data from
-'set lat 36 54'
-'set lon -139 -101'
-
-*Set map projection 
-'set mpvals -133 -108 37 53'
-'set mproj nps'
+'set lat  19 56'
+'set lon -128 -65'
 
 *style map
 'set mpdset hires'
@@ -43,14 +36,16 @@ MODELFORTITLE = subwrd(args,8)
 'set mpt 1 1 1 6'
 'set mpt 2 1 1 3'
 'set grid on 5 1 1'
+'set xlevs -120 -110 -100 -90 -80 -70'
+'set ylevs 50 40 30 20'
 
-*set colors
-'color 0 6500 100 -kind (255,255,255,0)-(0)->lightblue->green->yellow->orange->red->darkviolet->palevioletred->lightpink->peachpuff->burlywood->firebrick'
+*set color
+'color.gs 0 60 2.5 -kind (255,255,255,0)-(0)->(255,255,255,0)-(1)->aquamarine->deepskyblue->limegreen->gold->orange->red->firebrick->fuchsia->black'
 
-*Plot CAPE
+*Plot 10-meter wind shading (mph)
 'set gxout shaded'
-'d capesfc'
-'xcbar.gs -fstep 5 -line off -edge circle -direction v 9.93 10.13 .18 7.47'
+'d mag(ugrd10m,vgrd10m)*2.237'
+'xcbar.gs -fstep 2 -line off -edge circle -direction v 10.1 10.3 .44 7.2'
 
 *plot 1000-500hPa thickness in intervals of 6 decameters
 *** CHANGE THICKNESS SETTINGS HERE
@@ -77,10 +72,10 @@ MODELFORTITLE = subwrd(args,8)
 'set ccolor 1'
 'set digsiz .05'
 if (MODEL = "GFS_0.25_DEGREE")
-    'd skip(ugrd10m*2.237,5,5);vgrd10m*2.237'
+    'd skip(ugrd10m*2.237,10,10);vgrd10m*2.237'
 endif
 if (MODEL = "NAM_CONUS_12KM")
-    'd skip(ugrd10m*2.237,12,12);vgrd10m*2.237'
+    'd skip(ugrd10m*2.237,24,24);vgrd10m*2.237'
 endif
 
 *** End plotting
@@ -99,24 +94,22 @@ forecastday=substr(result, 45, 3)
 'draw shp /home/mint/opengrads/Contents/Shapefiles/Mexico/mexstates.shp'
 
 *draw titles and strings for map!
-'set strsiz .14'
-'draw string .70 8.4 1000-500 hPa Thickness (dotted contours, dam)'
-'draw string .70 8.15 Sea-Level Pressure (contours, hPa)' 
-'draw string .70 7.9 10-Meter Wind (barbs, mph)' 
-'draw string .70 7.65 Surface-Based CAPE (shading, J/kg)'
+'set strsiz .15'
+'draw string .45 8.00 1000-500 hPa Thickness (dotted contours, dam)'
+'draw string .45 7.71 Sea-Level Pressure (contours, hPa)' 
+'draw string .45 7.42 10-meter Wind (shaded and barbs, mph)'  
 'set strsiz .14'
 'set string 1 br'
-'draw string 9.9 8.30 '"Model: "''INITHOUR%'Z '%INIT_STRINGDATE' '%MODELFORTITLE
+'draw string 9.95 8.09 '"Model: "''INITHOUR%'Z '%INIT_STRINGDATE' '%MODELFORTITLE
 'set font 12'
 'set string 4'
-'draw string 9.9 8.05 '"Valid: "''%forecastutc' '%forecastday' '%forecastdate''%forecastmonth''%forecastyear
-'draw string 9.9 7.85 '%H' '"- hour forecast"
+'draw string 9.95 7.84 '"Valid: "''%forecastutc' '%forecastday' '%forecastdate''%forecastmonth''%forecastyear
+'draw string 9.95 7.64 '%H' '"- hour forecast"
 'set font 11'
 'set strsiz .17'
 'set string 11'
-'draw string 9.9 7.58 weathertogether.net'
+'draw string 9.95 7.34 weathertogether.net'   
 
-*plot high and low centers via mfhilo function
 radius=1000
 cint=300
 
@@ -124,16 +117,15 @@ cint=300
 
 'mfhilo prmslmsl/100 CL l 'radius', 'cint
 
-High_info=result
+Low_info=result
 if (MODEL = "GFS_0.25_DEGREE")
     i=2         ;*Since the data starts on the 2nd line
-    minmax=sublin(High_info,i)
+    minmax=sublin(Low_info,i)
 endif
 if (MODEL = "NAM_CONUS_12KM")
     i=3         ;*Since the data starts on the 3rd line
-    minmax=sublin(High_info,i)
+    minmax=sublin(Low_info,i)
 endif
-
 
 while(subwrd(minmax,1) = 'L') 
 
@@ -173,13 +165,14 @@ endwhile
 
 'mfhilo prmslmsl/100 CL h 'radius', 'cint
 
+High_info=result
 if (MODEL = "GFS_0.25_DEGREE")
     i=2         ;*Since the data starts on the 2nd line
-    minmax=sublin(Low_info,i)
+    minmax=sublin(High_info,i)
 endif
 if (MODEL = "NAM_CONUS_12KM")
     i=3         ;*Since the data starts on the 3rd line
-    minmax=sublin(Low_info,i)
+    minmax=sublin(High_info,i)
 endif
 
 while(subwrd(minmax,1) = 'H') 
@@ -215,7 +208,7 @@ while(subwrd(minmax,1) = 'H')
 endwhile
 
 *Save output as .png
-'gxprint /home/mint/grads_pics/'%MODEL'/'%INIT_INTDATE'/'%INITHOUR'z/'%FILENAME' -b /home/mint/opengrads/basemaps/pnwbasemap.png -t 1 x1200 y927'
+'gxprint /home/mint/grads_pics/'%MODEL'/'%INIT_INTDATE'/'%INITHOUR'z/'%FILENAME' -b /home/mint/opengrads/basemaps/conusbasemap.png -t 1 x1200 y927'
 
 'quit'
 

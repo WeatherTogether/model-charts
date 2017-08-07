@@ -1,7 +1,3 @@
-*This script plots Surface CAPE, SLP, and 1000-500 hPa thickness over a polar stereographic plot of the Pacific Northwest.
-
-*xcbar.gs: http://kodama.fubuki.info/wiki/wiki.cgi/GrADS/script/xcbar.gs?lang=en
-
 *Import arguments from bash script
 function script(args)
 CTLFILE = subwrd(args,1)
@@ -12,6 +8,7 @@ FILENAME = subwrd(args,5)
 H = subwrd(args,6)
 MODEL = subwrd(args,7)
 MODELFORTITLE = subwrd(args,8)
+LEVEL = subwrd(args,9)
 
 *Basic commands to clear everything, make background white, turn off timestamp/grads, set fonts, and set plotting area.
 'reinit'
@@ -44,13 +41,13 @@ MODELFORTITLE = subwrd(args,8)
 'set mpt 2 1 1 3'
 'set grid on 5 1 1'
 
-*set colors
-'color 0 6500 100 -kind (255,255,255,0)-(0)->lightblue->green->yellow->orange->red->darkviolet->palevioletred->lightpink->peachpuff->burlywood->firebrick'
+*set color
+'color.gs 0 60 2.5 -kind (255,255,255,0)-(0)->(255,255,255,0)-(1)->aquamarine->deepskyblue->limegreen->gold->orange->red->firebrick->fuchsia->black'
 
-*Plot CAPE
+*Plot 10-meter wind shading (mph)
 'set gxout shaded'
-'d capesfc'
-'xcbar.gs -fstep 5 -line off -edge circle -direction v 9.93 10.13 .18 7.47'
+'d mag(ugrd10m,vgrd10m)*2.237'
+'xcbar.gs -fstep 2 -line off -edge circle -direction v 9.93 10.13 .18 7.47'
 
 *plot 1000-500hPa thickness in intervals of 6 decameters
 *** CHANGE THICKNESS SETTINGS HERE
@@ -68,7 +65,7 @@ MODELFORTITLE = subwrd(args,8)
 'set cint 3'
 'set ccolor 1'
 'set cstyle 1'
-'set cthick 2'
+'set cthick 1'
 'set clab masked'
 'd prmslmsl/100'
 
@@ -99,11 +96,10 @@ forecastday=substr(result, 45, 3)
 'draw shp /home/mint/opengrads/Contents/Shapefiles/Mexico/mexstates.shp'
 
 *draw titles and strings for map!
-'set strsiz .14'
-'draw string .70 8.4 1000-500 hPa Thickness (dotted contours, dam)'
-'draw string .70 8.15 Sea-Level Pressure (contours, hPa)' 
-'draw string .70 7.9 10-Meter Wind (barbs, mph)' 
-'draw string .70 7.65 Surface-Based CAPE (shading, J/kg)'
+'set strsiz .15'
+'draw string .70 8.26 1000-500 hPa Thickness (dotted contours, dam)'
+'draw string .70 7.97 Sea-Level Pressure (contours, hPa)' 
+'draw string .70 7.68 10-meter Wind (shaded and barbs, mph)'  
 'set strsiz .14'
 'set string 1 br'
 'draw string 9.9 8.30 '"Model: "''INITHOUR%'Z '%INIT_STRINGDATE' '%MODELFORTITLE
@@ -116,7 +112,6 @@ forecastday=substr(result, 45, 3)
 'set string 11'
 'draw string 9.9 7.58 weathertogether.net'
 
-*plot high and low centers via mfhilo function
 radius=1000
 cint=300
 
@@ -124,16 +119,15 @@ cint=300
 
 'mfhilo prmslmsl/100 CL l 'radius', 'cint
 
-High_info=result
+Low_info=result
 if (MODEL = "GFS_0.25_DEGREE")
     i=2         ;*Since the data starts on the 2nd line
-    minmax=sublin(High_info,i)
+    minmax=sublin(Low_info,i)
 endif
 if (MODEL = "NAM_CONUS_12KM")
     i=3         ;*Since the data starts on the 3rd line
-    minmax=sublin(High_info,i)
+    minmax=sublin(Low_info,i)
 endif
-
 
 while(subwrd(minmax,1) = 'L') 
 
@@ -173,13 +167,14 @@ endwhile
 
 'mfhilo prmslmsl/100 CL h 'radius', 'cint
 
+High_info=result
 if (MODEL = "GFS_0.25_DEGREE")
     i=2         ;*Since the data starts on the 2nd line
-    minmax=sublin(Low_info,i)
+    minmax=sublin(High_info,i)
 endif
 if (MODEL = "NAM_CONUS_12KM")
     i=3         ;*Since the data starts on the 3rd line
-    minmax=sublin(Low_info,i)
+    minmax=sublin(High_info,i)
 endif
 
 while(subwrd(minmax,1) = 'H') 

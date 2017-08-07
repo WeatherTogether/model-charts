@@ -1,7 +1,3 @@
-*This script plots 1000-500 hPa thickness, SLP, and 2-meter temp over a polar stereographic plot of the Pacific Northwest.
-
-*xcbar.gs: http://kodama.fubuki.info/wiki/wiki.cgi/GrADS/script/xcbar.gs?lang=en
-
 *Import arguments from bash script
 function script(args)
 CTLFILE = subwrd(args,1)
@@ -22,19 +18,18 @@ MODELFORTITLE = subwrd(args,8)
 'set font 12 file /usr/share/fonts/type1/gsfonts/n019023l.pfb'
 'set font 11 file /usr/share/fonts/type1/gsfonts/n019004l.pfb'
 'set font 10 file /usr/share/fonts/type1/gsfonts/n019003l.pfb'
-'set parea 0.25 10.3 0.15 7.5'
+'set parea 0.3 10.3 0.15 7.5'
 
 *Open control file
 'open 'CTLFILE
 
 *** Begin plotting
-
 *Set spatial domain for Grads to retrieve data from
-'set lat 36 54'
-'set lon -139 -101'
+'set lat 18 70'
+'set lon -190 -80'
 
 *Set map projection 
-'set mpvals -133 -108 37 53'
+'set mpvals -160 -110 23 65'
 'set mproj nps'
 
 *style map
@@ -229,7 +224,7 @@ MODELFORTITLE = subwrd(args,8)
 
 'set gxout shaded'
 'd (tmp2m-273.15)*9/5 + 32'
-'xcbar.gs -fstep 10 -line off -edge circle -direction v 9.93 10.13 .18 7.47'
+'xcbar.gs -fstep 10 -line off -edge circle -direction v 9.8 10 .15 7.5'
 
 *plot 1000-500hPa thickness in intervals of 6 decameters
 *** CHANGE THICKNESS SETTINGS HERE
@@ -247,7 +242,7 @@ MODELFORTITLE = subwrd(args,8)
 'set cint 3'
 'set ccolor 1'
 'set cstyle 1'
-'set cthick 1'
+'set cthick 2'
 'set clab masked'
 'd prmslmsl/100'
 
@@ -256,12 +251,11 @@ MODELFORTITLE = subwrd(args,8)
 'set ccolor 1'
 'set digsiz .05'
 if (MODEL = "GFS_0.25_DEGREE")
-    'd skip(ugrd10m*2.237,5,5);vgrd10m*2.237'
+    'd skip(ugrd10m*2.237,15,15);vgrd10m*2.237'
 endif
 if (MODEL = "NAM_CONUS_12KM")
-    'd skip(ugrd10m*2.237,12,12);vgrd10m*2.237'
+    'd skip(ugrd10m*2.237,36,36);vgrd10m*2.237'
 endif
-
 
 *** End plotting
 
@@ -280,21 +274,21 @@ forecastday=substr(result, 45, 3)
 
 *draw titles and strings for map!
 'set strsiz .14'
-'draw string .70 8.4 1000-500 hPa Thickness (dotted contours, dam)'
-'draw string .70 8.15 Sea-Level Pressure (contours, hPa)' 
-'draw string .70 7.9 10-Meter Wind (barbs, mph)' 
-'draw string .70 7.65 2-Meter Temperature (shading, `ao`nF)'  
+'draw string .85 8.4 1000-500 hPa Thickness (dotted contours, dam)'
+'draw string .85 8.15 Sea-Level Pressure (contours, hPa)' 
+'draw string .85 7.9 10-Meter Wind (barbs, mph)' 
+'draw string .85 7.65 2-Meter Temperature (shading, `ao`nF)' 
 'set strsiz .14'
 'set string 1 br'
-'draw string 9.9 8.30 '"Model: "''INITHOUR%'Z '%INIT_STRINGDATE' '%MODELFORTITLE
+'draw string 9.75 8.30 '"Model: "''INITHOUR%'Z '%INIT_STRINGDATE' '%MODELFORTITLE
 'set font 12'
 'set string 4'
-'draw string 9.9 8.05 '"Valid: "''%forecastutc' '%forecastday' '%forecastdate''%forecastmonth''%forecastyear
-'draw string 9.9 7.85 '%H' '"- hour forecast"
+'draw string 9.75 8.05 '"Valid: "''%forecastutc' '%forecastday' '%forecastdate''%forecastmonth''%forecastyear
+'draw string 9.75 7.85 '%H' '"- hour forecast"
 'set font 11'
 'set strsiz .17'
 'set string 11'
-'draw string 9.9 7.58 weathertogether.net'
+'draw string 9.75 7.58 weathertogether.net'   
 
 radius=1000
 cint=300
@@ -394,7 +388,7 @@ while(subwrd(minmax,1) = 'H')
 endwhile
 
 *Save output as .png
-'gxprint /home/mint/grads_pics/'%MODEL'/'%INIT_INTDATE'/'%INITHOUR'z/'%FILENAME' -b /home/mint/opengrads/basemaps/pnwbasemap.png -t 1 x1200 y927'
+'gxprint /home/mint/grads_pics/'%MODEL'/'%INIT_INTDATE'/'%INITHOUR'z/'%FILENAME' -b /home/mint/opengrads/basemaps/nepacbasemap.png -t 1 x1200 y927'
 
 'quit'
 

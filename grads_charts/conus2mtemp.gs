@@ -1,7 +1,3 @@
-*This script plots 1000-500 hPa thickness, SLP, and 2-meter temperature over a Mercator projection of the CONUS.
-
-*xcbar.gs: http://kodama.fubuki.info/wiki/wiki.cgi/GrADS/script/xcbar.gs?lang=en
-
 *Import arguments from bash script
 function script(args)
 CTLFILE = subwrd(args,1)
@@ -39,6 +35,8 @@ MODELFORTITLE = subwrd(args,8)
 'set mpt 1 1 1 6'
 'set mpt 2 1 1 3'
 'set grid on 5 1 1'
+'set xlevs -120 -110 -100 -90 -80 -70'
+'set ylevs 50 40 30 20'
 
 *PLOT 2-METER TEMPERATURE
 *below freezing
@@ -243,9 +241,20 @@ MODELFORTITLE = subwrd(args,8)
 'set cint 3'
 'set ccolor 1'
 'set cstyle 1'
-'set cthick 1'
+'set cthick 2'
 'set clab masked'
 'd prmslmsl/100'
+
+*Plot 10m wind barbs
+'set gxout barb'
+'set ccolor 1'
+'set digsiz .05'
+if (MODEL = "GFS_0.25_DEGREE")
+    'd skip(ugrd10m*2.237,10,10);vgrd10m*2.237'
+endif
+if (MODEL = "NAM_CONUS_12KM")
+    'd skip(ugrd10m*2.237,24,24);vgrd10m*2.237'
+endif
 
 *** End plotting
 
@@ -264,22 +273,21 @@ forecastday=substr(result, 45, 3)
 
 *draw titles and strings for map!
 'set strsiz .15'
-'draw string .45 8.06 1000-500 hPa Thickness (dotted contours, dam)'
-'draw string .45 7.77 Sea-Level Pressure (contours, hPa)' 
-'draw string .45 7.48 2-Meter Temperature (shading, `ao`nF)' 
+'draw string .45 8.29 1000-500 hPa Thickness (dotted contours, dam)'
+'draw string .45 8.00 Sea-Level Pressure (contours, hPa)' 
+'draw string .45 7.71 10-Meter Wind (barbs, mph)'
+'draw string .45 7.42 2-Meter Temperature (shading, `ao`nF)' 
 'set strsiz .14'
 'set string 1 br'
-'draw string 9.95 8.10 '"Model: "''INITHOUR%'Z '%INIT_STRINGDATE' '%MODELFORTITLE
+'draw string 9.95 8.09 '"Model: "''INITHOUR%'Z '%INIT_STRINGDATE' '%MODELFORTITLE
 'set font 12'
 'set string 4'
-'draw string 9.95 7.85 '"Valid: "''%forecastutc' '%forecastday' '%forecastdate''%forecastmonth''%forecastyear
-'draw string 9.95 7.65 '%H' '"- hour forecast"
+'draw string 9.95 7.84 '"Valid: "''%forecastutc' '%forecastday' '%forecastdate''%forecastmonth''%forecastyear
+'draw string 9.95 7.64 '%H' '"- hour forecast"
 'set font 11'
 'set strsiz .17'
 'set string 11'
-'draw string 9.95 7.38 weathertogether.us'   
-'set font 10'
-'set strsiz .10'
+'draw string 9.95 7.34 weathertogether.net'   
 
 radius=1000
 cint=300
@@ -289,12 +297,14 @@ cint=300
 'mfhilo prmslmsl/100 CL l 'radius', 'cint
 
 Low_info=result
-i=2         ;*Since the data starts on the 2nd line
-minmax=sublin(Low_info,i)
-while(subwrd(minmax,1) != 'L') 
-i=i+1
-minmax=sublin(Low_info,i)
-endwhile
+if (MODEL = "GFS_0.25_DEGREE")
+    i=2         ;*Since the data starts on the 2nd line
+    minmax=sublin(Low_info,i)
+endif
+if (MODEL = "NAM_CONUS_12KM")
+    i=3         ;*Since the data starts on the 3rd line
+    minmax=sublin(Low_info,i)
+endif
 
 while(subwrd(minmax,1) = 'L') 
 
@@ -335,12 +345,14 @@ endwhile
 'mfhilo prmslmsl/100 CL h 'radius', 'cint
 
 High_info=result
-i=2         ;*Since the data starts on the 2nd line
-minmax=sublin(High_info,i)
-while(subwrd(minmax,1) != 'H') 
-i=i+1
-minmax=sublin(High_info,i)
-endwhile
+if (MODEL = "GFS_0.25_DEGREE")
+    i=2         ;*Since the data starts on the 2nd line
+    minmax=sublin(High_info,i)
+endif
+if (MODEL = "NAM_CONUS_12KM")
+    i=3         ;*Since the data starts on the 3rd line
+    minmax=sublin(High_info,i)
+endif
 
 while(subwrd(minmax,1) = 'H') 
 
@@ -375,6 +387,7 @@ while(subwrd(minmax,1) = 'H')
 endwhile
 
 *Save output as .png
-'gxprint /home/mint/grads_pics/'%MODEL'/'%INIT_INTDATE'/'%INITHOUR'z/'%FILENAME' x1200 y927'
+'gxprint /home/mint/grads_pics/'%MODEL'/'%INIT_INTDATE'/'%INITHOUR'z/'%FILENAME' -b /home/mint/opengrads/basemaps/conusbasemap.png -t 1 x1200 y927'
 
 'quit'
+

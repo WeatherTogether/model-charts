@@ -171,6 +171,17 @@ LEVEL = subwrd(args,9)
 'set clab masked'
 'd hgtprs/10'
 
+*Plot wind at level
+'set gxout barb'
+'set ccolor 1'
+'set digsiz .05'
+if (MODEL = "GFS_0.25_DEGREE")
+    'd skip(ugrdprs*2.237,15,15);vgrdprs*2.237'
+endif
+if (MODEL = "NAM_CONUS_12KM")
+    'd skip(ugrdprs*2.237,36,36);vgrdprs*2.237'
+endif
+
 *** End plotting
 
 *Get time of forecast
@@ -187,8 +198,9 @@ forecastday=substr(result, 45, 3)
 'draw shp /home/mint/opengrads/Contents/Shapefiles/Mexico/mexstates.shp'
 
 *draw titles and strings for map!
-'set strsiz .18'
-'draw string .85 7.97 '%LEVEL' '"hPa Geopotential Height (contours, dam)"
+'set strsiz .15'
+'draw string .85 8.26 '%LEVEL' '"hPa Geopotential Height (contours, dam)"
+'draw string .85 7.97 '%LEVEL' '"hPa Wind (barbs, mph)"
 'draw string .85 7.68 Precipitable Water (shaded, inches)'  
 'set strsiz .14'
 'set string 1 br'
@@ -200,7 +212,7 @@ forecastday=substr(result, 45, 3)
 'set font 11'
 'set strsiz .17'
 'set string 11'
-'draw string 9.75 7.58 weathertogether.us'   
+'draw string 9.75 7.58 weathertogether.net'   
 
 *plot high and low centers via mfhilo function
 radius=1500
@@ -211,12 +223,14 @@ cint=500
 'mfhilo hgtprs/10 CL l 'radius', 'cint
 
 Low_info=result
-i=2         ;*Since the data starts on the 2nd line
-minmax=sublin(Low_info,i)
-while(subwrd(minmax,1) != 'L') 
-i=i+1
-minmax=sublin(Low_info,i)
-endwhile
+if (MODEL = "GFS_0.25_DEGREE")
+    i=2         ;*Since the data starts on the 2nd line
+    minmax=sublin(Low_info,i)
+endif
+if (MODEL = "NAM_CONUS_12KM")
+    i=3         ;*Since the data starts on the 3rd line
+    minmax=sublin(Low_info,i)
+endif
 
 while(subwrd(minmax,1) = 'L') 
 
@@ -253,12 +267,14 @@ endwhile
 'mfhilo hgtprs/10 CL h 'radius', 'cint
 
 High_info=result
-i=2         ;*Since the data starts on the 2nd line
-minmax=sublin(High_info,i)
-while(subwrd(minmax,1) != 'H') 
-i=i+1
-minmax=sublin(High_info,i)
-endwhile
+if (MODEL = "GFS_0.25_DEGREE")
+    i=2         ;*Since the data starts on the 2nd line
+    minmax=sublin(High_info,i)
+endif
+if (MODEL = "NAM_CONUS_12KM")
+    i=3         ;*Since the data starts on the 3rd line
+    minmax=sublin(High_info,i)
+endif
 
 while(subwrd(minmax,1) = 'H') 
 
@@ -289,6 +305,6 @@ while(subwrd(minmax,1) = 'H')
 endwhile
 
 *Save output as .png
-'gxprint /home/mint/grads_pics/'%MODEL'/'%INIT_INTDATE'/'%INITHOUR'z/'%FILENAME' x1200 y927'
+'gxprint /home/mint/grads_pics/'%MODEL'/'%INIT_INTDATE'/'%INITHOUR'z/'%FILENAME' -b /home/mint/opengrads/basemaps/nepacbasemap.png -t 1 x1200 y927'
 
 'quit'

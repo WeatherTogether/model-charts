@@ -1,7 +1,3 @@
-*This script plots Surface CAPE, SLP, and 1000-500 hPa thickness over a polar stereographic plot of the Pacific Northwest.
-
-*xcbar.gs: http://kodama.fubuki.info/wiki/wiki.cgi/GrADS/script/xcbar.gs?lang=en
-
 *Import arguments from bash script
 function script(args)
 CTLFILE = subwrd(args,1)
@@ -12,6 +8,8 @@ FILENAME = subwrd(args,5)
 H = subwrd(args,6)
 MODEL = subwrd(args,7)
 MODELFORTITLE = subwrd(args,8)
+LEVEL = subwrd(args,9)
+DAYOFYEAR = subwrd(args,10)
 
 *Basic commands to clear everything, make background white, turn off timestamp/grads, set fonts, and set plotting area.
 'reinit'
@@ -22,20 +20,7 @@ MODELFORTITLE = subwrd(args,8)
 'set font 12 file /usr/share/fonts/type1/gsfonts/n019023l.pfb'
 'set font 11 file /usr/share/fonts/type1/gsfonts/n019004l.pfb'
 'set font 10 file /usr/share/fonts/type1/gsfonts/n019003l.pfb'
-'set parea 0.25 10.3 0.15 7.5'
-
-*Open control file
-'open 'CTLFILE
-
-*** Begin plotting
-
-*Set spatial domain for Grads to retrieve data from
-'set lat 36 54'
-'set lon -139 -101'
-
-*Set map projection 
-'set mpvals -133 -108 37 53'
-'set mproj nps'
+'set parea 0.37 10.07 0.15 7.5'
 
 *style map
 'set mpdset hires'
@@ -43,26 +28,44 @@ MODELFORTITLE = subwrd(args,8)
 'set mpt 1 1 1 6'
 'set mpt 2 1 1 3'
 'set grid on 5 1 1'
+'set xlevs -120 -110 -100 -90 -80 -70'
+'set ylevs 50 40 30 20'
 
-*set colors
-'color 0 6500 100 -kind (255,255,255,0)-(0)->lightblue->green->yellow->orange->red->darkviolet->palevioletred->lightpink->peachpuff->burlywood->firebrick'
+*Open control file
+'open 'CTLFILE
+'sdfopen /home/mint/opengrads/Contents/datafiles/air.4Xday.1981-2010.ltm.nc'
 
-*Plot CAPE
+*Convert control file 
+
+*** Begin plotting
+*Set spatial domain for Grads to retrieve data from
+'set lat  19 56'
+'set lon -128 -65'
+'set t 1'
+'set lev 'LEVEL
+
+*Set map projection 
+'define terp1 = tmpprs'
+'set dfile 2'
+'set lat  19 56'
+'set lon -128 -65'
+'set t 'DAYOFYEAR
+'set lev 'LEVEL
+'define terp2=air'
+'define airtmp = lterp(terp2,terp1)'
 'set gxout shaded'
-'d capesfc'
-'xcbar.gs -fstep 5 -line off -edge circle -direction v 9.93 10.13 .18 7.47'
+'color -20 20 .5 -kind lightpink->magenta->purple->blue->dodgerblue->limegreen->white->peachpuff->orange->red->maroon->gray->mistyrose'
+'set csmooth on'
+'d (terp1-airtmp)'
+'set csmooth off'
 
-*plot 1000-500hPa thickness in intervals of 6 decameters
-*** CHANGE THICKNESS SETTINGS HERE
-'set clevs 476 480 486 492 498 504 510 516 522 528 534 540 546 552 558 564 570 576 582 588 594 600'
-'set ccols 4 4 4 4 4 4 4 4 4 4 4 4 2 2 2 2 2 2 2 2 2 2'
-'set gxout contour'
-'set cint 6'
-'set cthick 3'
-'set cstyle 3'
-'set clab masked'
-'d (hgtprs(lev=500)-hgtprs(lev=1000))/10'
+*style map
+'xcbar.gs -fstep 5 -line off -edge circle -direction v 10.1 10.3 .44 7.2'
 
+'set dfile 1'
+'set lat  19 56'
+'set lon -128 -65'
+'set t 1'
 *plot the SLP contours in intervals of 3 hPa
 'set gxout contour'
 'set cint 3'
@@ -77,15 +80,17 @@ MODELFORTITLE = subwrd(args,8)
 'set ccolor 1'
 'set digsiz .05'
 if (MODEL = "GFS_0.25_DEGREE")
-    'd skip(ugrd10m*2.237,5,5);vgrd10m*2.237'
+    'd skip(ugrd10m*2.237,10,10);vgrd10m*2.237'
 endif
 if (MODEL = "NAM_CONUS_12KM")
-    'd skip(ugrd10m*2.237,12,12);vgrd10m*2.237'
+    'd skip(ugrd10m*2.237,24,24);vgrd10m*2.237'
 endif
 
 *** End plotting
 
 *Get time of forecast
+'set dfile 1'
+'set t 1'
 'q time'
 forecastutc=substr(result, 24, 3)
 forecastdate=substr(result, 27, 2)
@@ -99,24 +104,24 @@ forecastday=substr(result, 45, 3)
 'draw shp /home/mint/opengrads/Contents/Shapefiles/Mexico/mexstates.shp'
 
 *draw titles and strings for map!
+'set strsiz .15'
+'draw string .45 7.71 Sea-Level Pressure (contours, hPa)'
+'draw string .45 7.42 '%LEVEL' '"hPa Temp Anomalies (shaded, `ao`nC)"
 'set strsiz .14'
-'draw string .70 8.4 1000-500 hPa Thickness (dotted contours, dam)'
-'draw string .70 8.15 Sea-Level Pressure (contours, hPa)' 
-'draw string .70 7.9 10-Meter Wind (barbs, mph)' 
-'draw string .70 7.65 Surface-Based CAPE (shading, J/kg)'
-'set strsiz .14'
+'set font 12'
+'draw string .45 8.1 Anomalies based on 1981-2010 6-hourly Climatology'
 'set string 1 br'
-'draw string 9.9 8.30 '"Model: "''INITHOUR%'Z '%INIT_STRINGDATE' '%MODELFORTITLE
+'set font 10'
+'draw string 9.95 8.09 '"Model: "''INITHOUR%'Z '%INIT_STRINGDATE' '%MODELFORTITLE
 'set font 12'
 'set string 4'
-'draw string 9.9 8.05 '"Valid: "''%forecastutc' '%forecastday' '%forecastdate''%forecastmonth''%forecastyear
-'draw string 9.9 7.85 '%H' '"- hour forecast"
+'draw string 9.95 7.84 '"Valid: "''%forecastutc' '%forecastday' '%forecastdate''%forecastmonth''%forecastyear
+'draw string 9.95 7.64 '%H' '"- hour forecast"
 'set font 11'
 'set strsiz .17'
 'set string 11'
-'draw string 9.9 7.58 weathertogether.net'
+'draw string 9.95 7.34 weathertogether.net'    
 
-*plot high and low centers via mfhilo function
 radius=1000
 cint=300
 
@@ -124,16 +129,15 @@ cint=300
 
 'mfhilo prmslmsl/100 CL l 'radius', 'cint
 
-High_info=result
+Low_info=result
 if (MODEL = "GFS_0.25_DEGREE")
     i=2         ;*Since the data starts on the 2nd line
-    minmax=sublin(High_info,i)
+    minmax=sublin(Low_info,i)
 endif
 if (MODEL = "NAM_CONUS_12KM")
     i=3         ;*Since the data starts on the 3rd line
-    minmax=sublin(High_info,i)
+    minmax=sublin(Low_info,i)
 endif
-
 
 while(subwrd(minmax,1) = 'L') 
 
@@ -173,13 +177,14 @@ endwhile
 
 'mfhilo prmslmsl/100 CL h 'radius', 'cint
 
+High_info=result
 if (MODEL = "GFS_0.25_DEGREE")
     i=2         ;*Since the data starts on the 2nd line
-    minmax=sublin(Low_info,i)
+    minmax=sublin(High_info,i)
 endif
 if (MODEL = "NAM_CONUS_12KM")
     i=3         ;*Since the data starts on the 3rd line
-    minmax=sublin(Low_info,i)
+    minmax=sublin(High_info,i)
 endif
 
 while(subwrd(minmax,1) = 'H') 
@@ -215,7 +220,6 @@ while(subwrd(minmax,1) = 'H')
 endwhile
 
 *Save output as .png
-'gxprint /home/mint/grads_pics/'%MODEL'/'%INIT_INTDATE'/'%INITHOUR'z/'%FILENAME' -b /home/mint/opengrads/basemaps/pnwbasemap.png -t 1 x1200 y927'
+'gxprint /home/mint/grads_pics/'%MODEL'/'%INIT_INTDATE'/'%INITHOUR'z/'%FILENAME' -b /home/mint/opengrads/basemaps/conusbasemap.png -t 1 x1200 y927'
 
 'quit'
-

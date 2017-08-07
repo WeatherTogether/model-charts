@@ -251,6 +251,17 @@ MODELFORTITLE = subwrd(args,8)
 'set clab masked'
 'd prmslmsl/100'
 
+*Plot 10m wind barbs
+'set gxout barb'
+'set ccolor 1'
+'set digsiz .05'
+if (MODEL = "GFS_0.25_DEGREE")
+    'd skip(ugrd10m*2.237,5,5);vgrd10m*2.237'
+endif
+if (MODEL = "NAM_CONUS_12KM")
+    'd skip(ugrd10m*2.237,12,12);vgrd10m*2.237'
+endif
+
 *** End plotting
 
 *Get time of forecast
@@ -267,10 +278,11 @@ forecastday=substr(result, 45, 3)
 'draw shp /home/mint/opengrads/Contents/Shapefiles/Mexico/mexstates.shp'
 
 *draw titles and strings for map!
-'set strsiz .15'
-'draw string .70 8.26 1000-500 hPa Thickness (dotted contours, dam)'
-'draw string .70 7.97 Sea-Level Pressure (contours, hPa)' 
-'draw string .70 7.68 2-Meter Temperature (shading, `ao`nF)' 
+'set strsiz .14'
+'draw string .70 8.4 1000-500 hPa Thickness (dotted contours, dam)'
+'draw string .70 8.15 Sea-Level Pressure (contours, hPa)' 
+'draw string .70 7.9 10-Meter Wind (barbs, mph)' 
+'draw string .70 7.65 2-Meter Dewpoint (shading, `ao`nF)'  
 'set strsiz .14'
 'set string 1 br'
 'draw string 9.9 8.30 '"Model: "''INITHOUR%'Z '%INIT_STRINGDATE' '%MODELFORTITLE
@@ -281,7 +293,7 @@ forecastday=substr(result, 45, 3)
 'set font 11'
 'set strsiz .17'
 'set string 11'
-'draw string 9.9 7.58 weathertogether.us'
+'draw string 9.9 7.58 weathertogether.net'
 
 radius=1000
 cint=300
@@ -291,12 +303,14 @@ cint=300
 'mfhilo prmslmsl/100 CL l 'radius', 'cint
 
 Low_info=result
-i=2         ;*Since the data starts on the 2nd line
-minmax=sublin(Low_info,i)
-while(subwrd(minmax,1) != 'L') 
-i=i+1
-minmax=sublin(Low_info,i)
-endwhile
+if (MODEL = "GFS_0.25_DEGREE")
+    i=2         ;*Since the data starts on the 2nd line
+    minmax=sublin(Low_info,i)
+endif
+if (MODEL = "NAM_CONUS_12KM")
+    i=3         ;*Since the data starts on the 3rd line
+    minmax=sublin(Low_info,i)
+endif
 
 while(subwrd(minmax,1) = 'L') 
 
@@ -337,12 +351,14 @@ endwhile
 'mfhilo prmslmsl/100 CL h 'radius', 'cint
 
 High_info=result
-i=2         ;*Since the data starts on the 2nd line
-minmax=sublin(High_info,i)
-while(subwrd(minmax,1) != 'H') 
-i=i+1
-minmax=sublin(High_info,i)
-endwhile
+if (MODEL = "GFS_0.25_DEGREE")
+    i=2         ;*Since the data starts on the 2nd line
+    minmax=sublin(High_info,i)
+endif
+if (MODEL = "NAM_CONUS_12KM")
+    i=3         ;*Since the data starts on the 3rd line
+    minmax=sublin(High_info,i)
+endif
 
 while(subwrd(minmax,1) = 'H') 
 

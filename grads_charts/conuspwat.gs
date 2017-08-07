@@ -1,4 +1,4 @@
-*This script plots Precipitable Water and 500 hPa heights over a polar stereographic plot of the Pacific Northwest.
+*This script plots 1000-500 hPa thickness, SLP, and 2-meter temperature over a Mercator projection of the CONUS.
 
 *xcbar.gs: http://kodama.fubuki.info/wiki/wiki.cgi/GrADS/script/xcbar.gs?lang=en
 
@@ -23,7 +23,7 @@ LEVEL = subwrd(args,9)
 'set font 12 file /usr/share/fonts/type1/gsfonts/n019023l.pfb'
 'set font 11 file /usr/share/fonts/type1/gsfonts/n019004l.pfb'
 'set font 10 file /usr/share/fonts/type1/gsfonts/n019003l.pfb'
-'set parea 0.25 10.3 0.15 7.5'
+'set parea 0.37 10.07 0.15 7.5'
 
 *Open control file
 'open 'CTLFILE
@@ -31,12 +31,8 @@ LEVEL = subwrd(args,9)
 *** Begin plotting
 
 *Set spatial domain for Grads to retrieve data from
-'set lat 36 54'
-'set lon -139 -101'
-
-*Set map projection 
-'set mpvals -133 -108 37 53'
-'set mproj nps'
+'set lat  19 56'
+'set lon -128 -65'
 
 *style map
 'set mpdset hires'
@@ -44,11 +40,10 @@ LEVEL = subwrd(args,9)
 'set mpt 1 1 1 6'
 'set mpt 2 1 1 3'
 'set grid on 5 1 1'
+'set xlevs -120 -110 -100 -90 -80 -70'
+'set ylevs 50 40 30 20'
 
-*set colors
-
-*'color.gs 0 2.5 .025 -v -kind black->peru->palegreen->darkgreen->yellow->red->fuchsia->blue->aqua->purple->firebrick->mistyrose'
-
+*PLOT PRECIPITABLE WATER (inches)
 'set rgb 16 0 0 0'
 'set rgb 17 22 14 7'
 'set rgb 18 45 29 14'
@@ -159,7 +154,7 @@ LEVEL = subwrd(args,9)
 *Plot precipitable water 
 'set gxout shaded'
 'd pwatclm/25.4'
-'xcbar.gs -fstep 10 -line off -edge circle -direction v 9.93 10.13 .18 7.47'
+'xcbar.gs -fstep 10 -line off -edge circle -direction v 10.1 10.3 .44 7.2'
 
 *Set vertical coordinate
 'set lev 'LEVEL
@@ -176,10 +171,10 @@ LEVEL = subwrd(args,9)
 'set ccolor 1'
 'set digsiz .05'
 if (MODEL = "GFS_0.25_DEGREE")
-    'd skip(ugrdprs*2.237,10,10);vgrdprs*2.237'
+    'd skip(ugrdprs*2.237,15,15);vgrdprs*2.237'
 endif
 if (MODEL = "NAM_CONUS_12KM")
-    'd skip(ugrdprs*2.237,24,24);vgrdprs*2.237'
+    'd skip(ugrdprs*2.237,36,36);vgrdprs*2.237'
 endif
 
 *** End plotting
@@ -195,29 +190,30 @@ forecastday=substr(result, 45, 3)
 *Draw shapefiles
 'set line 1 1 1'
 'draw shp /home/mint/opengrads/Contents/Shapefiles/Canada/PROVINCE.shp'
+'draw shp /home/mint/opengrads/Contents/Shapefiles/Mexico/mexstates.shp'
 
 *draw titles and strings for map!
 'set strsiz .15'
-'draw string .70 8.26 '%LEVEL' '"hPa Geopotential Height (contours, dam)"
-'draw string .70 7.97 '%LEVEL' '"hPa Wind (barbs, mph)"
-'draw string .70 7.68 Precipitable Water (shaded, inches)'
+'draw string .45 8.00 '%LEVEL' '"hPa Geopotential Height (contours, dam)"
+'draw string .45 7.71 '%LEVEL' '"hPa Wind (barbs, mph)"
+'draw string .45 7.42 Precipitable Water (shaded, inches)' 
 'set strsiz .14'
 'set string 1 br'
-'draw string 9.9 8.30 '"Model: "''INITHOUR%'Z '%INIT_STRINGDATE' '%MODELFORTITLE
+'draw string 9.95 8.09 '"Model: "''INITHOUR%'Z '%INIT_STRINGDATE' '%MODELFORTITLE
 'set font 12'
 'set string 4'
-'draw string 9.9 8.05 '"Valid: "''%forecastutc' '%forecastday' '%forecastdate''%forecastmonth''%forecastyear
-'draw string 9.9 7.85 '%H' '"- hour forecast"
+'draw string 9.95 7.84 '"Valid: "''%forecastutc' '%forecastday' '%forecastdate''%forecastmonth''%forecastyear
+'draw string 9.95 7.64 '%H' '"- hour forecast"
 'set font 11'
 'set strsiz .17'
 'set string 11'
-'draw string 9.9 7.58 weathertogether.net'
+'draw string 9.95 7.34 weathertogether.net'  
 
 *plot high and low centers via mfhilo function
-radius=1000
-cint=300
+radius=1500
+cint=500
 
-******************************DRAW L's******************************
+*   ******************************DRAW L's******************************
 
 'mfhilo hgtprs/10 CL l 'radius', 'cint
 
@@ -259,7 +255,6 @@ while(subwrd(minmax,1) = 'L')
   i=i+1
   minmax = sublin(Low_info,i)
 endwhile
-
 
 *   ******************************DRAW H's******************************
 
@@ -303,8 +298,8 @@ while(subwrd(minmax,1) = 'H')
   minmax = sublin(High_info,i)
 endwhile
 
-
 *Save output as .png
-'gxprint /home/mint/grads_pics/'%MODEL'/'%INIT_INTDATE'/'%INITHOUR'z/'%FILENAME' -b /home/mint/opengrads/basemaps/pnwbasemap.png -t 1 x1200 y927'
+'gxprint /home/mint/grads_pics/'%MODEL'/'%INIT_INTDATE'/'%INITHOUR'z/'%FILENAME' -b /home/mint/opengrads/basemaps/conusbasemap.png -t 1 x1200 y927'
 
 'quit'
+
