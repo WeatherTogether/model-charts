@@ -31,8 +31,7 @@ cd /home/mint/opengrads/Contents/gribfiles/${MODEL}/${INIT_INTDATE}${INITHOUR}
 
 ### BEGIN WHILE LOOP
 
-#while the date of the current chart is less than or equal to the date of the last chart for this model run, check to see if the grib file exists. If it does exist, download it, make control and index files, run grads script to make image output, send image output to server via ftp, then define the new forecast hour/rundate and increment it accordingly. If the grib file does not exist, wait 60 seconds and run through the loop again.
-
+#this downloads grib2 files from the gfs operational and concatenates them into a larger grib file, then makes control files. These control files are passed to grads and plotted on the GEFS ensemble meteogram charts as the "GFS operational."
 
 while [ ${RUNDATE} -le $ENDDATE ] ;do
 
