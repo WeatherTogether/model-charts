@@ -42,7 +42,7 @@ cd /home/mint/opengrads/Contents/gribfiles/${MODEL}/${INIT_INTDATE}${INITHOUR}
 
 ### BEGIN WHILE LOOP
 
-#while the date of the current chart is less than or equal to the date of the last chart for this model run, check to see if the grib file exists. If it does exist, download it, make control and index files, run grads script to make image output, send image output to server via ftp, then define the new forecast hour/rundate and increment it accordingly. If the grib file does not exist, wait 60 seconds and run through the loop again.
+#while the date of the current chart is less than or equal to the date of the last chart for this model run, check to see if the grib file exists. If it does exist, download it, make control and index files, run grads script to make image output, send image output to server via scp, then define the new forecast hour/rundate and increment it accordingly. If the grib file does not exist, wait 60 seconds and run through the loop again.
 
 while [ ${RUNDATE} -lt $ENDDATE ] ;do
 
@@ -94,7 +94,7 @@ if [[ `wget -S --spider $URL  2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
 
 else
 	echo "Url : $URL doesn't exist.."
-    sleep 5
+    sleep 60
 fi
 done
 
