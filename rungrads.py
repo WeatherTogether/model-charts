@@ -5,8 +5,12 @@ import subprocess
 import time
 
 
+#This script does three primary tasks. First, it downloads the specified grib files. Second, it runs the specified grads scripts. Third, it makes a text file of the URLs each model chart will be located at and invokes a shell script to upload the charts and the text files. 
+
+#It takes two command-line arguments: the initialization hour  ( 00, 06, etc.) and the model name. The model name must be 'GFS_0.25', 'NAM_12', or 'GDPS'. We will have more models in the future.
+
 def initialmodelurl(model, inithour, forecasthour, init_intdate):
-    """Define an initial url to see if the model has begun running via the "if requests.get(url).status_code == 200:" code in the main loop"""
+    """Define an initial url to see if the model has begun running via the "if requests.get(url).status_code == 200:" code in the main loop."""
     if model == 'GFS_0.25':
         url='http://nomads.ncep.noaa.gov/cgi-bin/filter_gfs_0p25.pl?file=gfs.t{0}z.pgrb2.0p25.f{1}&lev_0-0.1_m_below_ground=on&lev_500_mb=on&var_HGT=on&leftlon=0&rightlon=360&toplat=90&bottomlat=-90&showurl=&dir=%2Fgfs.{2}{0}'.format(inithour, forecasthour, init_intdate)     
     elif model == 'NAM_12':
@@ -35,9 +39,9 @@ def findenddate(model, today, inithour):
     """Find the end date of the model. This is checked against the date of the current forecast hour in the main loop"""
     if model == "GFS_0.25":
         enddate=(today+timedelta(hours=384+int(inithour))).strftime('%Y%m%d%H')
-    if model == "NAM_12":
+    elif model == "NAM_12":
         enddate=(today+timedelta(hours=84+int(inithour))).strftime('%Y%m%d%H')
-    if model == 'GDPS':
+    elif model == 'GDPS':
         enddate=(today+timedelta(hours=240+int(inithour))).strftime('%Y%m%d%H')       
     return enddate
 
@@ -48,7 +52,7 @@ def findforecasthour(model):
     """Depending on the length of the model, the forecast hour in the URL either has three digits or two digits"""
     if model == "GFS_0.25" or model == 'GDPS':
         forecasthour="000"
-    if model == "NAM_12":
+    elif  model == "NAM_12":
         forecasthour="00"
     return forecasthour
 
@@ -99,9 +103,9 @@ def geturl(inithour, forecasthour, init_intdate, level, variable, model):
     """Determine the current url of the grib file you want to get"""
     if model == 'GFS_0.25':
         URL='http://nomads.ncep.noaa.gov/cgi-bin/filter_gfs_0p25.pl?file=gfs.t{0}z.pgrb2.0p25.f{1}&lev_{3}=on&var_{4}=on&leftlon=0&rightlon=360&toplat=90&bottomlat=-90&dir=%2Fgfs.{2}{0}'.format(inithour, forecasthour, init_intdate, level, variable)
-    if model == 'NAM_12':
+    elif model == 'NAM_12':
         URL='http://nomads.ncep.noaa.gov/cgi-bin/filter_nam.pl?file=nam.t{0}z.awphys{1}.tm00.grib2&lev_{3}=on&var_{4}=on&leftlon=0&rightlon=360&toplat=90&bottomlat=-90&dir=%2Fnam.{2}'.format(inithour, forecasthour, init_intdate, level, variable)
-    if model == 'GDPS':
+    elif model == 'GDPS':
         URL='http://dd.weather.gc.ca/model_gem_global/25km/grib2/lat_lon/{0}/{1}/CMC_glb_{4}_{3}_latlon.24x.24_{2}{0}_P{1}.grib2'.format(inithour, forecasthour, init_intdate, level, variable)
     return URL
 
@@ -187,8 +191,7 @@ modelfortitle=initialmodeltitle(model)
 
 #main script
 while chartdate <= enddate:
-    if requests.get(url).status_code == 200: #This returns true even if the file at the NOMADS server is nonexistent... ex: hour 383 for the GFS.
-        print(url)
+    if requests.get(url).status_code == 200: #Bug... This returns true even if the file at the NOMADS server is nonexistent... ex: hour 383 for the GFS.
         download_grib(levelvar[model], inithour, forecasthour, init_intdate, model)
         call_grads(gradsregions, init_stringdate, init_intdate, inithour, forecasthour, hour, model, modelfortitle, dayofyear, uploadurl)
         hour=change_hr(model,hour)
