@@ -1,9 +1,7 @@
 from datetime import date, timedelta, datetime
-import urllib.request
 import sys
 import requests
 import subprocess
-import collections
 import time
 
 
@@ -124,7 +122,7 @@ def download_grib (levelvar, inithour, forecasthour, init_intdate, model):
             url=geturl(inithour, forecasthour, init_intdate, level, levelvar[level][var], model)
             gribfile="/home/mint/gribfiles/{5}/{2}{0}/{3}_{4}_{1}".format(inithour, forecasthour, init_intdate, level, levelvar[level][var], model)
             controlfile="/home/mint/controlfiles/{5}/{2}{0}/{3}_{4}_{1}.ctl".format(inithour, forecasthour, init_intdate, level, levelvar[level][var], model)
-            subprocess.call(['bash', '/home/mint/gradswork/gribdownload11.sh', url, gribfile, controlfile])
+            subprocess.call(['bash', '/home/mint/gradswork/gribdownload.sh', url, gribfile, controlfile])
 
 
 
