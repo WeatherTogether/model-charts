@@ -49,7 +49,7 @@ def findenddate(model, today, inithour):
     elif model == 'GDPS':
         enddate=(today+timedelta(hours=240+int(inithour))).strftime('%Y%m%d%H')
     elif model == 'HRRR_Sub':
-        enddate=(today+timedelta(hours=3+int(inithour))).strftime('%Y%m%d%H')       
+        enddate=(today+timedelta(hours=6+int(inithour))).strftime('%Y%m%d%H')       
     return enddate
 
 
@@ -145,9 +145,19 @@ def call_grads (gradsregions, stringdate, init_intdate, inithour, forecasthour, 
             subprocess.call(['bash', '/home/mint/gradswork/rungrads.sh', script, stringdate, init_intdate, inithour, str(places), forecasthour, str(h), model, modelfortitle, dayofyear, uploadurl])
             uploadurl="http://weathertogether.net/models/{0}/{1}/{2}z/".format(model, init_intdate, inithour)
             with open("/home/mint/grads_pics/{0}/{1}/{2}z/{0}_{3}_{4}.txt".format(model, init_intdate, inithour, places, script[:-3]) , "a") as myfile:
-                myfile.write('{0}{1}_{2}_{3}_{4}.png\n'.format(uploadurl, model, places, script[:-3], forecasthour))
-    upload_files(model, init_intdate, inithour, forecasthour)     
 
+                if model == 'HRRR_Sub':  ##### Ugly Hack... fix!
+                    if forecasthour == '00':
+                        myfile.write('{0}{1}_{2}_{3}_{4}.1.png\n'.format(uploadurl, model, places, script[:-3], forecasthour))
+                    else:
+                        myfile.write('{0}{1}_{2}_{3}_{4}.1.png\n'.format(uploadurl, model, places, script[:-3], forecasthour))
+                        myfile.write('{0}{1}_{2}_{3}_{4}.2.png\n'.format(uploadurl, model, places, script[:-3], forecasthour))
+                        myfile.write('{0}{1}_{2}_{3}_{4}.3.png\n'.format(uploadurl, model, places, script[:-3], forecasthour))
+                        myfile.write('{0}{1}_{2}_{3}_{4}.4.png\n'.format(uploadurl, model, places, script[:-3], forecasthour))
+                else:
+                    myfile.write('{0}{1}_{2}_{3}_{4}.png\n'.format(uploadurl, model, places, script[:-3], forecasthour))
+    upload_files(model, init_intdate, inithour, forecasthour)     
+##### End Ugly Hack
 
 
 #######decide what variables you want to download for a given height for a given model######
@@ -191,11 +201,11 @@ levelvar['HRRR_Sub']['10_m_above_ground']=['UGRD','VGRD']
 gradsregions={}
 ##### ##### GFS_0.25 ##### ###### 
 gradsregions['GFS_0.25']={}
-gradsregions['GFS_0.25']['500mbvort.gs']=['northamerica', 'middleeast', 'nepacific']
+gradsregions['GFS_0.25']['500mbvort.gs']=['northamerica', 'pacnw', 'conus', 'nepacific']
 #gradsregions['GFS_0.25']['500mbheightanomaly.gs']=['northamerica', 'middleeast', 'nepacific']
-gradsregions['GFS_0.25']['pwat.gs']=['pacnw', 'conus', 'northamerica']
-gradsregions['GFS_0.25']['2mtemp.gs']=['pacnw', 'conus']
-gradsregions['GFS_0.25']['2mdp.gs']=['pacnw', 'conus']
+gradsregions['GFS_0.25']['pwat.gs']=['pacnw', 'conus', 'nepacific']
+gradsregions['GFS_0.25']['2mtemp.gs']=['pacnw', 'conus', 'nepacific', 'northamerica']
+gradsregions['GFS_0.25']['2mdp.gs']=['pacnw', 'conus', 'northamerica']
 gradsregions['GFS_0.25']['capesfc.gs']=['pacnw', 'conus']
 
 ##### ##### NAM_12 ##### ###### 
@@ -208,7 +218,7 @@ gradsregions['NAM_12']['capesfc.gs']=['pacnw', 'namconus']
 
 ##### ##### GDPS ##### ###### 
 gradsregions['GDPS']={}
-gradsregions['GDPS']['500mbvort.gs']=['northamerica', 'middleeast']
+gradsregions['GDPS']['500mbvort.gs']=['northamerica', 'pacnw', 'conus', 'nepacific']
 
 ##### ##### HRRR_Sub ##### ###### 
 gradsregions['HRRR_Sub']={}
