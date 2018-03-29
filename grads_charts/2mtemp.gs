@@ -48,6 +48,18 @@ endif
 
 ***** ***** Define Region ***** *****
 
+if REGION='nepacific'
+    LAT1=18
+    LAT2=70
+    LON1='-190'
+    LON2='-80'
+    MAP='nps'
+    MPVALSLON1='-166'
+    MPVALSLON2='-115'
+    MPVALSLAT1='23'
+    MPVALSLAT2='60'
+endif
+
 if REGION='northamerica'
     LAT1=20
     LAT2=75

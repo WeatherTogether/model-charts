@@ -11,7 +11,7 @@ MODEL = subwrd(args,7)
 MODELFORTITLE = subwrd(args,8)
 FILENAME = subwrd(args,9)
 
-originalH=H
+*originalH=H
 
 ***** Basic commands to clear everything, make background white, turn off timestamp/grads, set fonts, and set plotting area.
 'reinit'
@@ -122,6 +122,18 @@ if REGION='pacnwzoom'
     'set xlevs -126 -124 -122 -120 -118 -116'
     'set ylevs 44 45 46 47 48 49 50'
     MAP=latlon
+endif
+
+if REGION='hrrrconus'
+    LAT1=15
+    LAT2=65
+    LON1=-150
+    LON2=-50
+    MAP='nps'
+    MPVALSLAT1='23'
+    MPVALSLAT2='53.5'
+    MPVALSLON1='-118.7'
+    MPVALSLON2='-76.1'
 endif
 
 ***** ***** set map parameters ***** ***** 

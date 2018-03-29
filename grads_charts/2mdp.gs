@@ -125,6 +125,9 @@ endif
 'set grid off'
 'set lon '%LON1' '%LON2
 'set lat '%LAT1' '%LAT2
+if MAP!='latlon'
+    'set mpvals '%MPVALSLON1' '%MPVALSLON2' '%MPVALSLAT1' '%MPVALSLAT2
+endif
 'set mproj '%MAP
 
 ***** ***** Begin plotting ***** *****

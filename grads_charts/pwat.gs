@@ -39,6 +39,18 @@ endif
 
 ***** ***** Define Region ***** *****
 
+if REGION='nepacific'
+    LAT1=18
+    LAT2=70
+    LON1='-190'
+    LON2='-80'
+    MAP='nps'
+    MPVALSLON1='-166'
+    MPVALSLON2='-115'
+    MPVALSLAT1='23'
+    MPVALSLAT2='60'
+endif
+
 if REGION='northamerica'
     LAT1=20
     LAT2=75
@@ -77,6 +89,26 @@ if REGION='namconus'
     'set xlevs -120 -110 -100 -90 -80 -70'
     'set ylevs 20 30 40 50'
     MAP='latlon'
+endif
+
+if REGION='colriver'
+    LAT1=44.68
+    LAT2=46.7
+    LON1='-122.2'
+    LON2='-118.9'
+    'set xlevs -122 -121 -120 -119 -118'
+    'set ylevs 45 46'
+    MAP=latlon
+endif
+
+if REGION='pacnwzoom'
+    LAT1=43.8
+    LAT2=49.8
+    LON1='-126'
+    LON2='-116.2'
+    'set xlevs -126 -124 -122 -120 -118 -116'
+    'set ylevs 44 45 46 47 48 49 50'
+    MAP=latlon
 endif
 
 if REGION='middleeast'

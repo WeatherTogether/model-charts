@@ -11,7 +11,7 @@ MODEL = subwrd(args,7)
 MODELFORTITLE = subwrd(args,8)
 FILENAME = subwrd(args,9)
 
-originalH=H
+*originalH=H
 
 ***** Basic commands to clear everything, make background white, turn off timestamp/grads, set fonts, and set plotting area.
 'reinit'
@@ -27,18 +27,17 @@ originalH=H
 ***** ***** Open control file ***** *****
 
 if MODEL = 'GFS_0.25'
-'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/10_m_above_ground_UGRD_'%FULLH'.ctl'
-'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/10_m_above_ground_VGRD_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/80_m_above_ground_UGRD_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/80_m_above_ground_VGRD_'%FULLH'.ctl'
 'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/mean_sea_level_PRMSL_'%FULLH'.ctl'
 endif
 if MODEL = 'NAM_12'
-'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/10_m_above_ground_UGRD_'%FULLH'.ctl'
-'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/10_m_above_ground_VGRD_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/80_m_above_ground_UGRD_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/80_m_above_ground_VGRD_'%FULLH'.ctl'
 'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/mean_sea_level_PRMSL_'%FULLH'.ctl'
 endif
 if MODEL = 'HRRR_Sub'
-'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/10_m_above_ground_UGRD_'%FULLH'.ctl'
-'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/10_m_above_ground_VGRD_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/top_of_atmosphere_SBT124_'%FULLH'.ctl'
 endif
 
 
@@ -153,39 +152,13 @@ endif
 
 ***** ***** BEGIN PLOTTING ***** *****
 *set color
-*'color.gs 0 50 1 -kind (255,255,255,0)-(0)->(255,255,255,0)-(1)->aquamarine->deepskyblue->limegreen->gold->orange->red->firebrick->fuchsia->black'
-'color.gs 0 50 1 -kind (255,255,255,0)-(0)->(255,255,255,0)-(1)->aquamarine->limegreen->gold->crimson->black'
+'set gxout shaded'
 
-'d mag(ugrd10m.1*2.237,vgrd10m.2*2.237)'
+'color.gs -90 30 1 -kind white->black->red->yellow->green->blue->aqua->white->lightgray->darkgray->slategray->darkslategray->black'
 
-'xcbar.gs -fstep 5 -line off -fwidth 0.11 -fheight 0.12 -direction v 10.4 10.6 .6 8 -line on'
+'d (var31922toa-273.15)'
 
-*plot the SLP contours in intervals of 1 hPa
-*'set gxout contour'
-*'set cint 1'
-*'set ccolor 1'
-*'set cstyle 1'
-*'set cthick 4'
-*'set clab masked'
-*'d prmslmsl.3/600'
-
-*Plot 10m wind barbs
-'set gxout barb'
-'set ccolor 1'
-'set digsiz .04'
-if (MODEL = "GFS_0.25")
-    'd skip(ugrd10m.1*2.237,10,10);vgrd10m.2*2.237'
-endif
-if (MODEL = "NAM_12")
-    'd skip(ugrd10m.1*2.237,24,24);vgrd10m.2*2.237'
-endif
-if (MODEL = "HRRR_Sub")
-    if REGION = 'colriver'
-        'd skip(ugrd10m.1*2.237,6,6);vgrd10m.2*2.237'
-    else
-        'd skip(ugrd10m.1*2.237,30,30);vgrd10m.2*2.237'
-    endif
-endif
+'xcbar.gs -fstep 5 -line off -fwidth 0.11 -fheight 0.12 -direction v 10.4 10.6 .6 8'
 
 *Min and Mav Values
 if MODEL = 'NAM_12'
@@ -202,7 +175,7 @@ if MODEL = 'GDPS'
 endif
 
 **** MINVAL (Wind)
-'d amin(mag(ugrd10m.1*2.237,vgrd10m.2*2.237), lon='%LON1', lon='%LON2', lat='%LAT1', lat='%LAT2')'
+'d amin(var31922toa, lon='%LON1', lon='%LON2', lat='%LAT1', lat='%LAT2')'
 minlin=sublin(result,i)
 minval=subwrd(minlin,4)
 'q gxinfo'
@@ -210,10 +183,10 @@ minxlims=sublin(result,3)
 minylims=sublin(result,4)
 minxpos=subwrd(minxlims,4)
 minypos=subwrd(minylims,6)
-minval_wind = math_format('%5.1f',minval)
+minval_temp = math_format('%5.1f',minval-273.15)
 
 **** MAXVAL (Wind)
-'d amax(mag(ugrd10m.1*2.237,vgrd10m.2*2.237), lon='%LON1', lon='%LON2', lat='%LAT1', lat='%LAT2')'
+'d amax(var31922toa, lon='%LON1', lon='%LON2', lat='%LAT1', lat='%LAT2')'
 maxlin=sublin(result,i)
 maxval=subwrd(maxlin,4)
 say result
@@ -223,7 +196,7 @@ maxylims=sublin(result,4)
 maxxpos=subwrd(maxxlims,4)
 maxypos=subwrd(maxylims,6)
 say result
-maxval_wind = math_format('%5.1f',maxval)
+maxval_temp = math_format('%5.1f',maxval-273.15)
 
 
 *** End plotting
@@ -262,7 +235,7 @@ endif
 *title
 'set strsiz .13'
 'set font 11'
-'draw string .4 8.35 10-Meter Wind (mph)'
+'draw string .4 8.35 Simulated GOES-12 Brightness Temperature (`ao`nC)'
 *hour
 'set strsiz .14'
 'set string 1 r'
@@ -293,10 +266,10 @@ endif
 *'draw string 5.5 .10 |'
 *minval
 'set string 4 r'
-'draw string 5.46 0.30 Min Wind: 'minval_wind' mph'
+'draw string 5.46 0.30 Min Temp: 'minval_temp' `ao`nC'
 *maxval
 'set string 2 l'
-'draw string 5.6 0.30 Max Wind: 'maxval_wind' mph'
+'draw string 5.6 0.30 Max Temp: 'maxval_temp' `ao`nC'
 *weathertogether.net
 'set font 11'
 'set strsiz .14'
