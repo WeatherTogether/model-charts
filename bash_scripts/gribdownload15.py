@@ -49,7 +49,7 @@ def findenddate(model, today, inithour):
     elif model == 'GDPS':
         enddate=(today+timedelta(hours=240+int(inithour))).strftime('%Y%m%d%H')
     elif model == 'HRRR_Sub':
-        enddate=(today+timedelta(hours=6+int(inithour))).strftime('%Y%m%d%H')       
+        enddate=(today+timedelta(hours=18+int(inithour))).strftime('%Y%m%d%H')       
     return enddate
 
 
@@ -190,9 +190,10 @@ levelvar['GDPS']['EATM_0']=['CWAT']
 
 ##### ##### HRRR_Sub ##### ######
 levelvar['HRRR_Sub']={}
-levelvar['HRRR_Sub']['80_m_above_ground']=['UGRD','VGRD']
-levelvar['HRRR_Sub']['10_m_above_ground']=['UGRD','VGRD']
-
+#levelvar['HRRR_Sub']['80_m_above_ground']=['UGRD','VGRD']
+#levelvar['HRRR_Sub']['10_m_above_ground']=['UGRD','VGRD']
+#levelvar['HRRR_Sub']['entire_atmosphere']=['REFC']
+levelvar['HRRR_Sub']['top_of_atmosphere']=['SBT124']
 
 ##### ##### ##### ##### ##### END levelvar{} ##### ##### ##### ##### #####
 
@@ -222,8 +223,11 @@ gradsregions['GDPS']['500mbvort.gs']=['northamerica', 'pacnw', 'conus', 'nepacif
 
 ##### ##### HRRR_Sub ##### ###### 
 gradsregions['HRRR_Sub']={}
-gradsregions['HRRR_Sub']['80mwind_HRRR.gs']=['pacnwzoom', 'colriver']
-gradsregions['HRRR_Sub']['10mwind_HRRR.gs']=['pacnwzoom', 'colriver']
+#gradsregions['HRRR_Sub']['80mwind_HRRR.gs']=['pacnwzoom', 'colriver']
+#gradsregions['HRRR_Sub']['10mwind_HRRR.gs']=['pacnwzoom', 'colriver']
+#gradsregions['HRRR_Sub']['radar_SubHRRR.gs']=['pacnwzoom', 'hrrrconus']
+gradsregions['HRRR_Sub']['olw_SubHRRR.gs']=['hrrrconus', 'pacnwzoom']
+#gradsregions['HRRR_Sub']['10mwind_HRRR.gs']=['hrrrconus']
 
 ##### ##### ##### ##### ##### END gradsregions{} ##### ##### ##### ##### #####
 
