@@ -122,7 +122,7 @@ endif
 
 *Plot total accumulated precipitation
 *set color
-'color.gs 0 1 .05 -kind (255,255,255,0)-(0)->(255,255,255,0)-(1)->aquamarine->green->yellow->crimson->plum->bisque->palevioletred->maroon'
+'color.gs 0 .5 .01 -verbose -kind white->gray->palegreen->seagreen->blue->lightblue->thistle->purple->magenta->firebrick->orange->yellow'
 'd apcpsfc*0.03937007874'
 
 'xcbar.gs -fstep 1 -line on -fwidth 0.11 -fheight 0.12 -direction v 10.4 10.6 .6 8'
