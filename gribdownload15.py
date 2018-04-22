@@ -130,33 +130,59 @@ def download_grib (levelvar, inithour, forecasthour, init_intdate, model):
     """get url, define locations of grib and control files. In the bash script, use wget to download the file from $url as $gribfile, then convert $gribfile to $controlfile with g2ctl.pl and create index from control file with gribmap.pl""" 
     for level in levelvar:       
         for var in range(len(levelvar[level])):
-            url=geturl(inithour, forecasthour, init_intdate, level, levelvar[level][var], model)
-            gribfile="/home/mint/gribfiles/{5}/{2}{0}/{3}_{4}_{1}".format(inithour, forecasthour, init_intdate, level, levelvar[level][var], model)
-            controlfile="/home/mint/controlfiles/{5}/{2}{0}/{3}_{4}_{1}.ctl".format(inithour, forecasthour, init_intdate, level, levelvar[level][var], model)            
-            subprocess.call(['bash', '/home/mint/gradswork/gribdownload.sh', url, gribfile, controlfile])
+            # put boolean method in here to check for scripts for downloading at certain hours
+            if checkdownloadhour (levelvar[level][var], forecasthour):
+                url=geturl(inithour, forecasthour, init_intdate, level, levelvar[level][var], model)
+                gribfile="/home/mint/gribfiles/{5}/{2}{0}/{3}_{4}_{1}".format(inithour, forecasthour, init_intdate, level, levelvar[level][var], model)
+                controlfile="/home/mint/controlfiles/{5}/{2}{0}/{3}_{4}_{1}.ctl".format(inithour, forecasthour, init_intdate, level, levelvar[level][var], model)            
+                subprocess.call(['bash', '/home/mint/gradswork/gribdownload.sh', url, gribfile, controlfile])
 
+def checkdownloadhour (gribtodownload, forecasthour):
+    #remove leading zeros
+    while forecasthour[1:]=="0":
+        forecasthour=forecasthour[1:]
+    if (int(forecasthour) == 0 or int(forecasthour) % 6 != 0) and gribtodownload == "APCP":
+        return False
+    else:
+        return True
 
-
+def checkscripthour (scripttorun, forecasthour):
+    #remove leading zeros
+    print(scripttorun)
+    print(checkscripthour)
+    while forecasthour[1:]=="0":
+        forecasthour=forecasthour[1:]
+    if (int(forecasthour) == 0 or int(forecasthour) % 6 != 0) and scripttorun == "accumulatedprecip.gs":
+        return False
+    else:
+        return True
 
 def call_grads (gradsregions, stringdate, init_intdate, inithour, forecasthour, h, model, modelfortitle, dayofyear, uploadurl):
     """Call grads by iterating through the places you want your script to run for a given model"""
+    print(forecasthour)
+    print("blah")
     for script in gradsregions[model]:
         for places in gradsregions[model][script]:
-            subprocess.call(['bash', '/home/mint/gradswork/rungrads.sh', script, stringdate, init_intdate, inithour, str(places), forecasthour, str(h), model, modelfortitle, dayofyear, uploadurl])
-            uploadurl="http://weathertogether.net/models/{0}/{1}/{2}z/".format(model, init_intdate, inithour)
-            with open("/home/mint/grads_pics/{0}/{1}/{2}z/{0}_{3}_{4}.txt".format(model, init_intdate, inithour, places, script[:-3]) , "a") as myfile:
+            # put boolean method in here to check for scripts for downloading at certain hours
+            if checkscripthour(script, forecasthour):
+                print(gradsregions[model])
+                print(forecasthour)
+                subprocess.call(['bash', '/home/mint/gradswork/rungrads.sh', script, stringdate, init_intdate, inithour, str(places), forecasthour, str(h), model, modelfortitle, dayofyear, uploadurl])
+                uploadurl="http://weathertogether.net/models/{0}/{1}/{2}z/".format(model, init_intdate, inithour)
+                with open("/home/mint/grads_pics/{0}/{1}/{2}z/{0}_{3}_{4}.txt".format(model, init_intdate, inithour, places, script[:-3]) , "a") as myfile:
 
-                if model == 'HRRR_Sub':  ##### Ugly Hack... fix!
-                    if forecasthour == '00':
-                        myfile.write('{0}{1}_{2}_{3}_{4}.1.png\n'.format(uploadurl, model, places, script[:-3], forecasthour))
+                    if model == 'HRRR_Sub':  ##### Ugly Hack... fix!
+                        if forecasthour == '00':
+                            myfile.write('{0}{1}_{2}_{3}_{4}.1.png\n'.format(uploadurl, model, places, script[:-3], forecasthour))
+                        else:
+                            myfile.write('{0}{1}_{2}_{3}_{4}.1.png\n'.format(uploadurl, model, places, script[:-3], forecasthour))
+                            myfile.write('{0}{1}_{2}_{3}_{4}.2.png\n'.format(uploadurl, model, places, script[:-3], forecasthour))
+                            myfile.write('{0}{1}_{2}_{3}_{4}.3.png\n'.format(uploadurl, model, places, script[:-3], forecasthour))
+                            myfile.write('{0}{1}_{2}_{3}_{4}.4.png\n'.format(uploadurl, model, places, script[:-3], forecasthour))
                     else:
-                        myfile.write('{0}{1}_{2}_{3}_{4}.1.png\n'.format(uploadurl, model, places, script[:-3], forecasthour))
-                        myfile.write('{0}{1}_{2}_{3}_{4}.2.png\n'.format(uploadurl, model, places, script[:-3], forecasthour))
-                        myfile.write('{0}{1}_{2}_{3}_{4}.3.png\n'.format(uploadurl, model, places, script[:-3], forecasthour))
-                        myfile.write('{0}{1}_{2}_{3}_{4}.4.png\n'.format(uploadurl, model, places, script[:-3], forecasthour))
-                else:
-                    myfile.write('{0}{1}_{2}_{3}_{4}.png\n'.format(uploadurl, model, places, script[:-3], forecasthour))
-    upload_files(model, init_intdate, inithour, forecasthour)     
+                            myfile.write('{0}{1}_{2}_{3}_{4}.png\n'.format(uploadurl, model, places, script[:-3], forecasthour))
+    upload_files(model, init_intdate, inithour, forecasthour) 
+
 ##### End Ugly Hack
 
 
@@ -166,11 +192,14 @@ levelvar={}
 ##### ##### GFS_0.25 ##### ###### 
 levelvar['GFS_0.25']={}
 #levelvar['GFS_0.25']['850_mb']=['TMP']
-#levelvar['GFS_0.25']['500_mb']=['HGT', 'ABSV']
+levelvar['GFS_0.25']['500_mb']=['HGT', 'ABSV']
+#levelvar['GFS_0.25']['250_mb']=['UGRD', 'VGRD', 'HGT']
+levelvar['GFS_0.25']['surface']=['APCP']
 #levelvar['GFS_0.25']['entire_atmosphere_%5C%28considered_as_a_single_layer%5C%29']=['PWAT']
-#levelvar['GFS_0.25']['1000_mb']=['HGT']
+levelvar['GFS_0.25']['1000_mb']=['HGT']
 levelvar['GFS_0.25']['mean_sea_level']=['PRMSL']
 levelvar['GFS_0.25']['10_m_above_ground']=['UGRD', 'VGRD']
+#levelvar['GFS_0.25']['80_m_above_ground']=['UGRD', 'VGRD']
 #levelvar['GFS_0.25']['2_m_above_ground']=['TMP', 'DPT']
 #levelvar['GFS_0.25']['surface']=['CAPE']
 
@@ -178,10 +207,12 @@ levelvar['GFS_0.25']['10_m_above_ground']=['UGRD', 'VGRD']
 levelvar['NAM_12']={}
 levelvar['NAM_12']['500_mb']=['HGT', 'ABSV']
 levelvar['NAM_12']['850_mb']=['TMP']
+levelvar['NAM_12']['250_mb']=['UGRD', 'VGRD']
 levelvar['NAM_12']['entire_atmosphere_%5C%28considered_as_a_single_layer%5C%29']=['PWAT']
 levelvar['NAM_12']['1000_mb']=['HGT']
 levelvar['NAM_12']['mean_sea_level']=['PRMSL']
 levelvar['NAM_12']['10_m_above_ground']=['UGRD', 'VGRD']
+levelvar['NAM_12']['80_m_above_ground']=['UGRD', 'VGRD']
 levelvar['NAM_12']['2_m_above_ground']=['TMP', 'DPT']
 levelvar['NAM_12']['surface']=['CAPE']
 
@@ -211,7 +242,10 @@ gradsregions['GFS_0.25']={}
 #gradsregions['GFS_0.25']['2mtemp.gs']=['pacnw', 'conus', 'nepacific', 'northamerica']
 #gradsregions['GFS_0.25']['2mdp.gs']=['pacnw', 'conus', 'northamerica']
 #gradsregions['GFS_0.25']['capesfc.gs']=['pacnw', 'conus']
-gradsregions['GFS_0.25']['10mwind.gs']=['pacnw', 'nepacific']
+#gradsregions['GFS_0.25']['10mwind.gs']=['pacnw', 'nepacific']
+#gradsregions['GFS_0.25']['80mwind.gs']=['pacnw', 'nepacific']
+#gradsregions['GFS_0.25']['250mbwind.gs']=['pacnw', 'nepacific']
+gradsregions['GFS_0.25']['accumulatedprecip.gs']=['pacnw', 'nepacific']
 
 ##### ##### NAM_12 ##### ###### 
 gradsregions['NAM_12']={}
@@ -246,7 +280,6 @@ init_stringdate=today.strftime('%d%^b%Y') #today's date in DDMONYYYY - used for 
 chartdate=init_intdate+inithour #get the date of the current forecast chart
 dayofyear=today.strftime('%j')
 uploadurl="http://weathertogether.net/models/{0}/{1}/{2}z/".format(model, init_intdate, inithour)
-#=int(INITHOUR)/6
 hour=0 #hour used as a counter in while loop
 
 forecasthour=findforecasthour(model)
