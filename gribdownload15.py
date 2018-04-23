@@ -72,7 +72,7 @@ def change_hr(model, h):
         elif h >= 120 and h < 240:
             h=h+6  
         else:
-            h=h+3
+            h=h+6
         return h
     elif model=="NAM_12" or model == 'HRRR_Sub':
         if h >= 24:
@@ -135,7 +135,7 @@ def download_grib (levelvar, inithour, forecasthour, init_intdate, model):
                 url=geturl(inithour, forecasthour, init_intdate, level, levelvar[level][var], model)
                 gribfile="/home/mint/gribfiles/{5}/{2}{0}/{3}_{4}_{1}".format(inithour, forecasthour, init_intdate, level, levelvar[level][var], model)
                 controlfile="/home/mint/controlfiles/{5}/{2}{0}/{3}_{4}_{1}.ctl".format(inithour, forecasthour, init_intdate, level, levelvar[level][var], model)            
-                subprocess.call(['bash', '/home/mint/gradswork/gribdownload.sh', url, gribfile, controlfile])
+                subprocess.call(['bash', '/home/mint/gradswork/gribdownload.sh', url, gribfile, controlfile, model, init_intdate, inithour, forecasthour])
 
 def checkdownloadhour (gribtodownload, forecasthour):
     #remove leading zeros
@@ -148,11 +148,10 @@ def checkdownloadhour (gribtodownload, forecasthour):
 
 def checkscripthour (scripttorun, forecasthour):
     #remove leading zeros
-    print(scripttorun)
-    print(checkscripthour)
     while forecasthour[1:]=="0":
         forecasthour=forecasthour[1:]
-    if (int(forecasthour) == 0 or int(forecasthour) % 6 != 0) and scripttorun == "accumulatedprecip.gs":
+    if (int(forecasthour) == 0 or int(forecasthour) % 6 != 0) and (scripttorun == "accumulatedprecip.gs" or "totalprecip.gs"):
+        print("totalprecip.gs won't run")
         return False
     else:
         return True
@@ -181,7 +180,7 @@ def call_grads (gradsregions, stringdate, init_intdate, inithour, forecasthour, 
                             myfile.write('{0}{1}_{2}_{3}_{4}.4.png\n'.format(uploadurl, model, places, script[:-3], forecasthour))
                     else:
                             myfile.write('{0}{1}_{2}_{3}_{4}.png\n'.format(uploadurl, model, places, script[:-3], forecasthour))
-    upload_files(model, init_intdate, inithour, forecasthour) 
+    #upload_files(model, init_intdate, inithour, forecasthour) 
 
 ##### End Ugly Hack
 
@@ -192,13 +191,13 @@ levelvar={}
 ##### ##### GFS_0.25 ##### ###### 
 levelvar['GFS_0.25']={}
 #levelvar['GFS_0.25']['850_mb']=['TMP']
-levelvar['GFS_0.25']['500_mb']=['HGT', 'ABSV']
+#levelvar['GFS_0.25']['500_mb']=['HGT', 'ABSV']
 #levelvar['GFS_0.25']['250_mb']=['UGRD', 'VGRD', 'HGT']
 levelvar['GFS_0.25']['surface']=['APCP']
 #levelvar['GFS_0.25']['entire_atmosphere_%5C%28considered_as_a_single_layer%5C%29']=['PWAT']
-levelvar['GFS_0.25']['1000_mb']=['HGT']
-levelvar['GFS_0.25']['mean_sea_level']=['PRMSL']
-levelvar['GFS_0.25']['10_m_above_ground']=['UGRD', 'VGRD']
+#levelvar['GFS_0.25']['1000_mb']=['HGT']
+#levelvar['GFS_0.25']['mean_sea_level']=['PRMSL']
+#levelvar['GFS_0.25']['10_m_above_ground']=['UGRD', 'VGRD']
 #levelvar['GFS_0.25']['80_m_above_ground']=['UGRD', 'VGRD']
 #levelvar['GFS_0.25']['2_m_above_ground']=['TMP', 'DPT']
 #levelvar['GFS_0.25']['surface']=['CAPE']
@@ -245,7 +244,8 @@ gradsregions['GFS_0.25']={}
 #gradsregions['GFS_0.25']['10mwind.gs']=['pacnw', 'nepacific']
 #gradsregions['GFS_0.25']['80mwind.gs']=['pacnw', 'nepacific']
 #gradsregions['GFS_0.25']['250mbwind.gs']=['pacnw', 'nepacific']
-gradsregions['GFS_0.25']['accumulatedprecip.gs']=['pacnw', 'nepacific']
+#gradsregions['GFS_0.25']['accumulatedprecip.gs']=['pacnw', 'nepacific']
+gradsregions['GFS_0.25']['totalprecip.gs']=['pacnw', 'nepacific']
 
 ##### ##### NAM_12 ##### ###### 
 gradsregions['NAM_12']={}
@@ -280,7 +280,7 @@ init_stringdate=today.strftime('%d%^b%Y') #today's date in DDMONYYYY - used for 
 chartdate=init_intdate+inithour #get the date of the current forecast chart
 dayofyear=today.strftime('%j')
 uploadurl="http://weathertogether.net/models/{0}/{1}/{2}z/".format(model, init_intdate, inithour)
-hour=0 #hour used as a counter in while loop
+hour=222 #hour used as a counter in while loop
 
 forecasthour=findforecasthour(model)
 enddate=findenddate(model,today,inithour)
@@ -289,8 +289,12 @@ modelfortitle=initialmodeltitle(model)
 
 
 #main script
+print("blah")
 while chartdate <= enddate:
+    print("blah2")
+    print(url)
     if requests.get(url).status_code == 200: #Bug... This returns true even if the file at the NOMADS server is nonexistent... ex: hour 383 for the GFS.
+        print("blah3")
         download_grib(levelvar[model], inithour, forecasthour, init_intdate, model)
         call_grads(gradsregions, init_stringdate, init_intdate, inithour, forecasthour, hour, model, modelfortitle, dayofyear, uploadurl)
         hour=change_hr(model,hour)
