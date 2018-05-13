@@ -26,22 +26,8 @@ originalH=H
 
 ***** ***** Open control file ***** *****
 
-if MODEL = 'GFS_0.25'
 'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/10_m_above_ground_UGRD_'%FULLH'.ctl'
 'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/10_m_above_ground_VGRD_'%FULLH'.ctl'
-'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/mean_sea_level_PRMSL_'%FULLH'.ctl'
-endif
-if MODEL = 'NAM_12'
-'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/10_m_above_ground_UGRD_'%FULLH'.ctl'
-'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/10_m_above_ground_VGRD_'%FULLH'.ctl'
-'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/mean_sea_level_PRMSL_'%FULLH'.ctl'
-endif
-if MODEL = 'HRRR_Sub'
-'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/10_m_above_ground_UGRD_'%FULLH'.ctl'
-'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/10_m_above_ground_VGRD_'%FULLH'.ctl'
-endif
-
-
 
 ***** ***** FIND INFO FOR LOOP ***** *****
 'q ctlinfo'
@@ -59,27 +45,47 @@ while(count<=tstep)
 if REGION='northamerica'
     LAT1=20
     LAT2=75
-    LON1='-160'
-    LON2='-70'
+    LON1='-150'
+    LON2='-60.5'
     MAP='latlon'
-* 'set lon '%LON1' '%LON2
-* 'set lat '%LAT1' '%LAT2
-* 'set mpvals 20 89 30 160'
-* 'set mproj '%MAP
+endif
+
+if REGION='nepacific'
+    LAT1=18
+    LAT2=70
+    LON1='-190'
+    LON2='-80'
+    MAP='nps'
+    MPVALSLON1='-166'
+    MPVALSLON2='-115'
+    MPVALSLAT1='23'
+    MPVALSLAT2='60'
+endif
+
+if REGION='antarctica'
+    LAT1=-90
+    LAT2=-60
+    LON1='0'
+    LON2='360'
+    MAP='sps'
+    MPVALSLON1='0'
+    MPVALSLON2='360'
+    MPVALSLAT1='-90'
+    MPVALSLAT2='-60'
 endif
 
 if REGION='pacnw'
     LAT1=40
     LAT2=55
     LON1='-132'
-    LON2='-107.45'
+    LON2='-107.6'
     MAP='latlon'
 endif
 
 if REGION='conus'
     LAT1=15
-    LAT2=54.72
-    LON1='-128'
+    LAT2=55
+    LON1='-128.05'
     LON2='-63'
     'set xlevs -120 -110 -100 -90 -80 -70'
     'set ylevs 20 30 40 50'
@@ -87,8 +93,8 @@ if REGION='conus'
 endif
 
 if REGION='namconus'
-    LAT1=18.5
-    LAT2=58.22
+    LAT1=18.3
+    LAT2=58.2
     LON1='-129.5'
     LON2='-64.5'
     'set xlevs -120 -110 -100 -90 -80 -70'
@@ -96,9 +102,19 @@ if REGION='namconus'
     MAP='latlon'
 endif
 
+if REGION='pacnwzoom'
+    LAT1=43.07
+    LAT2=49.15
+    LON1='-126'
+    LON2='-116.1'
+    'set xlevs -126 -124 -122 -120 -118 -116'
+    'set ylevs 44 45 46 47 48 49 50'
+    MAP=latlon
+endif
+
 if REGION='middleeast'
     LAT1=0
-    LAT2=55
+    LAT2=55.3
     LON1=0
     LON2=90
     MAP=latlon
@@ -106,21 +122,11 @@ endif
 
 if REGION='colriver'
     LAT1=44.68
-    LAT2=46.7
+    LAT2=46.71
     LON1='-122.2'
     LON2='-118.9'
     'set xlevs -122 -121 -120 -119 -118'
     'set ylevs 45 46'
-    MAP=latlon
-endif
-
-if REGION='pacnwzoom'
-    LAT1=43.8
-    LAT2=49.8
-    LON1='-126'
-    LON2='-116.2'
-    'set xlevs -126 -124 -122 -120 -118 -116'
-    'set ylevs 44 45 46 47 48 49 50'
     MAP=latlon
 endif
 
@@ -134,6 +140,14 @@ if REGION='hrrrconus'
     MPVALSLAT2='53.5'
     MPVALSLON1='-118.7'
     MPVALSLON2='-76.1'
+endif
+
+if REGION='world'
+    LAT1=-90
+    LAT2=90
+    LON1=0
+    LON2=359.99
+    MAP=latlon
 endif
 
 ***** ***** set map parameters ***** ***** 
@@ -150,8 +164,8 @@ if MAP!='latlon'
 endif
 'set mproj '%MAP
 
-
 ***** ***** BEGIN PLOTTING ***** *****
+
 *set color
 'color.gs 0 70 1 -kind (255,255,255,0)-(0)->(255,255,255,0)-(1)->aquamarine->green->yellow->crimson->plum->bisque->palevioletred->maroon'
 
@@ -181,8 +195,12 @@ endif
 if (MODEL = "HRRR_Sub")
     if REGION = 'colriver'
         'd skip(ugrd10m.1*2.237,6,6);vgrd10m.2*2.237'
+    endif
+    if REGION = 'pacnwzoom'
+        'd skip(ugrd10m.1*2.237,15,15);vgrd10m.2*2.237'
     else
-        'd skip(ugrd10m.1*2.237,30,30);vgrd10m.2*2.237'
+        'set digsiz .03'
+        'd skip(ugrd10m.1*2.237,70,70);vgrd10m.2*2.237'
     endif
 endif
 
@@ -312,5 +330,6 @@ say count
 'set grads off'
 endwhile
 'quit'
+
 
 

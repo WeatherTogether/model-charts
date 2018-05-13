@@ -1,5 +1,6 @@
 *Import arguments from bash script
 function script(args)
+
 INIT_STRINGDATE = subwrd(args,1)
 INIT_INTDATE = subwrd(args,2)
 INITHOUR = subwrd(args,3)
@@ -9,7 +10,6 @@ H=subwrd(args,6)
 MODEL = subwrd(args,7)
 MODELFORTITLE = subwrd(args,8)
 FILENAME = subwrd(args,9)
-DAYOFYEAR = subwrd(args,10)
 
 ***** Basic commands to clear everything, make background white, turn off timestamp/grads, set fonts, and set plotting area.
 'reinit'
@@ -24,19 +24,18 @@ DAYOFYEAR = subwrd(args,10)
 
 ***** ***** Open control file ***** *****
 
-*if MODEL = 'GDPS'
-*'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/ISBL_500_HGT_'%FULLH'.ctl'
-*endif
-if MODEL = 'GFS_0.25'
-'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/500_mb_HGT_'%FULLH'.ctl'
-endif
-*if MODEL = 'NAM_12'
-*'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/500_mb_HGT_'%FULLH'.ctl'
-*endif
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/entire_atmosphere_REFC_'%FULLH'.ctl'
 
-*** Open netcdf file ***
-
-'sdfopen /home/mint/netcdf/hgt.day.1981-2010.ltm.nc'
+***** ***** FIND INFO FOR LOOP ***** *****
+'q ctlinfo'
+tdef=sublin(result,7)
+tstep=subwrd(tdef, 2)
+say tstep
+count=1
+say count
+while(count<=tstep)
+    minute=15*count
+    'set t '%count
 
 ***** ***** Define Region ***** *****
 
@@ -64,10 +63,10 @@ if REGION='antarctica'
     LAT1=-90
     LAT2=-60
     LON1='0'
-    LON2='360'
+    LON2='359.99'
     MAP='sps'
     MPVALSLON1='0'
-    MPVALSLON2='360'
+    MPVALSLON2='359.99'
     MPVALSLAT1='-90'
     MPVALSLAT2='-60'
 endif
@@ -162,53 +161,23 @@ if MAP!='latlon'
 endif
 'set mproj '%MAP
 
-***** ***** Begin plotting ***** *****
+***** ***** BEGIN PLOTTING ***** *****
+*set color
 
-*Convert control file 
+'set gxout grfill'
 
-*Netcdf (climatology) 
-'set dfile 2'
-'set lon '%LON1' '%LON2
-'set lat '%LAT1' '%LAT2
-'set t '%DAYOFYEAR
-say result
-'set lev 500'
-'define climo=hgt'
 
-*** Begin plotting
-*Interpolate the grib and netcdf file to the same grid
-*Grib (model)
-'set dfile 1'
-'set lev 500'
-'set t 1'
-say result
-'define modelhgt = lterp(HGT500mb,climo)'
+'color 5 75 2.5 -kind white-(0)->aqua->blue->lime->green->darkgreen->yellow->goldenrod->orange->firebrick->red->darkred->fuchsia->indigo'
 
-*Plot the height anomalies
-'set gxout shaded'
-'color -35 35 1 -kind darkgreen->purple->blue->dodgerblue->white->salmon->red->maroon->orange'
-'set csmooth on'
-'d (modelhgt-climo)/10'
-'set csmooth off'
-'xcbar.gs -fstep 5 -line off -fwidth 0.11 -fheight 0.12 -direction v 10.4 10.6 .6 8'
+'d REFCl10.1'
 
-*'set lev 'LEVEL
-'set dfile 1'
-'set lon '%LON1' '%LON2
-'set lat '%LAT1' '%LAT2
-'set lev 500'
-'set t 1'
-'set gxout contour'
-'set cint 3'
-'set cthick 5'
-'set clab masked'
-'d HGT500mb.1/10'
+'xcbar.gs -fstep 4 -line off -fwidth 0.11 -fheight 0.12 -direction v 10.4 10.6 .6 8 -line on'
 
-***** ***** End plotting ***** *****
-
-***** ***** Get max and min ***** *****
-
+*Min and Mav Values
 if MODEL = 'NAM_12'
+    i=2
+endif
+if MODEL = 'HRRR_Sub'
     i=2
 endif
 if MODEL = 'GFS_0.25'
@@ -218,7 +187,8 @@ if MODEL = 'GDPS'
     i=1
 endif
 
-'d amax(hgt500mb.1/10, lon='%LON1', lon='%LON2', lat='%LAT1', lat='%LAT2')'
+**** MAXVAL (Dbz)
+'d amax(REFCl10.1, lon='%LON1', lon='%LON2', lat='%LAT1', lat='%LAT2')'
 maxlin=sublin(result,i)
 maxval=subwrd(maxlin,4)
 say result
@@ -228,69 +198,74 @@ maxylims=sublin(result,4)
 maxxpos=subwrd(maxxlims,4)
 maxypos=subwrd(maxylims,6)
 say result
-maxheight = math_format('%5.1f',maxval)
-
-'d amin(HGT500mb.1/10, lon='%LON1', lon='%LON2', lat='%LAT1', lat='%LAT2')'
-minlin=sublin(result,i)
-minval=subwrd(minlin,4)
-'q gxinfo'
-minxlims=sublin(result,3)
-minylims=sublin(result,4)
-minxpos=subwrd(minxlims,4)
-minypos=subwrd(minylims,6)
-minheight = math_format('%5.1f',minval)
+maxval_dbz = math_format('%5.1f',maxval)
 
 
-*if MAP != 'latlon'
-*    LON1=MPVALSLON1
-*    LON2=MPVALSLON2
-*    LAT1=MPVALSLAT1
-*    LAT2=MPVALSLAT2
-*endif
+*** End plotting
 
-***** ***** End max and min ***** *****
+*Get time of forecast
 
-***** ***** Get time of forecast ***** *****
-'set dfile 1'
 'q time'
-forecastutc=substr(result, 24, 3)
-forecastdate=substr(result, 27, 2)
-forecastmonth=substr(result, 29, 3)
-forecastyear=substr(result, 32, 4)
-forecastday=substr(result, 45, 3)
-
-***** ***** Draw shapefiles ***** ***** 
+if MODEL='HRRR_Sub'
+    forecastutc=substr(result, 27, 6)
+    forecastdate=substr(result, 33, 2)
+    forecastmonth=substr(result, 35, 3)
+    forecastyear=substr(result, 38, 4)
+    forecastday=substr(result, 51, 3)
+    if count=4
+        forecastutc=substr(result, 24, 3)
+        forecastdate=substr(result, 27, 2)
+        forecastmonth=substr(result, 29, 3)
+        forecastyear=substr(result, 32, 4)
+        forecastday=substr(result, 45, 3)    
+    endif
+    if tstep=1
+        forecastutc=substr(result, 24, 3)
+        forecastdate=substr(result, 27, 2)
+        forecastmonth=substr(result, 29, 3)
+        forecastyear=substr(result, 32, 4)
+        forecastday=substr(result, 45, 3)    
+    endif
+endif
+    
+*Draw shapefiles
 'set line 1 1 1'
 'draw shp /home/mint/opengrads/Contents/Shapefiles/Canada/PROVINCE.shp'
-'draw shp /home/mint/opengrads/Contents/Shapefiles/Mexico/mexstates.shp'
+'draw shp /home/mint/opengrads/Contents/Shapefiles/Mexico/mexstates.shp' 
 
-
-***** ***** draw titles and strings for map! ***** *****
+*draw titles and strings for map!
 *title
-'set string 1 l'
 'set strsiz .13'
 'set font 11'
-'draw string .4 8.4 500 mb Geopotential Heights and Anomalies (based on 1981-2010 Climatology, dam)'
+'draw string .4 8.35 Composite Reflectivity (dBZ)'
 *hour
 'set strsiz .14'
 'set string 1 r'
-'draw string 10.37 8.15 Hour: '%H
+if MODEL='HRRR_Sub'
+    if FULLH = 00
+        'draw string 10.37 8.1 Hour: '%H':00'
+    else 
+        if minute=60
+            'draw string 10.37 8.1 Hour: '%H':00'
+        else
+            realh=H-1
+            'draw string 10.37 8.1 Hour: '%realh':'%minute
+        endif
+    endif
+endif
+*'draw string 10.37 8.1 Hour: '%H
 *valid
 'set strsiz .13'
 'set string 1 l'
 'set font 10'
-'draw string .4 8.15 Valid: '%forecastutc' '%forecastday' '%forecastdate''%forecastmonth''%forecastyear
-*separator
-'draw string 5.5 .15 |'
+'draw string .4 8.1 Valid: '%forecastutc' '%forecastday' '%forecastdate''%forecastmonth''%forecastyear
 *Init
 'set string 1 l'
 'draw string .4 .15 'INITHOUR%'Z '%INIT_STRINGDATE' '%MODELFORTITLE
-*minval
-'set string 2 r'
-'draw string 5.46 0.15 Min Height: 'minheight' dam'
 *maxval
-'set string 4 l'
-'draw string 5.6 0.15 Max Height: 'maxheight' dam'
+'set strsiz .11'
+'set string 1 c'
+'draw string 5.5 0.30 Max Reflectivity: 'maxval_dbz' dBZ'
 *weathertogether.net
 'set font 11'
 'set strsiz .14'
@@ -298,9 +273,12 @@ forecastday=substr(result, 45, 3)
 'draw string 10.37 .15 weathertogether.net'
 
 
-***** ***** Save output as .png ***** *****
-'gxprint /home/mint/grads_pics/'%MODEL'/'%INIT_INTDATE'/'%INITHOUR'z/'%MODEL'_'%REGION'_'%FILENAME'_'%FULLH'.png x1100 y850'
-
+*Save output as .png
+'gxprint /home/mint/grads_pics/'%MODEL'/'%INIT_INTDATE'/'%INITHOUR'z/'%MODEL'_'%REGION'_'%FILENAME'_'%FULLH'.'%count'.png x1100 y850'
+count=count+1
+say count
+'set display color white'
+'clear graphics'
+'set grads off'
+endwhile
 'quit'
-
-

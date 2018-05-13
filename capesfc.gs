@@ -1,5 +1,6 @@
 *Import arguments from bash script
 function script(args)
+
 INIT_STRINGDATE = subwrd(args,1)
 INIT_INTDATE = subwrd(args,2)
 INITHOUR = subwrd(args,3)
@@ -9,9 +10,8 @@ H=subwrd(args,6)
 MODEL = subwrd(args,7)
 MODELFORTITLE = subwrd(args,8)
 FILENAME = subwrd(args,9)
-DAYOFYEAR = subwrd(args,10)
 
-***** Basic commands to clear everything, make background white, turn off timestamp/grads, set fonts, and set plotting area.
+***** Basic commands to clear everything, make background white, turn off timestamp/grads, set fonts, and set plotting area. 
 'reinit'
 'set display color white'
 'clear'
@@ -24,25 +24,12 @@ DAYOFYEAR = subwrd(args,10)
 
 ***** ***** Open control file ***** *****
 
-*if MODEL = 'GDPS'
-*'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/ISBL_850_TMP_'%FULLH'.ctl'
-*endif
-if MODEL = 'GFS_0.25'
-'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/850_mb_TMP_'%FULLH'.ctl'
-endif
-*if MODEL = 'NAM_12'
-*'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/850_mb_TMP_'%FULLH'.ctl'
-*endif
-
-*** Open netcdf file ***
-
-'sdfopen /home/mint/netcdf/air.4Xday.1981-2010.ltm.nc'
-
-*** Open other Control Files ***
-
-'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/mean_sea_level_PRMSL_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/surface_CAPE_'%FULLH'.ctl'
 'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/10_m_above_ground_UGRD_'%FULLH'.ctl'
 'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/10_m_above_ground_VGRD_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/500_mb_HGT_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/1000_mb_HGT_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/mean_sea_level_PRMSL_'%FULLH'.ctl'
 
 ***** ***** Define Region ***** *****
 
@@ -170,38 +157,24 @@ endif
 
 ***** ***** Begin plotting ***** *****
 
-*Interpolate the grib and netcdf file to the same grid
+*set colors
+'color 0 6500 100 -kind (255,255,255,0)-(0)->lightblue->green->yellow->orange->red->darkviolet->palevioletred->lightpink->peachpuff->burlywood->firebrick'
 
-*Netcdf (climatology) 
-'set dfile 2'
-'set lon '%LON1' '%LON2
-'set lat '%LAT1' '%LAT2
-hour6ofyear=DAYOFYEAR*4+ INITHOUR+ H/6+1
-'set t '%hour6ofyear
-say result
-'set lev 850'
-'define climo=air'
-
-*Grib (model)
-'set dfile 1'
-'set lev 850'
-'set t 1'
-say result
-'define modeltmp = lterp(TMP850mb,climo)'
-'define tempanom = (modeltmp-climo)'
-
-*HOUR6OFYEAR=$((${DAYOFYEAR}*4+${INITHOURFORADDITION}+${h}/6+1))
-
-*Plot the height anomalies
 'set gxout shaded'
-'color -20 20 .5 -kind lightpink->magenta->purple->blue->dodgerblue->limegreen->white->peachpuff->orange->red->maroon->gray->mistyrose'
-'d tempanom'
-'set csmooth off'
-'xcbar.gs -fstep 5 -line off -fwidth 0.09 -fheight 0.10 -direction v 10.4 10.6 .6 8'
+'d CAPEsfc.1'
+'xcbar.gs -fstep 10 -line off -fwidth 0.09 -fheight 0.10 -direction v 10.4 10.6 .6 8'
 
-*** End height anomalies ***
+*plot 1000-500hPa thickness in intervals of 6 decameters
+*** CHANGE THICKNESS SETTINGS HERE
+'set clevs 476 480 486 492 498 504 510 516 522 528 534 540 546 552 558 564 570 576 582 588 594 600'
+'set ccols 4 4 4 4 4 4 4 4 4 4 4 4 2 2 2 2 2 2 2 2 2 2'
+'set gxout contour'
+'set cint 6'
+'set cthick 3'
+'set cstyle 3'
+'set clab masked'
+'d (hgt500mb.4-hgt1000mb.5)/10'
 
-*** Plot SLP ***
 *plot the SLP contours in intervals of 3 hPa
 'set gxout contour'
 'set cint 3'
@@ -213,25 +186,24 @@ if REGION='pacnw'
     'set cthick 5'
 endif
 'set clab masked'
-'d prmslmsl.3/100'
-*** End SLP ***
+'d prmslmsl.6/100'
 
-*** Plot 10-meter wind barbs ***
+*Plot 10m wind barbs
 'set gxout barb'
 'set ccolor 1'
 'set digsiz .04'
 if (MODEL = "GFS_0.25")
     if REGION='pacnw'
-        'd skip(ugrd10m.4*2.237,5,5);vgrd10m.5*2.237'
+        'd skip(ugrd10m.2*2.237,5,5);vgrd10m.3*2.237'
     else
-        'd skip(ugrd10m.4*2.237,10,10);vgrd10m.5*2.237'
+        'd skip(ugrd10m.2*2.237,10,10);vgrd10m.3*2.237'
     endif
 endif
 if (MODEL = "NAM_12")
     if REGION='pacnw'
-        'd skip(ugrd10m.4*2.237,10,10);vgrd10m.5*2.237'
+        'd skip(ugrd10m.2*2.237,10,10);vgrd10m.3*2.237'
     else
-        'd skip(ugrd10m.4*2.237,24,24);vgrd10m.5*2.237'
+        'd skip(ugrd10m.2*2.237,24,24);vgrd10m.3*2.237'
     endif
 endif
 
@@ -242,7 +214,7 @@ cint=300
 'set font 11'
 *   ******************************DRAW L's******************************
 
-'mfhilo prmslmsl.3/100 CL l 'radius', 'cint
+'mfhilo prmslmsl.6/100 CL l 'radius', 'cint
 
 Low_info=result
 if (MODEL = "GFS_0.25")
@@ -290,7 +262,7 @@ endwhile
 
 *   ******************************DRAW H's******************************
 
-'mfhilo prmslmsl.3/100 CL h 'radius', 'cint
+'mfhilo prmslmsl.6/100 CL h 'radius', 'cint
 
 High_info=result
 if (MODEL = "GFS_0.25")
@@ -350,8 +322,8 @@ if MODEL = 'GDPS'
     i=1
 endif
 
-**** MAXVAL (SLP)
-'d amax(prmslmsl.3/100, lon='%LON1', lon='%LON2', lat='%LAT1', lat='%LAT2')'
+**** MAXVAL (CAPE)
+'d amax(CAPEsfc, lon='%LON1', lon='%LON2', lat='%LAT1', lat='%LAT2')'
 maxlin=sublin(result,i)
 maxval=subwrd(maxlin,4)
 say result
@@ -361,10 +333,33 @@ maxylims=sublin(result,4)
 maxxpos=subwrd(maxxlims,4)
 maxypos=subwrd(maxylims,6)
 say result
-maxval_slp = math_format('%5.1f',maxval)
+maxval_cape = math_format('%5.1f',maxval)
+
+**** MINVAL (CAPE)
+'d amin(CAPEsfc, lon='%LON1', lon='%LON2', lat='%LAT1', lat='%LAT2')'
+minlin=sublin(result,i)
+minval=subwrd(minlin,4)
+'q gxinfo'
+minxlims=sublin(result,3)
+minylims=sublin(result,4)
+minxpos=subwrd(minxlims,4)
+minypos=subwrd(minylims,6)
+minval_cape = math_format('%5.1f',minval)
+
+
+**** MAXVAL (SLP)
+'d amax(prmslmsl.6/100, lon='%LON1', lon='%LON2', lat='%LAT1', lat='%LAT2')'
+maxlin=sublin(result,i)
+maxval=subwrd(maxlin,4)
+'q gxinfo'
+maxxlims=sublin(result,3)
+maxylims=sublin(result,4)
+maxxpos=subwrd(maxxlims,4)
+maxypos=subwrd(maxylims,6)
+maxval_slp = math_format('%5.1f',maxval) 
 
 **** MINVAL (SLP)
-'d amin(prmslmsl.3/100, lon='%LON1', lon='%LON2', lat='%LAT1', lat='%LAT2')'
+'d amin(prmslmsl.6/100, lon='%LON1', lon='%LON2', lat='%LAT1', lat='%LAT2')'
 minlin=sublin(result,i)
 minval=subwrd(minlin,4)
 'q gxinfo'
@@ -374,34 +369,9 @@ minxpos=subwrd(minxlims,4)
 minypos=subwrd(minylims,6)
 minval_slp = math_format('%5.1f',minval)
 
-**** MAXVAL (Temp Anomaly)
-'d amax(tempanom, lon='%LON1', lon='%LON2', lat='%LAT1', lat='%LAT2')'
-maxlin=sublin(result,i)
-maxval=subwrd(maxlin,4)
-say result
-'q gxinfo'
-maxxlims=sublin(result,3)
-maxylims=sublin(result,4)
-maxxpos=subwrd(maxxlims,4)
-maxypos=subwrd(maxylims,6)
-say result
-maxval_tempanom = math_format('%5.1f',maxval)
-
-**** MINVAL (Temp Anomaly)
-'d amin(tempanom, lon='%LON1', lon='%LON2', lat='%LAT1', lat='%LAT2')'
-minlin=sublin(result,i)
-minval=subwrd(minlin,4)
-'q gxinfo'
-minxlims=sublin(result,3)
-minylims=sublin(result,4)
-minxpos=subwrd(minxlims,4)
-minypos=subwrd(minylims,6)
-minval_tempanom = math_format('%5.1f',minval)
-
 ***** ***** End max and min ***** *****
 
 ***** ***** Get time of forecast ***** *****
-'set dfile 1'
 'q time'
 forecastutc=substr(result, 24, 3)
 forecastdate=substr(result, 27, 2)
@@ -414,22 +384,21 @@ forecastday=substr(result, 45, 3)
 'draw shp /home/mint/opengrads/Contents/Shapefiles/Canada/PROVINCE.shp'
 'draw shp /home/mint/opengrads/Contents/Shapefiles/Mexico/mexstates.shp'
 
-
 ***** ***** draw titles and strings for map! ***** *****
 *title
 'set string 1 l'
 'set strsiz .13'
 'set font 11'
-'draw string .4 8.4 850 mb Temperature Anomalies (based on 1981-2010 Climatology, `ao`nC), Sea-Level Pressure (mb), 10-Meter Wind (mph)'
+'draw string .4 8.37 Surface-Based CAPE (J/kg), Sea-Level Pressure (mb), 10-Meter Wind (mph), 1000-500mb Thickness (dam)'
 *hour
 'set strsiz .14'
 'set string 1 r'
-'draw string 10.37 8.15 Hour: '%H
+'draw string 10.37 8.12 Hour: '%H
 *valid
 'set strsiz .13'
 'set string 1 l'
 'set font 10'
-'draw string .4 8.15 Valid: '%forecastutc' '%forecastday' '%forecastdate''%forecastmonth''%forecastyear
+'draw string .4 8.12 Valid: '%forecastutc' '%forecastday' '%forecastdate''%forecastmonth''%forecastyear
 *Init
 'set string 1 l'
 'draw string .4 .15 'INITHOUR%'Z '%INIT_STRINGDATE' '%MODELFORTITLE
@@ -440,23 +409,19 @@ forecastday=substr(result, 45, 3)
 *minval
 'set string 2 r'
 'draw string 5.46 0.10 Min Pressure: 'minval_slp' mb'
-'set string 2 r'
-'draw string 5.46 0.30 Min Temp Anomaly: 'minval_tempanom' `ao`nC'
+'draw string 5.46 0.30 Min CAPE: 'minval_cape' J/kg'
 *maxval
 'set string 4 l'
 'draw string 5.6 0.10 Max Pressure: 'maxval_slp' mb'
-'set string 4 l'
-'draw string 5.6 0.30 Max Temp Anomaly: 'maxval_tempanom' `ao`nC'
+'draw string 5.6 0.30 Max CAPE: 'maxval_cape' J/kg'
 *weathertogether.net
 'set font 11'
 'set strsiz .14'
 'set string 11 r'
 'draw string 10.37 .15 weathertogether.net'
 
-
-***** ***** Save output as .png ***** *****
+*Save output as .png
 'gxprint /home/mint/grads_pics/'%MODEL'/'%INIT_INTDATE'/'%INITHOUR'z/'%MODEL'_'%REGION'_'%FILENAME'_'%FULLH'.png x1100 y850'
 
 'quit'
-
 

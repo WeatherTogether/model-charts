@@ -23,14 +23,17 @@ FILENAME = subwrd(args,9)
 'set parea 0.37 10.4 0.6 8'
 
 *Open control file
-if MODEL = 'GFS_0.25'
 'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/BIGGRIB_surface_APCP.ctl'
-endif
-if MODEL = 'NAM_12'
-'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/BIGGRIB_surface_APCP.ctl'
-endif
 
 ***** ***** Define Region ***** *****
+
+if REGION='northamerica'
+    LAT1=20
+    LAT2=75
+    LON1='-150'
+    LON2='-60.5'
+    MAP='latlon'
+endif
 
 if REGION='nepacific'
     LAT1=18
@@ -44,49 +47,91 @@ if REGION='nepacific'
     MPVALSLAT2='60'
 endif
 
-if REGION='northamerica'
-    LAT1=20
-    LAT2=75
-    LON1='-160'
-    LON2='-70'
-    MAP='latlon'
-* 'set lon '%LON1' '%LON2
-* 'set lat '%LAT1' '%LAT2
-* 'set mpvals 20 89 30 160'
-* 'set mproj '%MAP
+if REGION='antarctica'
+    LAT1=-90
+    LAT2=-60
+    LON1='0'
+    LON2='359.99'
+    MAP='sps'
+    MPVALSLON1='0'
+    MPVALSLON2='359.99'
+    MPVALSLAT1='-90'
+    MPVALSLAT2='-60'
 endif
 
 if REGION='pacnw'
     LAT1=40
     LAT2=55
     LON1='-132'
-    LON2='-107.52'
+    LON2='-107.6'
     MAP='latlon'
 endif
 
 if REGION='conus'
     LAT1=15
-    LAT2=54.72
-    LON1='-128'
+    LAT2=55
+    LON1='-128.05'
     LON2='-63'
     'set xlevs -120 -110 -100 -90 -80 -70'
     'set ylevs 20 30 40 50'
     MAP='latlon'
 endif
 
+if REGION='namconus'
+    LAT1=18.3
+    LAT2=58.2
+    LON1='-129.5'
+    LON2='-64.5'
+    'set xlevs -120 -110 -100 -90 -80 -70'
+    'set ylevs 20 30 40 50'
+    MAP='latlon'
+endif
+
+if REGION='pacnwzoom'
+    LAT1=43.07
+    LAT2=49.15
+    LON1='-126'
+    LON2='-116.1'
+    'set xlevs -126 -124 -122 -120 -118 -116'
+    'set ylevs 44 45 46 47 48 49 50'
+    MAP=latlon
+endif
+
 if REGION='middleeast'
     LAT1=0
-    LAT2=55
+    LAT2=55.3
     LON1=0
     LON2=90
     MAP=latlon
 endif
 
 if REGION='colriver'
-    LAT1=0
-    LAT2=55
+    LAT1=44.68
+    LAT2=46.71
+    LON1='-122.2'
+    LON2='-118.9'
+    'set xlevs -122 -121 -120 -119 -118'
+    'set ylevs 45 46'
+    MAP=latlon
+endif
+
+if REGION='hrrrconus'
+    LAT1=15
+    LAT2=65
+    LON1=-150
+    LON2=-50
+    MAP='nps'
+    MPVALSLAT1='23'
+    MPVALSLAT2='53.5'
+    MPVALSLON1='-118.7'
+    MPVALSLON2='-76.1'
+endif
+
+if REGION='world'
+    LAT1=-90
+    LAT2=90
     LON1=0
-    LON2=90
+    LON2=359.99
     MAP=latlon
 endif
 
@@ -235,7 +280,7 @@ endif
 ***** ***** Get max and min ***** *****
 
 if MODEL = 'NAM_12'
-    i=2
+    i=1
 endif
 if MODEL = 'HRRR_Sub'
     i=2
@@ -335,4 +380,5 @@ forecastday=substr(result, 45, 3)
 'gxprint /home/mint/grads_pics/'%MODEL'/'%INIT_INTDATE'/'%INITHOUR'z/'%MODEL'_'%REGION'_'%FILENAME'_'%FULLH'.png x1100 y850'
 
 'quit'
+
 
