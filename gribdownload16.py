@@ -185,7 +185,7 @@ def call_grads (gradsregions, stringdate, init_intdate, inithour, forecasthour, 
                             myfile.write('{0}{1}_{2}_{3}_{4}.4.png\n'.format(uploadurl, model, places, script[:-3], forecasthour))
                     else:
                             myfile.write('{0}{1}_{2}_{3}_{4}.png\n'.format(uploadurl, model, places, script[:-3], forecasthour))
-    #upload_files(model, init_intdate, inithour, forecasthour) 
+    upload_files(model, init_intdate, inithour, forecasthour) 
 
 ##### End Ugly Hack
 
@@ -239,15 +239,15 @@ levelvar['GFS_0.25']['surface']=['CAPE', 'APCP']
 
 ##### ##### NAM_12 ##### ######
 levelvar['NAM_12']={}
-#levelvar['NAM_12']['500_mb']=['HGT', 'ABSV']
-#levelvar['NAM_12']['850_mb']=['TMP', 'HGT', 'UGRD', 'VGRD']
-#levelvar['NAM_12']['250_mb']=['UGRD', 'VGRD', 'HGT']
-#levelvar['NAM_12']['entire_atmosphere_%5C%28considered_as_a_single_layer%5C%29']=['PWAT']
-#levelvar['NAM_12']['1000_mb']=['HGT']
-#levelvar['NAM_12']['mean_sea_level']=['PRMSL']
-#levelvar['NAM_12']['10_m_above_ground']=['UGRD', 'VGRD']
-#levelvar['NAM_12']['80_m_above_ground']=['UGRD', 'VGRD']
-#levelvar['NAM_12']['2_m_above_ground']=['TMP', 'DPT']
+levelvar['NAM_12']['500_mb']=['HGT', 'ABSV']
+levelvar['NAM_12']['850_mb']=['TMP', 'HGT', 'UGRD', 'VGRD']
+levelvar['NAM_12']['250_mb']=['UGRD', 'VGRD', 'HGT']
+levelvar['NAM_12']['entire_atmosphere_%5C%28considered_as_a_single_layer%5C%29']=['PWAT']
+levelvar['NAM_12']['1000_mb']=['HGT']
+levelvar['NAM_12']['mean_sea_level']=['PRMSL']
+levelvar['NAM_12']['10_m_above_ground']=['UGRD', 'VGRD']
+levelvar['NAM_12']['80_m_above_ground']=['UGRD', 'VGRD']
+levelvar['NAM_12']['2_m_above_ground']=['TMP', 'DPT']
 levelvar['NAM_12']['surface']=['CAPE', 'APCP']
 
 ##### ##### GDPS ##### ######
@@ -271,41 +271,40 @@ levelvar['HRRR_Sub']['top_of_atmosphere']=['SBT124']
 gradsregions={}
 ##### ##### GFS_0.25 ##### ###### 
 gradsregions['GFS_0.25']={}
-gradsregions['GFS_0.25']['850mbvort.gs']=['antarctica']
-gradsregions['GFS_0.25']['700mbvort.gs']=['northamerica', 'pacnw', 'conus', 'nepacific']
+gradsregions['GFS_0.25']['850mbvort.gs']=['pacnw', 'conus', 'nepacific']
+gradsregions['GFS_0.25']['700mbvort.gs']=['pacnw', 'conus', 'nepacific']
 gradsregions['GFS_0.25']['500mbvort.gs']=['northamerica', 'pacnw', 'conus', 'nepacific']
-gradsregions['GFS_0.25']['500mbheightanomaly.gs']=['northamerica', 'middleeast', 'nepacific']
-gradsregions['GFS_0.25']['850mbtempanomaly.gs']=['northamerica', 'middleeast', 'nepacific']
-gradsregions['GFS_0.25']['1000-500mbthickness.gs']=['pacnw', 'conus', 'northamerica', 'antarctica']
-gradsregions['GFS_0.25']['1000-850mbthickness.gs']=['pacnw', 'conus', 'northamerica', 'antarctica']
+gradsregions['GFS_0.25']['500mbheightanomaly.gs']=['northamerica', 'nepacific']
+gradsregions['GFS_0.25']['850mbtempanomaly.gs']=['northamerica', 'conus', 'nepacific']
+gradsregions['GFS_0.25']['1000-500mbthickness.gs']=['conus', 'northamerica', 'antarctica']
+gradsregions['GFS_0.25']['1000-850mbthickness.gs']=['conus', 'northamerica', 'antarctica']
 gradsregions['GFS_0.25']['2mdp.gs']=['pacnw', 'conus', 'northamerica']
-gradsregions['GFS_0.25']['2mtemp.gs']=['antarctica', 'pacnw', 'conus', 'nepacific', 'northamerica']
-gradsregions['GFS_0.25']['925mbtemp.gs']=['pacnw', 'conus', 'northamerica', 'antarctica']
-gradsregions['GFS_0.25']['850mbtemp.gs']=['antarctica', 'pacnw', 'conus', 'nepacific', 'northamerica']
-gradsregions['GFS_0.25']['700mbtemp.gs']=['antarctica', 'pacnw', 'conus', 'nepacific', 'northamerica']
-gradsregions['GFS_0.25']['500mbtemp.gs']=['antarctica', 'world', 'conus', 'nepacific', 'northamerica']
-gradsregions['GFS_0.25']['10mwind.gs']=['pacnw', 'nepacific']
+gradsregions['GFS_0.25']['2mtemp.gs']=['pacnw', 'conus', 'nepacific', 'northamerica']
+gradsregions['GFS_0.25']['925mbtemp.gs']=['conus', 'northamerica', 'antarctica']
+gradsregions['GFS_0.25']['850mbtemp.gs']=['conus', 'nepacific', 'northamerica']
+gradsregions['GFS_0.25']['700mbtemp.gs']=['conus', 'nepacific', 'northamerica']
+gradsregions['GFS_0.25']['500mbtemp.gs']=['conus', 'nepacific', 'northamerica']
+gradsregions['GFS_0.25']['10mwind.gs']=['pacnw', 'nepacific', 'conus']
 gradsregions['GFS_0.25']['80mwind.gs']=['pacnw', 'nepacific']
-gradsregions['GFS_0.25']['250mbwind.gs']=['pacnw', 'nepacific']
-gradsregions['GFS_0.25']['precipmslp.gs']=['pacnw', 'nepacific']
-gradsregions['GFS_0.25']['accumulatedprecip.gs']=['pacnw', 'nepacific']
+gradsregions['GFS_0.25']['250mbwind.gs']=['northamerica', 'nepacific']
+gradsregions['GFS_0.25']['precipmslp.gs']=['pacnw', 'nepacific', 'conus', 'northamerica']
+gradsregions['GFS_0.25']['accumulatedprecip.gs']=['pacnw', 'nepacific', 'conus']
 gradsregions['GFS_0.25']['pwat.gs']=['pacnw', 'conus', 'nepacific']
-gradsregions['GFS_0.25']['capesfc.gs']=['pacnw', 'conus']
+gradsregions['GFS_0.25']['capesfc.gs']=['conus', 'pacnw']
 
 
 ##### ##### NAM_12 ##### ###### 
 gradsregions['NAM_12']={}
-#gradsregions['NAM_12']['500mbvort.gs']=['pacnw', 'namconus']
-#gradsregions['NAM_12']['pwat.gs']=['pacnw', 'namconus']
-#gradsregions['NAM_12']['2mtemp.gs']=['pacnw', 'namconus']
-#gradsregions['NAM_12']['2mdp.gs']=['pacnw', 'namconus']
-#gradsregions['NAM_12']['capesfc.gs']=['pacnw', 'namconus']
-#gradsregions['NAM_12']['10mwind.gs']=['pacnw', 'namconus']
-#gradsregions['NAM_12']['80mwind.gs']=['pacnw', 'namconus']
-#gradsregions['NAM_12']['250mbwind.gs']=['pacnw', 'namconus']
-#gradsregions['NAM_12']['850mbtemp.gs']=['pacnw', 'conus', 'nepacific', 'northamerica']
-gradsregions['NAM_12']['precipmslp.gs']=['pacnw', 'nepacific']
-gradsregions['NAM_12']['accumulatedprecip.gs']=['pacnw', 'nepacific']
+gradsregions['NAM_12']['500mbvort.gs']=['pacnw', 'namconus']
+gradsregions['NAM_12']['pwat.gs']=['pacnw', 'namconus']
+gradsregions['NAM_12']['2mtemp.gs']=['pacnw', 'namconus']
+gradsregions['NAM_12']['2mdp.gs']=['pacnw', 'namconus']
+gradsregions['NAM_12']['capesfc.gs']=['pacnw', 'namconus']
+gradsregions['NAM_12']['10mwind.gs']=['pacnw', 'namconus']
+gradsregions['NAM_12']['80mwind.gs']=['pacnw', 'namconus']
+gradsregions['NAM_12']['250mbwind.gs']=['pacnw', 'namconus']
+gradsregions['NAM_12']['precipmslp.gs']=['pacnw', 'namconus']
+gradsregions['NAM_12']['accumulatedprecip.gs']=['pacnw', 'namconus']
 
 ##### ##### GDPS ##### ###### 
 gradsregions['GDPS']={}
@@ -319,8 +318,6 @@ gradsregions['HRRR_Sub']['radar_SubHRRR.gs']=['pacnwzoom', 'hrrrconus']
 gradsregions['HRRR_Sub']['olw_SubHRRR.gs']=['hrrrconus', 'pacnwzoom']
 
 ##### ##### ##### ##### ##### END gradsregions{} ##### ##### ##### ##### #####
-
- 
 
 #Global variables
 inithour=sys.argv[1] # initialization hour
@@ -346,8 +343,8 @@ modelfortitle=initialmodeltitle(model)
 print("blah")
 while chartdate <= enddate:
     print("blah2")
-    #if requests.get(url).status_code == 200: #Bug... This returns true even if the file at the NOMADS server is nonexistent... ex: hour 383 for the GFS.
-    if True:        
+    if requests.get(url).status_code == 200: #Bug... This returns true even if the file at the NOMADS server is nonexistent... ex: hour 383 for the GFS.
+    #if True:        
         print("blah3")
         download_grib(levelvar[model], inithour, forecasthour, init_intdate, model)
         call_grads(gradsregions, init_stringdate, init_intdate, inithour, forecasthour, hour, model, modelfortitle, dayofyear, uploadurl)
