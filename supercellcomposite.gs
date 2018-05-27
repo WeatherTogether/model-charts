@@ -57,72 +57,6 @@ FILENAME = subwrd(args,9)
 'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/10_m_above_ground_VGRD_'%FULLH'.ctl'
 'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/surface_CAPE_'%FULLH'.ctl'
 
-***** ***** Define Variables ***** *****
-
-'define u1000=UGRD1000mb.1'
-'define u950=UGRD950mb.2'
-'define u900=UGRD900mb.3'
-'define u850=UGRD850mb.4'
-'define u800=UGRD800mb.5'
-'define u750=UGRD750mb.6'
-'define u700=UGRD700mb.7'
-'define u650=UGRD650mb.8'
-'define u600=UGRD600mb.9'
-'define u550=UGRD550mb.10'
-'define u500=UGRD500mb.11'
-'define u450=UGRD450mb.12'
-'define u400=UGRD400mb.13'
-
-
-'define v1000=VGRD1000mb.14'
-'define v950=VGRD950mb.15'
-'define v900=VGRD900mb.16'
-'define v850=VGRD850mb.17'
-'define v800=VGRD800mb.18'
-'define v750=VGRD750mb.19'
-'define v700=VGRD700mb.20'
-'define v650=VGRD650mb.21'
-'define v600=VGRD600mb.22'
-'define v550=VGRD550mb.23'
-'define v500=VGRD500mb.24'
-'define v450=VGRD450mb.25'
-'define v400=VGRD400mb.26'
-
-'define prmslmsl=prmslmsl.27'
-'define u10m=UGRD10m.28'
-'define v10m=VGRD10m.29'
-
-'define umean=(u1000+u950+u900+u850+u800+u750+u700+u650+u600+u550+u500+u450+u400)/13.0'
-'define vmean=(v1000+v950+v900+v850+v800+v750+v700+v650+v600+v550+v500+v450+v400)/13.0'
-'define ushear=u500-u1000'
-'define vshear=v500-v1000'
-'define shear=sqrt(ushear*ushear+vshear*vshear)'
-'define umotion=((umean+(7.5/(shear))*vshear))'
-'define vmotion=((vmean-(7.5/(shear))*ushear))'
-
-'define srh1=((u950-umotion)*(v1000-vmotion)-(u1000-umotion)*(v950-vmotion))'
-'define srh2=((u900-umotion)*(v950-vmotion)-(u950-umotion)*(v900-vmotion))'
-'define srh3=((u850-umotion)*(v900-vmotion)-(u900-umotion)*(v850-vmotion))'
-'define srh4=((u800-umotion)*(v850-vmotion)-(u850-umotion)*(v800-vmotion))'
-'define srh5=((u750-umotion)*(v800-vmotion)-(u800-umotion)*(v750-vmotion))'
-'define srh6=((u700-umotion)*(v750-vmotion)-(u750-umotion)*(v700-vmotion))'
-
-
-'define prmslmsl=prmslmsl.27'
-'define u10m=UGRD10m.28'
-'define v10m=VGRD10m.29'
-'define capesfc=CAPEsfc.30'
-
-'define bulkushear=u500-u10m'
-'define bulkvshear=v500-v10m'
-'define bulkshear=mag(bulkushear,bulkvshear)'
-'define srh3km=srh1+srh2+srh3+srh4+srh5+srh6'
-'define scpsfc=(capesfc/1000)*(bulkshear*2.237/20)*(srh3km/50)'
-
-
-
-
-
 ***** ***** Define Region ***** *****
 
 if REGION='northamerica'
@@ -247,9 +181,66 @@ if MAP!='latlon'
 endif
 'set mproj '%MAP
 
+***** ***** Define Variables ***** *****
+
+'u1000=UGRD1000mb.1'
+'u950=UGRD950mb.2'
+'u900=UGRD900mb.3'
+'u850=UGRD850mb.4'
+'u800=UGRD800mb.5'
+'u750=UGRD750mb.6'
+'u700=UGRD700mb.7'
+'u650=UGRD650mb.8'
+'u600=UGRD600mb.9'
+'u550=UGRD550mb.10'
+'u500=UGRD500mb.11'
+'u450=UGRD450mb.12'
+'u400=UGRD400mb.13'
+
+
+'v1000=VGRD1000mb.14'
+'v950=VGRD950mb.15'
+'v900=VGRD900mb.16'
+'v850=VGRD850mb.17'
+'v800=VGRD800mb.18'
+'v750=VGRD750mb.19'
+'v700=VGRD700mb.20'
+'v650=VGRD650mb.21'
+'v600=VGRD600mb.22'
+'v550=VGRD550mb.23'
+'v500=VGRD500mb.24'
+'v450=VGRD450mb.25'
+'v400=VGRD400mb.26'
+
+'prmslmsl=prmslmsl.27'
+'u10m=UGRD10m.28'
+'v10m=VGRD10m.29'
+'capesfc=CAPEsfc.30'
+
+'umean=(u1000+u950+u900+u850+u800+u750+u700+u650+u600+u550+u500+u450+u400)/13.0'
+'vmean=(v1000+v950+v900+v850+v800+v750+v700+v650+v600+v550+v500+v450+v400)/13.0'
+'ushear=u500-u1000'
+'vshear=v500-v1000'
+'shear=sqrt(ushear*ushear+vshear*vshear)'
+'umotion=((umean+(7.5/(shear))*vshear))'
+'vmotion=((vmean-(7.5/(shear))*ushear))'
+
+'srh1=((u950-umotion)*(v1000-vmotion)-(u1000-umotion)*(v950-vmotion))'
+'srh2=((u900-umotion)*(v950-vmotion)-(u950-umotion)*(v900-vmotion))'
+'srh3=((u850-umotion)*(v900-vmotion)-(u900-umotion)*(v850-vmotion))'
+'srh4=((u800-umotion)*(v850-vmotion)-(u850-umotion)*(v800-vmotion))'
+'srh5=((u750-umotion)*(v800-vmotion)-(u800-umotion)*(v750-vmotion))'
+'srh6=((u700-umotion)*(v750-vmotion)-(u750-umotion)*(v700-vmotion))'
+
+'bulkushear=u500-u10m'
+'bulkvshear=v500-v10m'
+'bulkshear=mag(bulkushear,bulkvshear)'
+'srh3km=srh1+srh2+srh3+srh4+srh5+srh6'
+'scpsfc=(capesfc/1000)*(bulkshear*2.237/20)*(srh3km/50)'
+
 ***** ***** Begin plotting ***** *****
 
-*Plot supercell composite
+*Plot Supercell Composite (surface-based)
 'color 0 50 1 -kind (255,255,255,0)-(0)->lightaquamarine->green->yellow->orange->red->darkviolet->palevioletred->lightpink->peachpuff->burlywood->firebrick'
 
 'set gxout shaded'
@@ -271,23 +262,22 @@ endif
 
 *Plot 10m, 850mb, and 500mb wind barbs
 'set gxout barb'
-
 'set digsiz .03'
 if (MODEL = "GFS_0.25")
     if REGION='pacnw'
         'set ccolor 1'
         'd skip(u10m*2.237,5,5);v10m*2.237'
-        'set ccolor 7'
+        'set ccolor 2'
         'd skip(u850*2.237,5,5);v850*2.237'
-        'set ccolor 9'
+        'set ccolor 4'
         'd skip(u500*2.237,5,5);v500*2.237'
         
     else
         'set ccolor 1'
         'd skip(u10m*2.237,10,10);v10m*2.237'
-        'set ccolor 7'
+        'set ccolor 2'
         'd skip(u850*2.237,10,10);v850*2.237'
-        'set ccolor 9'
+        'set ccolor 4'
         'd skip(u500*2.237,10,10);v500*2.237'
     endif
 endif
@@ -295,16 +285,16 @@ if (MODEL = "NAM_12")
     if REGION='pacnw'
         'set ccolor 1'
         'd skip(u10m*2.237,10,10);v10m*2.237'
-        'set ccolor 7'
+        'set ccolor 2'
         'd skip(u850*2.237,10,10);v850*2.237'
-        'set ccolor 9'
+        'set ccolor 4'
         'd skip(u500*2.237,10,10);v500*2.237'
     else
         'set ccolor 1'
         'd skip(u10m*2.237,24,24);v10m*2.237'
-        'set ccolor 7'
+        'set ccolor 2'
         'd skip(u850*2.237,24,24);v850*2.237'
-        'set ccolor 9'
+        'set ccolor 4'
         'd skip(u500*2.237,24,24);v500*2.237'
      endif
 endif
@@ -497,7 +487,7 @@ forecastday=substr(result, 45, 3)
 'set string 1 l'
 'set strsiz .13'
 'set font 11'
-'draw string .4 8.37 Supercell Composite (Surface-Based), 10m/850mb/500mb Wind Vectors (black/yellow/purple; mph), SLP (mb)'
+'draw string .4 8.37 Supercell Composite (Surface-Based), 10m/850mb/500mb Wind Vectors (black/red/blue; mph), SLP (mb)'
 *hour
 'set strsiz .14'
 'set string 1 r'
@@ -514,7 +504,7 @@ forecastday=substr(result, 45, 3)
 'set strsiz .11'
 *'draw string 5.5 .3 |'
 'set string 1 c'
-'draw string 5.5 0.30 Max Supercell Composite: 'maxval_scpsfc' m`a-2`ns`a-2`n'
+'draw string 5.5 0.30 Max Supercell Composite: 'maxval_scpsfc
 'draw string 5.5 .10 |'
 *minval
 'set string 2 r'

@@ -187,37 +187,37 @@ endif
 'set digsiz .03'
 if (MODEL = "GFS_0.25")
     if REGION='pacnw'
-        'set ccolor 7'
+        'set ccolor 4'
         'd skip(ushear*2.237,5,5);vshear*2.237'
         'set ccolor 1'
         'd skip(ugrd10m.1*2.237,5,5);vgrd10m.2*2.237'
-        'set ccolor 9'
+        'set ccolor 2'
         'd skip(ugrd500mb.3*2.237,5,5);vgrd500mb.4*2.237'
         
     else
-        'set ccolor 7'
+        'set ccolor 4'
         'd skip(ushear*2.237,10,10);vshear*2.237'
         'set ccolor 1'
         'd skip(ugrd10m.1*2.237,10,10);vgrd10m.2*2.237'
-        'set ccolor 9'
+        'set ccolor 2'
         'd skip(ugrd500mb.3*2.237,10,10);vgrd500mb.4*2.237'
     endif
 endif
 if (MODEL = "NAM_12")
     if REGION='pacnw'
-        'set ccolor 7'
+        'set ccolor 4'
         'd skip(ushear*2.237,10,10);vshear*2.237'
         'set ccolor 1'
         'd skip(ugrd10m.1*2.237,10,10);vgrd10m.2*2.237'
-        'set ccolor 9'
+        'set ccolor 2'
         'd skip(ugrd500mb.3*2.237,10,10);vgrd500mb.4*2.237'
         
     else
-        'set ccolor 7'
+        'set ccolor 4'
         'd skip(ushear*2.237,24,24);vshear*2.237'
         'set ccolor 1'
         'd skip(ugrd10m.1*2.237,24,24);vgrd10m.2*2.237'
-        'set ccolor 9'
+        'set ccolor 2'
         'd skip(ugrd500mb.3*2.237,24,24);vgrd500mb.4*2.237'
    
     endif
@@ -415,7 +415,7 @@ forecastday=substr(result, 45, 3)
 'set string 1 l'
 'set strsiz .13'
 'set font 11'
-'draw string .4 8.37 500 mb-10m Bulk Shear (mph), 10m/500mb/500mb-10m Wind Vectors (black/purple/yellow; mph), SLP (mb)'
+'draw string .4 8.37 500 mb-10m Bulk Shear (mph), 10m/500mb/500mb-10m Wind Vectors (black/red/blue; mph), SLP (mb)'
 *hour
 'set strsiz .14'
 'set string 1 r'

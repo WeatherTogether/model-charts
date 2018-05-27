@@ -261,17 +261,16 @@ if (MODEL = "GFS_0.25")
     if REGION='pacnw'
         'set ccolor 1'
         'd skip(u10m*2.237,5,5);v10m*2.237'
-        'set ccolor 7'
+        'set ccolor 2'
         'd skip(u850*2.237,5,5);v850*2.237'
-        'set ccolor 9'
+        'set ccolor 4'
         'd skip(u500*2.237,5,5);v500*2.237'
-        
     else
         'set ccolor 1'
         'd skip(u10m*2.237,10,10);v10m*2.237'
-        'set ccolor 7'
+        'set ccolor 2'
         'd skip(u850*2.237,10,10);v850*2.237'
-        'set ccolor 9'
+        'set ccolor 4'
         'd skip(u500*2.237,10,10);v500*2.237'
     endif
 endif
@@ -279,16 +278,16 @@ if (MODEL = "NAM_12")
     if REGION='pacnw'
         'set ccolor 1'
         'd skip(u10m*2.237,10,10);v10m*2.237'
-        'set ccolor 7'
+        'set ccolor 2'
         'd skip(u850*2.237,10,10);v850*2.237'
-        'set ccolor 9'
+        'set ccolor 4'
         'd skip(u500*2.237,10,10);v500*2.237'
     else
         'set ccolor 1'
         'd skip(u10m*2.237,24,24);v10m*2.237'
-        'set ccolor 7'
+        'set ccolor 2'
         'd skip(u850*2.237,24,24);v850*2.237'
-        'set ccolor 9'
+        'set ccolor 4'
         'd skip(u500*2.237,24,24);v500*2.237'
      endif
 endif
@@ -484,7 +483,7 @@ forecastday=substr(result, 45, 3)
 'set string 1 l'
 'set strsiz .13'
 'set font 11'
-'draw string .4 8.37 0-3 km Storm Relative Helicity (m`a-2`ns`a-2`n), 10m/850mb/500mb Wind Vectors (black/yellow/purple; mph), SLP (mb)'
+'draw string .4 8.37 0-3 km Storm Relative Helicity (m`a-2`ns`a-2`n), 10m/850mb/500mb Wind Vectors (black/red/blue; mph), SLP (mb)'
 *hour
 'set strsiz .14'
 'set string 1 r'
