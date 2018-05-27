@@ -35,13 +35,12 @@ FILENAME = subwrd(args,9)
 
 ***** ***** Define Variables ***** *****
 
-'define u10m=UGRD10m.2'
-'define v10m=VGRD10m.3'
-'define u850=UGRD850mb.4'
-'define v850=VGRD850mb.5'
-'define u500=UGRD500mb.6'
-'define v500=VGRD500mb.7'
-'define v500=VGRD500mb.7'
+*'define u10m=UGRD10m.2'
+*'define v10m=VGRD10m.3'
+*'define u850=UGRD850mb.4'
+*'define v850=VGRD850mb.5'
+*'define u500=UGRD500mb.6'
+*'define v500=VGRD500mb.7'
 
 ***** ***** Define Region ***** *****
 
@@ -159,41 +158,42 @@ endif
 
 *Plot 10m, 850mb, and 500mb wind barbs
 'set gxout barb'
-'set cthick 2'
 'set digsiz .03'
 if (MODEL = "GFS_0.25")
     if REGION='pacnw'
         'set ccolor 1'
-        'd skip(u10m*2.237,5,5);v10m*2.237'
+        'd skip(UGRD10m.2*2.237,5,5);VGRD10m.3*2.237'
         'set ccolor 7'
-        'd skip(u850*2.237,5,5);v850*2.237'
+        'd skip(UGRD850mb.4*2.237,5,5);VGRD850mb.5*2.237'
         'set ccolor 9'
-        'd skip(u500*2.237,5,5);v500*2.237'
+        'd skip(UGRD500mb.6*2.237,5,5);VGRD500mb.7*2.237'
         
     else
+
         'set ccolor 1'
-        'd skip(u10m*2.237,10,10);v10m*2.237'
+        'd skip(UGRD10m.2*2.237,10,10);VGRD10m.3*2.237'
         'set ccolor 7'
-        'd skip(u850*2.237,10,10);v850*2.237'
+        'd skip(UGRD850mb.4*2.237,10,10);VGRD850mb.5*2.237'
         'set ccolor 9'
-        'd skip(u500*2.237,10,10);v500*2.237'
+        'd skip(UGRD500mb.6*2.237,10,10);VGRD500mb.7*2.237'
     endif
 endif
 if (MODEL = "NAM_12")
     if REGION='pacnw'
         'set ccolor 1'
-        'd skip(u10m*2.237,10,10);v10m*2.237'
+
+        'd skip(UGRD10m.2*2.237,10,10);VGRD10m.3*2.237'
         'set ccolor 7'
-        'd skip(u850*2.237,10,10);v850*2.237'
+        'd skip(UGRD850mb.4*2.237,10,10);VGRD850mb.5*2.237'
         'set ccolor 9'
-        'd skip(u500*2.237,10,10);v500*2.237'
+        'd skip(UGRD500mb.6*2.237,10,10);VGRD500mb.7*2.237'
     else
         'set ccolor 1'
-        'd skip(u10m*2.237,24,24);v10m*2.237'
+        'd skip(UGRD10m.2*2.237,24,24);VGRD10m.3*2.237'
         'set ccolor 7'
-        'd skip(u850*2.237,24,24);v850*2.237'
+        'd skip(UGRD850mb.4*2.237,24,24);VGRD850mb.5*2.237'
         'set ccolor 9'
-        'd skip(u500*2.237,24,24);v500*2.237'
+        'd skip(UGRD500mb.6*2.237,24,24);VGRD500mb.7*2.237'
      endif
 endif
 
@@ -404,8 +404,8 @@ forecastday=substr(result, 45, 3)
 'draw string 5.5 .10 |'
 *minval
 'set string 2 r'
-'draw string 5.46 0.10 Min Pressure: 'minval_slp' mb'
-*'draw string 5.46 0.30 Min CAPE: 'minval_cape' J/kg'
+'draw string 5.42 0.10 Min Pressure: 'minval_slp' mb'
+*'draw string 5.42 0.30 Min CAPE: 'minval_cape' J/kg'
 *maxval
 'set string 4 l'
 'draw string 5.6 0.10 Max Pressure: 'maxval_slp' mb'
