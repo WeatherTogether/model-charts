@@ -235,7 +235,7 @@ endif
 ***** ***** Begin plotting ***** *****
 
 *Plot 0-3km storm relative helicity
-'color 0 900 20 -kind (255,255,255,0)-(0)->lightaquamarine->green->yellow->orange->red->darkviolet->palevioletred->lightpink->peachpuff->burlywood->firebrick'
+'color 0 900 10 -kind (255,255,255,0)-(0)->lightaquamarine->green->yellow->orange->red->darkviolet->palevioletred->lightpink->peachpuff->burlywood->firebrick'
 
 'set gxout shaded'
 'd srh3km'
@@ -481,9 +481,9 @@ forecastday=substr(result, 45, 3)
 ***** ***** draw titles and strings for map! ***** *****
 *title
 'set string 1 l'
-'set strsiz .13'
+'set strsiz .125'
 'set font 11'
-'draw string .4 8.37 0-3 km Storm Relative Helicity (m`a-2`ns`a-2`n), 10m/850mb/500mb Wind Vectors (black/red/blue; mph), SLP (mb)'
+'draw string .4 8.37 0-3 km Storm Relative Helicity (m`a-2`ns`a-2`n), 10m/850mb/500mb Wind Vectors (black/red/blue; mph), Sea-Level Pressure (mb)'
 *hour
 'set strsiz .14'
 'set string 1 r'

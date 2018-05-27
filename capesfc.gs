@@ -435,7 +435,7 @@ forecastday=substr(result, 45, 3)
 'set string 1 l'
 'set strsiz .13'
 'set font 11'
-'draw string .4 8.37 Surface-Based CAPE (J/kg), 10m/850mb/500mb Wind Vectors (black/red/blue; mph), SLP (mb)'
+'draw string .4 8.37 Surface-Based CAPE (J/kg), 10m/850mb/500mb Wind Vectors (black/red/blue; mph), Sea-Level Pressure (mb)'
 'set strsiz .14'
 'set string 1 r'
 'draw string 10.37 8.12 Hour: '%H

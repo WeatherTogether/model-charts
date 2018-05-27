@@ -485,9 +485,9 @@ forecastday=substr(result, 45, 3)
 ***** ***** draw titles and strings for map! ***** *****
 *title
 'set string 1 l'
-'set strsiz .13'
+'set strsiz .125'
 'set font 11'
-'draw string .4 8.37 Supercell Composite (Surface-Based), 10m/850mb/500mb Wind Vectors (black/red/blue; mph), SLP (mb)'
+'draw string .4 8.37 Supercell Composite (Surface-Based), 10m/850mb/500mb Wind Vectors (black/red/blue; mph), Sea-Level Pressure (mb)'
 *hour
 'set strsiz .14'
 'set string 1 r'

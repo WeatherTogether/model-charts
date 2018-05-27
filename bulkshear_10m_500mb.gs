@@ -161,7 +161,7 @@ endif
 *set color
 
 *  if( color = 'lightaquamarine')  ; r=229 ; g=255 ; b=247 ; endif
-'color.gs 20 150 1 -kind white-(0)->lightaquamarine->green->yellow->crimson->plum->bisque->palevioletred->maroon'
+'color.gs 20 150 2 -kind (255,255,255,0)-(0)->lightaquamarine->green->yellow->orange->red->darkviolet->palevioletred->lightpink->peachpuff->burlywood->firebrick'
 'define ushear = ugrd500mb.3 - ugrd10m.1'
 'define vshear = vgrd500mb.4 - vgrd10m.2'
 'd mag(ushear*2.237,vshear*2.237)'
@@ -415,7 +415,7 @@ forecastday=substr(result, 45, 3)
 'set string 1 l'
 'set strsiz .13'
 'set font 11'
-'draw string .4 8.37 500 mb-10m Bulk Shear (mph), 10m/500mb/500mb-10m Wind Vectors (black/red/blue; mph), SLP (mb)'
+'draw string .4 8.37 500 mb-10m Bulk Shear (mph), 10m/500mb/500mb-10m Wind Vectors (black/red/blue; mph), Sea-Level Pressure (mb)'
 *hour
 'set strsiz .14'
 'set string 1 r'
