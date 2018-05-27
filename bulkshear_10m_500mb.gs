@@ -155,20 +155,6 @@ if MAP!='latlon'
 endif
 'set mproj '%MAP
 
-***** ***** set map parameters ***** ***** 
-
-'set mpdset hires'
-'set mpt 0 1 1 6'
-'set mpt 1 1 1 6'
-'set mpt 2 1 1 3'
-'set grid off'
-'set lon '%LON1' '%LON2
-'set lat '%LAT1' '%LAT2
-if MAP!='latlon'
-    'set mpvals '%MPVALSLON1' '%MPVALSLON2' '%MPVALSLAT1' '%MPVALSLAT2
-endif
-'set mproj '%MAP
-
 ***** ***** Begin plotting ***** *****
 
 *Plot wind shear
@@ -181,9 +167,23 @@ endif
 'd mag(ushear*2.237,vshear*2.237)'
 'xcbar.gs -fstep 5 -line off -fwidth 0.11 -fheight 0.12 -direction v 10.4 10.6 .6 8'
 
+*https://www.saakeskus.fi
+
+*plot the SLP contours
+'set gxout contour'
+'set cint 3'
+'set ccolor 1'
+'set cstyle 1'
+'set cthick 2'
+if REGION='pacnw'
+    'set cint 1'
+    'set cthick 2'
+endif
+'set clab masked'
+'d prmslmsl.5/100'
+
 *Plot 10m and 500mb wind barbs
 'set gxout barb'
-
 'set digsiz .03'
 if (MODEL = "GFS_0.25")
     if REGION='pacnw'
@@ -223,22 +223,11 @@ if (MODEL = "NAM_12")
     endif
 endif
 
-*plot the SLP contours
-'set gxout contour'
-'set cint 3'
-'set ccolor 1'
-'set cstyle 1'
-'set cthick 2'
-if REGION='pacnw'
-    'set cint 1'
-    'set cthick 5'
-endif
-'set clab masked'
-'d prmslmsl.5/100'
-
 ***** ***** plot high and low centers via mfhilo function ***** *****
 radius=1000
 cint=300
+
+'set font 11'
 
 *   ******************************DRAW L's******************************
 
@@ -341,7 +330,7 @@ endwhile
 ***** ***** Get max and min ***** *****
 
 if MODEL = 'NAM_12'
-    i=2
+    i=1
 endif
 if MODEL = 'HRRR_Sub'
     i=2
@@ -353,7 +342,6 @@ if MODEL = 'GDPS'
     i=1
 endif
 
-if MODEL != 'NAM_12'
 **** MAXVAL (Wind Shear)
 'd amax(mag(ushear*2.237,vshear*2.237), lon='%LON1', lon='%LON2', lat='%LAT1', lat='%LAT2')'
 maxlin=sublin(result,i)
@@ -377,10 +365,12 @@ minylims=sublin(result,4)
 minxpos=subwrd(minxlims,4)
 minypos=subwrd(minylims,6)
 minval_windshear = math_format('%5.1f',minval)
-endif
 
 **** MAXVAL (SLP)
 'd amax(prmslmsl.5/100, lon='%LON1', lon='%LON2', lat='%LAT1', lat='%LAT2')'
+if MODEL = 'NAM_12'
+    i=2
+endif
 maxlin=sublin(result,i)
 maxval=subwrd(maxlin,4)
 'q gxinfo'
@@ -392,6 +382,9 @@ maxval_slp = math_format('%5.1f',maxval)
 
 **** MINVAL (SLP)
 'd amin(prmslmsl.5/100, lon='%LON1', lon='%LON2', lat='%LAT1', lat='%LAT2')'
+if MODEL = 'NAM_12'
+    i=2
+endif
 minlin=sublin(result,i)
 minval=subwrd(minlin,4)
 'q gxinfo'
@@ -422,7 +415,7 @@ forecastday=substr(result, 45, 3)
 'set string 1 l'
 'set strsiz .13'
 'set font 11'
-'draw string .4 8.37 500 mb-10 Meter Bulk Shear (mph), 10m/500mb/500mb-10m Wind Vectors (black/purple/yellow; mph), SLP (mb)'
+'draw string .4 8.37 500 mb-10m Bulk Shear (mph), 10m/500mb/500mb-10m Wind Vectors (black/purple/yellow; mph), SLP (mb)'
 *hour
 'set strsiz .14'
 'set string 1 r'
@@ -437,22 +430,18 @@ forecastday=substr(result, 45, 3)
 'draw string .4 .15 'INITHOUR%'Z '%INIT_STRINGDATE' '%MODELFORTITLE
 *separator
 'set strsiz .11'
-if MODEL != 'NAM_12'
-'draw string 5.5 .3 |'
-endif
+*'draw string 5.5 .3 |'
+'set string 1 c'
+'draw string 5.5 0.30 Max Bulk Shear: 'maxval_windshear' mph'
 'draw string 5.5 .10 |'
 *minval
-'set string 4 r'
+'set string 2 r'
 'draw string 5.46 0.10 Min Pressure: 'minval_slp' mb'
-if MODEL != 'NAM_12'
-'draw string 5.46 0.30 Min Bulk Shear: 'minval_windshear' mph'
-endif
+*'draw string 5.46 0.30 Min Bulk Shear: 'minval_windshear' mph'
 *maxval
-'set string 2 l'
+'set string 4 l'
 'draw string 5.6 0.10 Max Pressure: 'maxval_slp' mb'
-if MODEL != 'NAM_12'
-'draw string 5.6 0.30 Max Bulk Shear: 'maxval_windshear' mph'
-endif
+*'draw string 5.6 0.30 Max Bulk Shear: 'maxval_windshear' mph'
 *weathertogether.net
 'set font 11'
 'set strsiz .14'

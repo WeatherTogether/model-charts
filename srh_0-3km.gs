@@ -24,51 +24,84 @@ FILENAME = subwrd(args,9)
 
 ***** ***** Open control file ***** *****
 
-'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/surface_CAPE_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/1000_mb_UGRD_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/950_mb_UGRD_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/900_mb_UGRD_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/850_mb_UGRD_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/800_mb_UGRD_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/750_mb_UGRD_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/700_mb_UGRD_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/650_mb_UGRD_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/600_mb_UGRD_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/550_mb_UGRD_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/500_mb_UGRD_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/450_mb_UGRD_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/400_mb_UGRD_'%FULLH'.ctl'
+
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/1000_mb_VGRD_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/950_mb_VGRD_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/900_mb_VGRD_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/850_mb_VGRD_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/800_mb_VGRD_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/750_mb_VGRD_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/700_mb_VGRD_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/650_mb_VGRD_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/600_mb_VGRD_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/550_mb_VGRD_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/500_mb_VGRD_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/450_mb_VGRD_'%FULLH'.ctl'
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/400_mb_VGRD_'%FULLH'.ctl'
+
+'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/mean_sea_level_PRMSL_'%FULLH'.ctl'
 'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/10_m_above_ground_UGRD_'%FULLH'.ctl'
 'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/10_m_above_ground_VGRD_'%FULLH'.ctl'
-'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/850_mb_UGRD_'%FULLH'.ctl'
-'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/850_mb_VGRD_'%FULLH'.ctl'
-'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/500_mb_UGRD_'%FULLH'.ctl'
-'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/500_mb_VGRD_'%FULLH'.ctl'
-'open /home/mint/controlfiles/'%MODEL'/'%INIT_INTDATE''%INITHOUR'/mean_sea_level_PRMSL_'%FULLH'.ctl'
-
-***** ***** Define Variables ***** *****
-
-'define u10m=UGRD10m.2'
-'define v10m=VGRD10m.3'
-'define u850=UGRD850mb.4'
-'define v850=VGRD850mb.5'
-'define u500=UGRD500mb.6'
-'define v500=VGRD500mb.7'
-'define v500=VGRD500mb.7'
 
 ***** ***** Define Region ***** *****
 
 if REGION='northamerica'
     LAT1=20
     LAT2=75
-    LON1='-160'
-    LON2='-70'
+    LON1='-150'
+    LON2='-60.5'
     MAP='latlon'
-* 'set lon '%LON1' '%LON2
-* 'set lat '%LAT1' '%LAT2
-* 'set mpvals 20 89 30 160'
-* 'set mproj '%MAP
+endif
+
+if REGION='nepacific'
+    LAT1=18
+    LAT2=70
+    LON1='-190'
+    LON2='-80'
+    MAP='nps'
+    MPVALSLON1='-166'
+    MPVALSLON2='-115'
+    MPVALSLAT1='23'
+    MPVALSLAT2='60'
+endif
+
+if REGION='antarctica'
+    LAT1=-90
+    LAT2=-60
+    LON1='0'
+    LON2='359.99'
+    MAP='sps'
+    MPVALSLON1='0'
+    MPVALSLON2='359.99'
+    MPVALSLAT1='-60'
+    MPVALSLAT2='-90'
 endif
 
 if REGION='pacnw'
     LAT1=40
     LAT2=55
     LON1='-132'
-    LON2='-107.45'
+    LON2='-107.6'
     MAP='latlon'
 endif
 
 if REGION='conus'
     LAT1=15
-    LAT2=54.72
-    LON1='-128'
+    LAT2=55
+    LON1='-128.05'
     LON2='-63'
     'set xlevs -120 -110 -100 -90 -80 -70'
     'set ylevs 20 30 40 50'
@@ -76,8 +109,8 @@ if REGION='conus'
 endif
 
 if REGION='namconus'
-    LAT1=18.5
-    LAT2=58.22
+    LAT1=18.3
+    LAT2=58.2
     LON1='-129.5'
     LON2='-64.5'
     'set xlevs -120 -110 -100 -90 -80 -70'
@@ -85,21 +118,11 @@ if REGION='namconus'
     MAP='latlon'
 endif
 
-if REGION='colriver'
-    LAT1=44.68
-    LAT2=46.7
-    LON1='-122.2'
-    LON2='-118.9'
-    'set xlevs -122 -121 -120 -119 -118'
-    'set ylevs 45 46'
-    MAP=latlon
-endif
-
 if REGION='pacnwzoom'
-    LAT1=43.8
-    LAT2=49.8
+    LAT1=43.07
+    LAT2=49.15
     LON1='-126'
-    LON2='-116.2'
+    LON2='-116.1'
     'set xlevs -126 -124 -122 -120 -118 -116'
     'set ylevs 44 45 46 47 48 49 50'
     MAP=latlon
@@ -107,9 +130,39 @@ endif
 
 if REGION='middleeast'
     LAT1=0
-    LAT2=55
+    LAT2=55.3
     LON1=0
     LON2=90
+    MAP=latlon
+endif
+
+if REGION='colriver'
+    LAT1=44.68
+    LAT2=46.71
+    LON1='-122.2'
+    LON2='-118.9'
+    'set xlevs -122 -121 -120 -119 -118'
+    'set ylevs 45 46'
+    MAP=latlon
+endif
+
+if REGION='hrrrconus'
+    LAT1=15
+    LAT2=65
+    LON1=-150
+    LON2=-50
+    MAP='nps'
+    MPVALSLAT1='23'
+    MPVALSLAT2='53.5'
+    MPVALSLON1='-118.7'
+    MPVALSLON2='-76.1'
+endif
+
+if REGION='world'
+    LAT1=-90
+    LAT2=90
+    LON1=0
+    LON2=359.99
     MAP=latlon
 endif
 
@@ -122,29 +175,73 @@ endif
 'set grid off'
 'set lon '%LON1' '%LON2
 'set lat '%LAT1' '%LAT2
+if MAP!='latlon'
+    'set mpvals '%MPVALSLON1' '%MPVALSLON2' '%MPVALSLAT1' '%MPVALSLAT2
+endif
 'set mproj '%MAP
+
+***** ***** Define Variables ***** *****
+
+'define u1000=UGRD1000mb.1'
+'define u950=UGRD950mb.2'
+'define u900=UGRD900mb.3'
+'define u850=UGRD850mb.4'
+'define u800=UGRD800mb.5'
+'define u750=UGRD750mb.6'
+'define u700=UGRD700mb.7'
+'define u650=UGRD650mb.8'
+'define u600=UGRD600mb.9'
+'define u550=UGRD550mb.10'
+'define u500=UGRD500mb.11'
+'define u450=UGRD450mb.12'
+'define u400=UGRD400mb.13'
+
+
+'define v1000=VGRD1000mb.14'
+'define v950=VGRD950mb.15'
+'define v900=VGRD900mb.16'
+'define v850=VGRD850mb.17'
+'define v800=VGRD800mb.18'
+'define v750=VGRD750mb.19'
+'define v700=VGRD700mb.20'
+'define v650=VGRD650mb.21'
+'define v600=VGRD600mb.22'
+'define v550=VGRD550mb.23'
+'define v500=VGRD500mb.24'
+'define v450=VGRD450mb.25'
+'define v400=VGRD400mb.26'
+
+'define prmslmsl=prmslmsl.27'
+'define u10m=UGRD10m.28'
+'define v10m=VGRD10m.29'
+
+'define umean=(u1000+u950+u900+u850+u800+u750+u700+u650+u600+u550+u500+u450+u400)/13.0'
+'define vmean=(v1000+v950+v900+v850+v800+v750+v700+v650+v600+v550+v500+v450+v400)/13.0'
+'define ushear=u500-u1000'
+'define vshear=v500-v1000'
+'define shear=sqrt(ushear*ushear+vshear*vshear)'
+'define umotion=((umean+(7.5/(shear))*vshear))'
+'define vmotion=((vmean-(7.5/(shear))*ushear))'
+
+'define srh1=((u950-umotion)*(v1000-vmotion)-(u1000-umotion)*(v950-vmotion))'
+'define srh2=((u900-umotion)*(v950-vmotion)-(u950-umotion)*(v900-vmotion))'
+'define srh3=((u850-umotion)*(v900-vmotion)-(u900-umotion)*(v850-vmotion))'
+'define srh4=((u800-umotion)*(v850-vmotion)-(u850-umotion)*(v800-vmotion))'
+'define srh5=((u750-umotion)*(v800-vmotion)-(u800-umotion)*(v750-vmotion))'
+'define srh6=((u700-umotion)*(v750-vmotion)-(u750-umotion)*(v700-vmotion))'
+
+'define srh3km=srh1+srh2+srh3+srh4+srh5+srh6'
 
 ***** ***** Begin plotting ***** *****
 
-*set colors
-'color 0 6500 100 -kind (255,255,255,0)-(0)->lightaquamarine->green->yellow->orange->red->darkviolet->palevioletred->lightpink->peachpuff->burlywood->firebrick'
+*Plot 0-3km storm relative helicity
+'color 0 900 20 -kind (255,255,255,0)-(0)->lightaquamarine->green->yellow->orange->red->darkviolet->palevioletred->lightpink->peachpuff->burlywood->firebrick'
 
 'set gxout shaded'
-'d CAPEsfc.1'
-'xcbar.gs -fstep 10 -line off -fwidth 0.09 -fheight 0.10 -direction v 10.4 10.6 .6 8'
+'d srh3km'
+'xcbar.gs -fstep 5 -line off -fwidth 0.11 -fheight 0.12 -direction v 10.4 10.6 .6 8'
 
-*plot 1000-500hPa thickness in intervals of 6 decameters
-*** CHANGE THICKNESS SETTINGS HERE
-*'set clevs 476 480 486 492 498 504 510 516 522 528 534 540 546 552 558 564 570 576 582 588 594 600'
-*'set ccols 4 4 4 4 4 4 4 4 4 4 4 4 2 2 2 2 2 2 2 2 2 2'
-*'set gxout contour'
-*'set cint 6'
-*'set cthick 3'
-*'set cstyle 3'
-*'set clab masked'
-*'d (hgt500mb.4-hgt1000mb.5)/10'
-
-*plot the SLP contours in intervals of 3 hPa
+*plot the SLP contours
 'set gxout contour'
 'set cint 3'
 'set ccolor 1'
@@ -152,14 +249,14 @@ endif
 'set cthick 2'
 if REGION='pacnw'
     'set cint 1'
-    'set cthick 2'
+    'set cthick 5'
 endif
 'set clab masked'
-'d prmslmsl.8/100'
+'d prmslmsl/100'
 
 *Plot 10m, 850mb, and 500mb wind barbs
 'set gxout barb'
-'set cthick 2'
+
 'set digsiz .03'
 if (MODEL = "GFS_0.25")
     if REGION='pacnw'
@@ -206,7 +303,7 @@ cint=300
 
 *   ******************************DRAW L's******************************
 
-'mfhilo prmslmsl.8/100 CL l 'radius', 'cint
+'mfhilo prmslmsl/100 CL l 'radius', 'cint
 
 Low_info=result
 if (MODEL = "GFS_0.25")
@@ -251,9 +348,10 @@ while(subwrd(minmax,1) = 'L')
   minmax = sublin(Low_info,i)
 endwhile
 
+
 *   ******************************DRAW H's******************************
 
-'mfhilo prmslmsl.8/100 CL h 'radius', 'cint
+'mfhilo prmslmsl/100 CL h 'radius', 'cint
 
 High_info=result
 if (MODEL = "GFS_0.25")
@@ -304,7 +402,7 @@ endwhile
 ***** ***** Get max and min ***** *****
 
 if MODEL = 'NAM_12'
-    i=2
+    i=1
 endif
 if MODEL = 'HRRR_Sub'
     i=2
@@ -316,8 +414,8 @@ if MODEL = 'GDPS'
     i=1
 endif
 
-**** MAXVAL (CAPE)
-'d amax(CAPEsfc.1, lon='%LON1', lon='%LON2', lat='%LAT1', lat='%LAT2')'
+**** MAXVAL (Storm Relative Helicity 3km)
+'d amax(srh3km, lon='%LON1', lon='%LON2', lat='%LAT1', lat='%LAT2')'
 maxlin=sublin(result,i)
 maxval=subwrd(maxlin,4)
 say result
@@ -327,10 +425,10 @@ maxylims=sublin(result,4)
 maxxpos=subwrd(maxxlims,4)
 maxypos=subwrd(maxylims,6)
 say result
-maxval_cape = math_format('%5.1f',maxval)
+maxval_srh3km = math_format('%5.1f',maxval)
 
-**** MINVAL (CAPE)
-'d amin(CAPEsfc.1, lon='%LON1', lon='%LON2', lat='%LAT1', lat='%LAT2')'
+**** MAXVAL (Storm Relative Helicity 3km)
+'d amin(srh3km, lon='%LON1', lon='%LON2', lat='%LAT1', lat='%LAT2')'
 minlin=sublin(result,i)
 minval=subwrd(minlin,4)
 'q gxinfo'
@@ -338,11 +436,13 @@ minxlims=sublin(result,3)
 minylims=sublin(result,4)
 minxpos=subwrd(minxlims,4)
 minypos=subwrd(minylims,6)
-minval_cape = math_format('%5.1f',minval)
-
+minval_srh3km = math_format('%5.1f',minval)
 
 **** MAXVAL (SLP)
-'d amax(prmslmsl.8/100, lon='%LON1', lon='%LON2', lat='%LAT1', lat='%LAT2')'
+'d amax(prmslmsl/100, lon='%LON1', lon='%LON2', lat='%LAT1', lat='%LAT2')'
+if MODEL = 'NAM_12'
+    i=1
+endif
 maxlin=sublin(result,i)
 maxval=subwrd(maxlin,4)
 'q gxinfo'
@@ -353,7 +453,7 @@ maxypos=subwrd(maxylims,6)
 maxval_slp = math_format('%5.1f',maxval) 
 
 **** MINVAL (SLP)
-'d amin(prmslmsl.8/100, lon='%LON1', lon='%LON2', lat='%LAT1', lat='%LAT2')'
+'d amin(prmslmsl/100, lon='%LON1', lon='%LON2', lat='%LAT1', lat='%LAT2')'
 minlin=sublin(result,i)
 minval=subwrd(minlin,4)
 'q gxinfo'
@@ -363,8 +463,8 @@ minxpos=subwrd(minxlims,4)
 minypos=subwrd(minylims,6)
 minval_slp = math_format('%5.1f',minval)
 
-***** ***** End max and min ***** *****
 
+***** ***** End max and min ***** *****
 
 ***** ***** Get time of forecast ***** *****
 'q time'
@@ -375,16 +475,18 @@ forecastyear=substr(result, 32, 4)
 forecastday=substr(result, 45, 3)
 
 ***** ***** Draw shapefiles ***** ***** 
+
 'set line 1 1 1'
 'draw shp /home/mint/opengrads/Contents/Shapefiles/Canada/PROVINCE.shp'
-'draw shp /home/mint/opengrads/Contents/Shapefiles/Mexico/mexstates.shp'
+'draw shp /home/mint/opengrads/Contents/Shapefiles/Mexico/mexstates.shp' 
 
 ***** ***** draw titles and strings for map! ***** *****
 *title
 'set string 1 l'
 'set strsiz .13'
 'set font 11'
-'draw string .4 8.37 Surface-Based CAPE (J/kg), 10m/850mb/500mb Wind Vectors (black/yellow/purple; mph), SLP (mb)'
+'draw string .4 8.37 0-3 km Storm Relative Helicity (m`a-2`ns`a-2`n), 10m/850mb/500mb Wind Vectors (black/yellow/purple; mph), SLP (mb)'
+*hour
 'set strsiz .14'
 'set string 1 r'
 'draw string 10.37 8.12 Hour: '%H
@@ -400,23 +502,23 @@ forecastday=substr(result, 45, 3)
 'set strsiz .11'
 *'draw string 5.5 .3 |'
 'set string 1 c'
-'draw string 5.5 0.30 Max CAPE: 'maxval_cape' J/kg'
+'draw string 5.5 .3 Max Storm Relative Helicity: 'maxval_srh3km' m`a-2`ns`a-2`n'
 'draw string 5.5 .10 |'
 *minval
 'set string 2 r'
 'draw string 5.46 0.10 Min Pressure: 'minval_slp' mb'
-*'draw string 5.46 0.30 Min CAPE: 'minval_cape' J/kg'
+*'draw string 5.46 0.30 Min Storm Relative Helicity: 'minval_srh3km' m`a-2`ns`a-2`n'
 *maxval
 'set string 4 l'
 'draw string 5.6 0.10 Max Pressure: 'maxval_slp' mb'
-*'draw string 5.6 0.30 Max CAPE: 'maxval_cape' J/kg'
+*'draw string 5.6 0.30 Max Storm Relative Helicity: 'maxval_srh3km' m`a-2`ns`a-2`n'
 *weathertogether.net
 'set font 11'
 'set strsiz .14'
 'set string 11 r'
 'draw string 10.37 .15 weathertogether.net'
 
-*Save output as .png
+***** ***** Save output as .png ***** *****
 'gxprint /home/mint/grads_pics/'%MODEL'/'%INIT_INTDATE'/'%INITHOUR'z/'%MODEL'_'%REGION'_'%FILENAME'_'%FULLH'.png x1100 y850'
 
 'quit'
