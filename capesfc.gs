@@ -160,6 +160,14 @@ if REGION='world'
     MAP=latlon
 endif
 
+if REGION='greatplains'
+    LAT1=32
+    LAT2=45
+    LON1='-108'
+    LON2='-86.9'
+    MAP='latlon'
+endif
+
 ***** ***** set map parameters ***** ***** 
 
 'set mpdset hires'
