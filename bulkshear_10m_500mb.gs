@@ -146,7 +146,8 @@ endif
 'set mpdset hires'
 'set mpt 0 1 1 6'
 'set mpt 1 1 1 6'
-'set mpt 2 1 1 3'
+*'set mpt 2 1 1 3'
+'set mpt 2 off'
 'set grid off'
 'set lon '%LON1' '%LON2
 'set lat '%LAT1' '%LAT2
@@ -175,7 +176,7 @@ endif
 'set ccolor 1'
 'set cstyle 1'
 'set cthick 2'
-if REGION='pacnw'
+if REGION='greatplains'
     'set cint 1'
     'set cthick 2'
 endif
@@ -186,7 +187,7 @@ endif
 'set gxout barb'
 'set digsiz .03'
 if (MODEL = "GFS_0.25")
-    if REGION='pacnw'
+    if REGION='greatplains'
         'set ccolor 4'
         'd skip(ushear*2.237,5,5);vshear*2.237'
         'set ccolor 1'
@@ -204,7 +205,7 @@ if (MODEL = "GFS_0.25")
     endif
 endif
 if (MODEL = "NAM_12")
-    if REGION='pacnw'
+    if REGION='greatplains'
         'set ccolor 4'
         'd skip(ushear*2.237,10,10);vshear*2.237'
         'set ccolor 1'
@@ -405,10 +406,15 @@ forecastyear=substr(result, 32, 4)
 forecastday=substr(result, 45, 3)
 
 ***** ***** Draw shapefiles ***** ***** 
-
 'set line 1 1 1'
 'draw shp /home/mint/opengrads/Contents/Shapefiles/Canada/PROVINCE.shp'
-'draw shp /home/mint/opengrads/Contents/Shapefiles/Mexico/mexstates.shp' 
+'draw shp /home/mint/opengrads/Contents/Shapefiles/Mexico/mexstates.shp'
+if REGION='greatplains'
+    'set line 15 1 1'
+    'draw shp /home/mint/opengrads/Contents/Shapefiles/Counties/c_11au16.shp'
+endif
+'set line 1 1 3'
+'draw shp /home/mint/opengrads/Contents/Shapefiles/States/s_11au16.shp'
 
 ***** ***** draw titles and strings for map! ***** *****
 *title
