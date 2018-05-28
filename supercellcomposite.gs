@@ -250,7 +250,7 @@ endif
 ***** ***** Begin plotting ***** *****
 
 *Plot Supercell Composite (surface-based)
-'color 0 50 1 -kind (255,255,255,0)-(0)->lightaquamarine->green->yellow->orange->red->darkviolet->palevioletred->lightpink->peachpuff->burlywood->firebrick'
+'color 0 150 1 -kind (255,255,255,0)-(0)->lightaquamarine->green->yellow->orange->red->darkviolet->palevioletred->lightpink->peachpuff->burlywood->firebrick'
 
 'set gxout shaded'
 'd scpsfc'
