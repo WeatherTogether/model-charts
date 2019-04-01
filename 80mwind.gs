@@ -38,6 +38,18 @@ endif
 
 ***** ***** Define Region ***** *****
 
+if REGION='northhemisphere'
+    LAT1=20
+    LAT2=90
+    LON1='0'
+    LON2='360'
+    MAP='nps'
+    MPVALSLON1='0'
+    MPVALSLON2='360'
+    MPVALSLAT1='40'
+    MPVALSLAT2='90'
+endif
+
 if REGION='northamerica'
     LAT1=20
     LAT2=75

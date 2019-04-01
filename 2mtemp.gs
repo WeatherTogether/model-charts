@@ -46,6 +46,14 @@ if REGION='northamerica'
     MAP='latlon'
 endif
 
+if REGION='greatplains'
+    LAT1=32
+    LAT2=45
+    LON1='-108'
+    LON2='-86.9'
+    MAP='latlon'
+endif
+
 if REGION='nepacific'
     LAT1=18
     LAT2=70
@@ -68,6 +76,18 @@ if REGION='antarctica'
     MPVALSLON2='360'
     MPVALSLAT1='-90'
     MPVALSLAT2='-60'
+endif
+
+if REGION='northhemisphere'
+    LAT1=10
+    LAT2=90
+    LON1='0'
+    LON2='360'
+    MAP='nps'
+    MPVALSLON1='0'
+    MPVALSLON2='360'
+    MPVALSLAT1='25'
+    MPVALSLAT2='90'
 endif
 
 if REGION='pacnw'
@@ -151,7 +171,8 @@ endif
 'set mpdset hires'
 'set mpt 0 1 1 6'
 'set mpt 1 1 1 6'
-'set mpt 2 1 1 3'
+*'set mpt 2 1 1 3'
+'set mpt 2 off'
 'set grid off'
 'set lon '%LON1' '%LON2
 'set lat '%LAT1' '%LAT2
@@ -449,9 +470,9 @@ if (MODEL = "GFS_0.25")
 endif
 if (MODEL = "NAM_12")
     if REGION='pacnw'
-        'd skip(ugrd10m.2*2.237,10,10);vgrd10m.3*2.237'
+*        'd skip(ugrd10m.2*2.237,10,10);vgrd10m.3*2.237'
     else
-        'd skip(ugrd10m.2*2.237,24,24);vgrd10m.3*2.237'
+*        'd skip(ugrd10m.2*2.237,24,24);vgrd10m.3*2.237'
     endif
 endif
 
@@ -631,6 +652,12 @@ forecastday=substr(result, 45, 3)
 'set line 1 1 1'
 'draw shp /home/mint/opengrads/Contents/Shapefiles/Canada/PROVINCE.shp'
 'draw shp /home/mint/opengrads/Contents/Shapefiles/Mexico/mexstates.shp'
+if REGION='greatplains'
+    'set line 15 1 1'
+    'draw shp /home/mint/opengrads/Contents/Shapefiles/Counties/c_11au16.shp'
+endif
+'set line 1 1 3'
+'draw shp /home/mint/opengrads/Contents/Shapefiles/States/s_11au16.shp'
 
 ***** ***** draw titles and strings for map! ***** *****
 *title

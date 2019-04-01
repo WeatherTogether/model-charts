@@ -44,6 +44,18 @@ FILENAME = subwrd(args,9)
 
 ***** ***** Define Region ***** *****
 
+if REGION='northhemisphere'
+    LAT1=20
+    LAT2=90
+    LON1='0'
+    LON2='360'
+    MAP='nps'
+    MPVALSLON1='0'
+    MPVALSLON2='360'
+    MPVALSLAT1='40'
+    MPVALSLAT2='90'
+endif
+
 if REGION='northamerica'
     LAT1=20
     LAT2=75
@@ -173,25 +185,14 @@ endif
 'set mpdset hires'
 'set mpt 0 1 1 6'
 'set mpt 1 1 1 6'
-'set mpt 2 1 1 3'
+*'set mpt 2 1 1 3'
+'set mpt 2 off'
 'set grid off'
 'set lon '%LON1' '%LON2
 'set lat '%LAT1' '%LAT2
 if MAP!='latlon'
     'set mpvals '%MPVALSLON1' '%MPVALSLON2' '%MPVALSLAT1' '%MPVALSLAT2
 endif
-'set mproj '%MAP
-
-***** ***** set map parameters ***** ***** 
-
-'set mpdset hires'
-'set mpt 0 1 1 6'
-'set mpt 1 1 1 6'
-*'set mpt 2 1 1 3'
-'set mpt 2 off'
-'set grid off'
-'set lon '%LON1' '%LON2
-'set lat '%LAT1' '%LAT2
 'set mproj '%MAP
 
 ***** ***** Begin plotting ***** *****
@@ -494,3 +495,4 @@ endif
 'gxprint /home/mint/grads_pics/'%MODEL'/'%INIT_INTDATE'/'%INITHOUR'z/'%MODEL'_'%REGION'_'%FILENAME'_'%FULLH'.png x1100 y850'
 
 'quit'
+

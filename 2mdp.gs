@@ -38,11 +38,31 @@ FILENAME = subwrd(args,9)
 
 ***** ***** Define Region ***** *****
 
+if REGION='northhemisphere'
+    LAT1=20
+    LAT2=90
+    LON1='0'
+    LON2='360'
+    MAP='nps'
+    MPVALSLON1='0'
+    MPVALSLON2='360'
+    MPVALSLAT1='40'
+    MPVALSLAT2='90'
+endif
+
 if REGION='northamerica'
     LAT1=20
     LAT2=75
     LON1='-150'
     LON2='-60.5'
+    MAP='latlon'
+endif
+
+if REGION='greatplains'
+    LAT1=32
+    LAT2=45
+    LON1='-108'
+    LON2='-86.9'
     MAP='latlon'
 endif
 
@@ -151,7 +171,8 @@ endif
 'set mpdset hires'
 'set mpt 0 1 1 6'
 'set mpt 1 1 1 6'
-'set mpt 2 1 1 3'
+*'set mpt 2 1 1 3'
+'set mpt 2 off'
 'set grid off'
 'set lon '%LON1' '%LON2
 'set lat '%LAT1' '%LAT2
@@ -436,16 +457,16 @@ endif
 'set digsiz .04'
 if (MODEL = "GFS_0.25")
     if REGION='pacnw'
-        'd skip(ugrd10m.2*2.237,5,5);vgrd10m.3*2.237'
+*        'd skip(ugrd10m.2*2.237,5,5);vgrd10m.3*2.237'
     else
-        'd skip(ugrd10m.2*2.237,10,10);vgrd10m.3*2.237'
+*        'd skip(ugrd10m.2*2.237,10,10);vgrd10m.3*2.237'
     endif
 endif
 if (MODEL = "NAM_12")
     if REGION='pacnw'
-        'd skip(ugrd10m.2*2.237,10,10);vgrd10m.3*2.237'
+*        'd skip(ugrd10m.2*2.237,10,10);vgrd10m.3*2.237'
     else
-        'd skip(ugrd10m.2*2.237,24,24);vgrd10m.3*2.237'
+*        'd skip(ugrd10m.2*2.237,24,24);vgrd10m.3*2.237'
     endif
 endif
 
@@ -621,11 +642,17 @@ forecastmonth=substr(result, 29, 3)
 forecastyear=substr(result, 32, 4)
 forecastday=substr(result, 45, 3)
 
+
 ***** ***** Draw shapefiles ***** ***** 
 'set line 1 1 1'
 'draw shp /home/mint/opengrads/Contents/Shapefiles/Canada/PROVINCE.shp'
 'draw shp /home/mint/opengrads/Contents/Shapefiles/Mexico/mexstates.shp'
-
+if REGION='greatplains'
+    'set line 15 1 1'
+    'draw shp /home/mint/opengrads/Contents/Shapefiles/Counties/c_11au16.shp'
+endif
+'set line 1 1 3'
+'draw shp /home/mint/opengrads/Contents/Shapefiles/States/s_11au16.shp'
 ***** ***** draw titles and strings for map! ***** *****
 *title
 'set string 1 l'
